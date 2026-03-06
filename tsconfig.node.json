@@ -1,0 +1,16 @@
+// tsconfig.node.json
+{
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "include": ["vite.config.*", "vitest.config.*", "cypress.config.*", "playwright.config.*"],
+  "compilerOptions": {
+    "composite": true, // 关键：开启组合项目
+    "noEmit": false,   // 基础配置
+    "emitDeclarationOnly": true, // 关键：仅生成声明文件
+    "allowImportingTsExtensions": false, // 显式关闭冲突选项
+    "declaration": true,
+    "declarationMap": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["node"]
+  }
+}

@@ -1,0 +1,13 @@
+// tsconfig.json（根目录）
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    // 可选：全局禁用某些严格规则（新手友好）
+    "strict": false,
+    "skipLibCheck": true
+  }
+}

@@ -1,0 +1,110 @@
+@use 'variables' as *;
+
+// 响应式适配 - 使用断点变量
+@mixin responsive($breakpoint: $breakpoint-xs) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+// 移动优先的响应式
+@mixin mobile-up($breakpoint: $breakpoint-sm) {
+  @media (min-width: $breakpoint) {
+    @content;
+  }
+}
+
+// 在特定断点范围内
+@mixin between($min, $max) {
+  @media (min-width: $min) and (max-width: $max) {
+    @content;
+  }
+}
+// 清除浮动
+@mixin clearfix {
+  &::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+}
+
+// 弹性布局 - 添加参数增强灵活性
+@mixin flex-center($direction: row) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: center;
+  align-items: center;
+}
+
+// 弹性布局 - 更灵活的版本
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// 弹性布局 - 完全可配置版本
+@mixin flex($direction: row, $justify: flex-start, $align: stretch, $wrap: nowrap) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  flex-wrap: $wrap;
+}
+
+// 响应式适配 - 使用变量统一管理断点
+@mixin responsive($breakpoint: $breakpoint-mobile) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+// 响应式适配 - 移动优先（推荐）
+@mixin mobile-up($breakpoint: $breakpoint-mobile) {
+  @media (min-width: $breakpoint) {
+    @content;
+  }
+}
+
+// 文字超出省略 - 优化多行省略
+@mixin text-ellipsis($line: 1) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  @if $line == 1 {
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $line;
+    -webkit-box-orient: vertical;
+    // 兼容非 WebKit 浏览器
+    max-height: calc(1.5em * #{$line});
+    line-height: 1.5;
+  }
+}
+
+// 新增：响应式字体
+@mixin responsive-font($min-size: 14px, $max-size: 18px, $min-width: 320px, $max-width: 1200px) {
+  font-size: clamp(
+    #{$min-size},
+    calc(#{$min-size} + (#{$max-size} - #{$min-size}) * ((100vw - #{$min-width}) / (#{$max-width} - #{$min-width}))),
+    #{$max-size}
+  );
+}
+
+// 新增：卡片阴影
+@mixin card-shadow($level: 1) {
+  @if $level == 1 {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  } @else if $level == 2 {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  } @else {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.14);
+  }
+}
+
+// 新增：渐变背景
+@mixin gradient($direction: to right, $start-color: #409eff, $end-color: #67c23a) {
+  background: linear-gradient($direction, $start-color, $end-color);
+}

@@ -1,0 +1,91 @@
+// 颜色变量（使用 !default 允许被覆盖）
+$primary-color: #409eff !default;      // 主题色（适配 Element Plus 主色）
+$success-color: #67c23a !default;      // 成功色
+$warning-color: #e6a23c !default;      // 警告色
+$danger-color: #f56c6c !default;       // 危险色
+$info-color: #909399 !default;         // 信息色（新增）
+
+// 文字颜色
+$text-color-primary: #303133 !default; // 主要文字（原 $text-color）
+$text-color-regular: #606266 !default; // 常规文字（新增）
+$text-color-secondary: #909399 !default; // 次要文字
+$text-color-placeholder: #c0c4cc !default; // 占位文字（新增）
+
+// 背景颜色
+$bg-color: #f5f7fa !default;           // 页面背景
+$bg-color-light: #fafafa !default;     // 浅色背景（新增）
+$bg-color-dark: #e4e7ed !default;      // 深色背景（新增）
+
+// 边框颜色
+$border-color: #e4e7ed !default;       // 基础边框
+$border-color-light: #ebeef5 !default; // 浅色边框（新增）
+$border-color-dark: #d4d7de !default;  // 深色边框（新增）
+
+// 边框圆角
+$border-radius: 4px !default;          // 基础圆角
+$border-radius-lg: 8px !default;       // 大圆角（新增）
+$border-radius-sm: 2px !default;       // 小圆角（新增）
+$border-radius-circle: 50% !default;   // 圆形（新增）
+
+// 尺寸变量
+$header-height: 60px !default;          // 头部高度
+$sidebar-width: 200px !default;         // 侧边栏宽度
+$sidebar-width-collapsed: 64px !default; // 侧边栏折叠宽度（新增）
+$content-padding: 20px !default;        // 内容内边距
+
+// 字体变量
+$font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !default;
+$font-size-base: 14px !default;         // 基础字体
+$font-size-lg: 16px !default;           // 大字体
+$font-size-sm: 12px !default;           // 小字体
+$font-weight-normal: 400 !default;      // 正常字重（新增）
+$font-weight-bold: 600 !default;        // 加粗字重（新增）
+
+// 行高
+$line-height-base: 1.5 !default;        // 基础行高（新增）
+$line-height-lg: 1.8 !default;          // 大行高（新增）
+$line-height-sm: 1.2 !default;          // 小行高（新增）
+
+// 间距变量（新增）
+$spacing-unit: 8px !default;             // 基础间距单位
+$spacing-xs: $spacing-unit !default;     // 极小间距 (8px)
+$spacing-sm: $spacing-unit * 2 !default; // 小间距 (16px)
+$spacing-md: $spacing-unit * 3 !default; // 中间距 (24px)
+$spacing-lg: $spacing-unit * 4 !default; // 大间距 (32px)
+$spacing-xl: $spacing-unit * 6 !default; // 极大间距 (48px)
+
+// 响应式断点（与 Element Plus 保持一致）
+$breakpoint-xs: 768px !default;  // < 768px
+$breakpoint-sm: 992px !default;  // < 992px
+$breakpoint-md: 1200px !default; // < 1200px
+$breakpoint-lg: 1920px !default; // < 1920px
+$breakpoint-xl: 2560px !default; // >= 2560px
+
+// Z-index 层级（新增）
+$z-index-dropdown: 1000 !default;
+$z-index-sticky: 1020 !default;
+$z-index-fixed: 1030 !default;
+$z-index-modal-backdrop: 1040 !default;
+$z-index-modal: 1050 !default;
+$z-index-popover: 1060 !default;
+$z-index-tooltip: 1070 !default;
+
+// 动画时长（新增）
+$transition-duration: 0.3s !default;
+$transition-duration-fast: 0.15s !default;
+$transition-duration-slow: 0.5s !default;
+
+// 阴影（新增）
+$box-shadow-base: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04) !default;
+$box-shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.1) !default;
+$box-shadow-dark: 0 4px 16px 0 rgba(0, 0, 0, 0.2) !default;
+
+// 导出变量供 JavaScript 使用（如果需要在 JS 中使用）
+:export {
+  primaryColor: $primary-color;
+  successColor: $success-color;
+  warningColor: $warning-color;
+  dangerColor: $danger-color;
+  textColorPrimary: $text-color-primary;
+  fontSizeBase: $font-size-base;
+}
