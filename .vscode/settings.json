@@ -1,0 +1,27 @@
+{
+  // 保存时自动格式化
+  "editor.formatOnSave": false,
+
+  // 设置 Prettier 为默认格式化工具
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // 针对特定语言也可单独指定（可选）
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  },
+  // 关闭css警告
+  "css.validate": false,
+  "scss.validate": false
+}
