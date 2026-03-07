@@ -13,7 +13,7 @@
     <!-- footer 按钮由我完全控制 -->
     <footer>
       <div class="flex mt-5 justify-end">
-        <el-button size="default" @click="handleCancel">取消</el-button>
+        <el-button size="default" @click="emit('close')">取消</el-button>
         <el-button size="default" type="primary" @click="handleConfirm" :loading="loading">
           确定
         </el-button>
@@ -58,16 +58,9 @@ const loginRules: FormRules = {
   ]
 }
 
-// 处理取消
-const handleCancel = () => {
-  // 直接触发 close 事件，让对话框关闭
-  emit('close')
-}
-
 // 处理确认
 const handleConfirm = async () => {
   if (!formRef.value) return
-
   try {
     loading.value = true
     // 表单验证

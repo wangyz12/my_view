@@ -15,7 +15,7 @@ export function showChangePasswordPopup(): Promise<any> {
     null,                      // 传递给组件的属性
     {
       title: '修改密码',            // 弹窗标题
-      width: '500px',              // 弹窗宽度
+      width: '350px',              // 弹窗宽度
       showClose: true,             // 显示关闭按钮
       closeOnClickModal: false,    // 点击遮罩不关闭
       className: 'change-password-dialog',

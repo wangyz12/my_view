@@ -11,7 +11,12 @@
     flex-direction: column;
     background-color: #304156;
   }
-  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    display: block;
+    border-radius: 100%;
+  }
   .logo-area {
     height: 60px;
     display: flex;

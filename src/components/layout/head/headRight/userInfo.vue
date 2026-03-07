@@ -43,12 +43,14 @@ const dropdList: DROPDLIST[] = [
   { label: '修改密码', value: '2', type: 'popup' },
   { label: '退出登录', value: '3', type: 'msgbox' },
 ];
+// 统一跳转登录
 const unificationOut = async (str: string) => {
   storage.clear()
   await userStore.clear_state()
   ElMessage.success(str)
   setTimeout(() => router.push('/login'), 500)
 }
+// 退出
 const outFunc = () => {
   ElMessageBox.confirm('确定退出吗？', '提示', {
     confirmButtonText: '确定',
@@ -58,9 +60,11 @@ const outFunc = () => {
     unificationOut('账号成功退出，请重新登录')
   }).catch(() => { })
 }
+// 跳转个人信息
 const linkFunc = (path: string) => {
   router.push(path);
 };
+// 修改密码弹框
 const popupFunc = async (itme: DROPDLIST) => {
   if (itme.value === '2') {
     // 修改密码
@@ -70,6 +74,7 @@ const popupFunc = async (itme: DROPDLIST) => {
     }
   }
 }
+// 下拉菜单点击事件
 const dropdClick = (item: DROPDLIST) => {
   switch (item.type) {
     case 'router':
@@ -84,12 +89,3 @@ const dropdClick = (item: DROPDLIST) => {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.avatar {
-  width: 40px;
-  height: 40px;
-  display: block;
-  border-radius: 100%;
-}
-</style>
