@@ -1,5 +1,5 @@
 <template>
-  <div class="h-[60px] px-3 py-1 flex items-center justify-between head-box">
+  <div class="h-[60px] px-3 py-1 bg-white flex items-center justify-between head-box">
     <head-left />
     <head-right />
   </div>

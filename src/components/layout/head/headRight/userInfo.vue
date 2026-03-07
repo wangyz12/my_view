@@ -21,7 +21,6 @@ import { useUserStore } from '@/store/modules/user';
 import { useRouter } from 'vue-router';
 import { showChangePasswordPopup } from './popup/index'
 import storage from '@/utils/storage'
-import { handleLogout } from '@/utils/auth';
 const userStore = useUserStore();
 const router = useRouter();
 const avatarUrl = computed(() => {

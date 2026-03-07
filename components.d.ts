@@ -32,6 +32,7 @@ declare module 'vue' {
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+    ElWatermark: typeof import('element-plus/es')['ElWatermark']
     Head: typeof import('./src/components/layout/head/index.vue')['default']
     HeadLeft: typeof import('./src/components/layout/head/headLeft/index.vue')['default']
     HeadRight: typeof import('./src/components/layout/head/headRight/index.vue')['default']

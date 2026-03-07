@@ -49,3 +49,13 @@ a {
 .flex-center {
   @include flex-center;
 }
+.main-content {
+  padding: 10px !important;
+  height: 100%;  // 让main占满剩余高度
+  
+  .router-view {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;  // 溢出隐藏，内部如果有滚动需求可以在子组件单独设置
+  }
+}
