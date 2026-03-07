@@ -9,6 +9,8 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
 import pinia from '@/store';
 import '@/styles/index.scss';
 import { setupRouter } from '@/utils/router';
+import moment from 'moment';
+window.moment = moment;
 const app = createApp(App);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);

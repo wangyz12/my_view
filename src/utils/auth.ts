@@ -17,10 +17,6 @@ export function handleLogout() {
   // 清除token和菜单
   storage.remove('token');
   storage.remove('menus');
-  
   // 重置动态路由
   dynamicRouteManager.resetRoutes();
-  
-  // 跳转到登录页
-  router.push('/login');
 }

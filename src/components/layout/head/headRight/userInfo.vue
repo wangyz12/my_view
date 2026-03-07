@@ -22,6 +22,7 @@ import { useRouter } from 'vue-router';
 import { showChangePasswordPopup } from './popup/index'
 import storage from '@/utils/storage'
 import { ElMessageBox } from 'element-plus';
+import { handleLogout } from '@/utils/auth';
 const userStore = useUserStore();
 const router = useRouter();
 const avatarUrl = computed(() => {
@@ -65,6 +66,7 @@ const popupFunc = async (itme: DROPDLIST) => {
     const res: any = await showChangePasswordPopup()
     if (res.success) {
       storage.clear()
+      handleLogout()
       await userStore.clear_state()
       ElMessage.success('密码修改成功，请重新登录')
       setTimeout(() => router.push('/login'), 500)

@@ -28,6 +28,7 @@ import storage from '@/utils/storage'
 import { getMenuListApi } from '@/api'
 import {handleLoginSuccess} from '@/utils/auth'
 import { useRouter } from 'vue-router'
+import { getGreeting } from '@/utils/timeUtils'
 const userStore = useUserStore()
 const router = useRouter()
 const loading = ref(false)
@@ -60,7 +61,8 @@ const submit = async () => {
       menus: res.data
     })
    await handleLoginSuccess(data.accessToken,res.data)
-   ElMessage.success('登录成功')
+   const str = `${getGreeting(new Date)},欢迎回来`
+   ElMessage.success(str)
    setTimeout(()=>router.push('/'),500)
   } catch (error: any) {
     console.error('登录失败:', error)
