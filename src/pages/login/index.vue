@@ -21,18 +21,14 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/store/modules/user'
 import { login as loginApi } from '@/api/modules/login'
 import storage from '@/utils/storage'
 import { getMenuListApi } from '@/api'
 import {handleLoginSuccess} from '@/utils/auth'
-const router = useRouter()
-const route = useRoute()
 const userStore = useUserStore()
 const loading = ref(false)
-
 const loginForm = reactive({
   account: 'test',
   password: 'www13com_'

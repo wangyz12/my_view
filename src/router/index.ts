@@ -1,12 +1,12 @@
 // src/router/index.ts
-import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
-import { useUserStore } from '@/store/modules/user'
-import storage from '@/utils/storage'
+import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router';
+import { useUserStore } from '@/store/modules/user';
+import storage from '@/utils/storage';
 // 定义路由组件
-const Layout = () => import('@/components/layout/index.vue')
-const Home = () => import('@/pages/home/index.vue')
-const Login = () => import('@/pages/login/index.vue')
-const NotFound = () => import('@/components/notFound/index.vue')
+const Layout = () => import('@/components/layout/index.vue');
+const Home = () => import('@/pages/home/index.vue');
+const Login = () => import('@/pages/login/index.vue');
+const NotFound = () => import('@/components/notFound/index.vue');
 
 // 定义路由配置
 const routes: RouteRecordRaw[] = [
@@ -14,6 +14,7 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: Layout,
     redirect: '/home',
+    name: 'Layout',
     children: [
       {
         path: 'home',
@@ -21,10 +22,10 @@ const routes: RouteRecordRaw[] = [
         component: Home,
         meta: {
           title: '首页',
-          requiresAuth: true // 需要登录
-        }
+          requiresAuth: true, // 需要登录
+        },
       },
-    ]
+    ],
   },
   {
     path: '/login',
@@ -32,8 +33,8 @@ const routes: RouteRecordRaw[] = [
     component: Login,
     meta: {
       title: '登录',
-      requiresAuth: false // 不需要登录
-    }
+      requiresAuth: false, // 不需要登录
+    },
   },
   {
     path: '/:pathMatch(.*)*',
@@ -41,10 +42,10 @@ const routes: RouteRecordRaw[] = [
     component: NotFound,
     meta: {
       title: '404',
-      requiresAuth: false
-    }
-  }
-]
+      requiresAuth: false,
+    },
+  },
+];
 
 // 创建路由实例
 const router = createRouter({
@@ -53,40 +54,69 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     // 滚动行为：回到顶部
     if (savedPosition) {
-      return savedPosition
+      return savedPosition;
     } else {
-      return { top: 0 }
+      return { top: 0 };
     }
-  }
-})
+  },
+});
 
-// 全局前置守卫
 router.beforeEach(async (to, from) => {
-  // 设置页面标题
-  document.title = to.meta.title ? `${to.meta.title} - 我的应用` : '我的应用'
-  const menus = storage.get('menus')
-  // 获取用户store
-  const userStore = useUserStore()
-  
-  // 检查是否需要登录
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  
-  // 检查是否已登录
-  const isLoggedIn = userStore.accessToken || storage.get('token')
-  
-  if (requiresAuth && !isLoggedIn) {
-    // 需要登录但未登录，跳转到登录页
+  // 设置页面标题（支持动态参数）
+  const defaultTitle = '我的应用';
+  if (to.meta.title) {
+    const title = typeof to.meta.title === 'function' ? to.meta.title(to.params) : to.meta.title;
+    document.title = `${title} - ${defaultTitle}`;
+  } else {
+    document.title = defaultTitle;
+  }
+
+  // 获取用户信息
+  const userStore = useUserStore();
+  const token = userStore.accessToken || storage.get('token');
+  const isLoggedIn = !!token;
+
+  // 如果已登录但未获取用户信息，尝试获取
+  // if (isLoggedIn && !userStore.userInfo) {
+  //   try {
+  //     await userStore.getUserInfo()
+  //   } catch (error) {
+  //     console.error('获取用户信息失败:', error)
+  //     // token 无效，清除登录状态
+  //     userStore.logout()
+  //     return {
+  //       path: '/login',
+  //       query: { redirect: to.fullPath }
+  //     }
+  //   }
+  // }
+
+  // 权限检查
+  // if (to.meta.roles && userStore.userInfo) {
+  //   const hasRole = to.meta.roles.some(role =>
+  //     userStore.userInfo.roles?.includes(role)
+  //   )
+  //   if (!hasRole) {
+  //     return '/403' // 无权限页面
+  //   }
+  // }
+
+  // 登录页处理
+  if (to.path === '/login') {
+    if (isLoggedIn) {
+      return from.path === '/' ? '/home' : from.fullPath;
+    }
+    return true;
+  }
+
+  // 登录检查
+  if (!isLoggedIn) {
     return {
       path: '/login',
-      query: { redirect: to.fullPath } // 保存原路径，登录后跳回
-    }
-  } else if (to.path === '/login' && isLoggedIn) {
-    // 已登录但访问登录页，跳转到首页
-    return '/home'
-  } else {
-    // 返回 true 或 undefined 表示导航通过
-    return true
+      query: { redirect: to.fullPath },
+    };
   }
-})
 
-export default router
+  return true;
+});
+export default router;
