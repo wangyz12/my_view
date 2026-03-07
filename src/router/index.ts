@@ -2,7 +2,6 @@
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
 import { useUserStore } from '@/store/modules/user'
 import storage from '@/utils/storage'
-import { dynamicRouteManager } from './dynamic' // 导入动态路由管理器
 // 定义路由组件
 const Layout = () => import('@/components/layout/index.vue')
 const Home = () => import('@/pages/home/index.vue')

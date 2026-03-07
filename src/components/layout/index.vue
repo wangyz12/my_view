@@ -1,14 +1,17 @@
 <!-- src/layout/Layout.vue -->
 <template>
-  <div class="layout">
-    <!-- 侧边栏（示例） -->
-    <div class="sidebar">
-     <Menu />
-    </div>
-    <!-- 主内容区 -->
-    <div class="main-content">
-      <router-view></router-view>
-    </div>
+   <div class="common-layout layout">
+    <el-container class="layout">
+      <el-aside width="200px">
+        <Menu />
+      </el-aside>
+      <el-container>
+        <el-header>Header</el-header>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
+      </el-container>
+    </el-container>
   </div>
 </template>
 
@@ -18,21 +21,10 @@ defineOptions({
   name: 'Layout'
 })
 </script>
-
-<style scoped>
-.layout {
-  display: flex;
+<style>
+.layout{
+  width: 100vw;
   height: 100vh;
-}
-
-.sidebar {
-  width: 200px;
-  background: #f5f5f5;
-  padding-top: 20px;
-}
-
-.main-content {
-  flex: 1;
-  padding: 20px;
+  overflow: hidden;
 }
 </style>
