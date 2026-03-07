@@ -15,6 +15,9 @@ declare module 'vue' {
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElContainer: typeof import('element-plus/es')['ElContainer']
+    ElDropdown: typeof import('element-plus/es')['ElDropdown']
+    ElDropdownItem: typeof import('element-plus/es')['ElDropdownItem']
+    ElDropdownMenu: typeof import('element-plus/es')['ElDropdownMenu']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElHeader: typeof import('element-plus/es')['ElHeader']
@@ -38,8 +41,11 @@ declare module 'vue' {
     Menu: typeof import('./src/components/layout/menu/index.vue')['default']
     MenuItem: typeof import('./src/components/layout/menu/MenuItem.vue')['default']
     NotFound: typeof import('./src/components/notFound/index.vue')['default']
+    Popup: typeof import('./src/components/layout/head/headRight/popup/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SignPopup: typeof import('./src/components/popup/SignPopup.vue')['default']
+    UserInfo: typeof import('./src/components/layout/head/headRight/userInfo.vue')['default']
   }
   export interface GlobalDirectives {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']

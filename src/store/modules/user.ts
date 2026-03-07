@@ -32,7 +32,17 @@ export const useUserStore = defineStore('user', {
     }
   },
   actions: {
-    set_state(data:STATE){
+    clear_state(){
+      this.accessToken = ''
+      this.refreshToken = ''
+      this.menusLoaded = false
+      this.userInfo = {}
+      this.menus = []
+      this.isCollapse = false
+      this.menuWight = '200px'
+
+    },
+    set_state(data:any){
       this.accessToken = data.accessToken;
       this.refreshToken = data.refreshToken;
       this.userInfo = data.userInfo;

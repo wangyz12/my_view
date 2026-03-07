@@ -27,7 +27,9 @@ import { login as loginApi } from '@/api/modules/login'
 import storage from '@/utils/storage'
 import { getMenuListApi } from '@/api'
 import {handleLoginSuccess} from '@/utils/auth'
+import { useRouter } from 'vue-router'
 const userStore = useUserStore()
+const router = useRouter()
 const loading = ref(false)
 const loginForm = reactive({
   account: 'test',
@@ -57,7 +59,9 @@ const submit = async () => {
       menusLoaded: false,
       menus: res.data
     })
-    handleLoginSuccess(data.accessToken,res.data)
+   await handleLoginSuccess(data.accessToken,res.data)
+   ElMessage.success('登录成功')
+   setTimeout(()=>router.push('/'),500)
   } catch (error: any) {
     console.error('登录失败:', error)
     ElMessage.error(error.message || '登录失败，请检查账号密码！')
