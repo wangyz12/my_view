@@ -1,6 +1,6 @@
 <template>
   <div class="menu-wrapper">
-    <Logo/>
+    <Logo @goHome="goHome"/>
     <!-- 菜单区域：使用 element-plus 的菜单组件，数据从 userStore 获取 -->
     <el-menu
       :default-active="activeMenu"
@@ -78,4 +78,7 @@ const findMenuItemByPath = (menus: any[], path: string): any => {
   }
   return null;
 };
+const goHome = ()=>{
+  router.push('/home')
+}
 </script>
