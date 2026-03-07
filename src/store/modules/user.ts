@@ -1,6 +1,4 @@
-// src/store/modules/user.ts
 import { defineStore } from 'pinia'
-
 // 定义用户信息类型（可选，替代 any）
 interface UserInfo {
   id?: number
@@ -13,6 +11,7 @@ interface STATE {
   refreshToken:string
   userInfo:UserInfo 
   menusLoaded: boolean
+  menus:any[]
 }
 // 定义 Store（参数1：唯一标识，参数2：状态配置）
 export const useUserStore = defineStore('user', {
@@ -21,6 +20,7 @@ export const useUserStore = defineStore('user', {
     refreshToken:'',
     menusLoaded:false,
     userInfo: {},
+    menus:[]
   }),
   getters: {
  
@@ -30,11 +30,12 @@ export const useUserStore = defineStore('user', {
       this.accessToken = data.accessToken;
       this.refreshToken = data.refreshToken;
       this.userInfo = data.userInfo;
+      this.menus = data.menus
     },
   },
   // 数据持久化
   persist: {
     key: 'user-store', // 自定义存储键名
-    paths: ['accessToken', 'userInfo'] // 只持久化 token 和 userInfo
+    paths: ['accessToken', 'userInfo','menus'] // 只持久化 token 和 userInfo
   }
 })

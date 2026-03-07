@@ -2,7 +2,7 @@
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
 import { useUserStore } from '@/store/modules/user'
 import storage from '@/utils/storage'
-
+import { dynamicRouteManager } from './dynamic' // 导入动态路由管理器
 // 定义路由组件
 const Layout = () => import('@/components/layout/index.vue')
 const Home = () => import('@/pages/home/index.vue')
@@ -62,10 +62,10 @@ const router = createRouter({
 })
 
 // 全局前置守卫
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, from) => {
   // 设置页面标题
   document.title = to.meta.title ? `${to.meta.title} - 我的应用` : '我的应用'
-
+  const menus = storage.get('menus')
   // 获取用户store
   const userStore = useUserStore()
   
@@ -77,15 +77,16 @@ router.beforeEach(async (to, from, next) => {
   
   if (requiresAuth && !isLoggedIn) {
     // 需要登录但未登录，跳转到登录页
-    next({
+    return {
       path: '/login',
       query: { redirect: to.fullPath } // 保存原路径，登录后跳回
-    })
+    }
   } else if (to.path === '/login' && isLoggedIn) {
     // 已登录但访问登录页，跳转到首页
-    next('/home')
+    return '/home'
   } else {
-    next()
+    // 返回 true 或 undefined 表示导航通过
+    return true
   }
 })
 

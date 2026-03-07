@@ -25,9 +25,9 @@ import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/store/modules/user'
 import { login as loginApi } from '@/api/modules/login'
-import { getMenuListApi } from '@/api/modules/menu'
 import storage from '@/utils/storage'
-
+import { getMenuListApi } from '@/api'
+import {handleLoginSuccess} from '@/utils/auth'
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
@@ -51,13 +51,17 @@ const submit = async () => {
     // 调用登录接口
     const { data }: any = await loginApi(loginForm)
     storage.set('token', data.accessToken)
+    const res:any = await getMenuListApi()
+    storage.set('menus', res.data)
     // 保存用户信息到store
     userStore.set_state({
       accessToken: data.accessToken,
       refreshToken: data.refreshToken,
       userInfo: data.userInfo,
-      menusLoaded: false
+      menusLoaded: false,
+      menus: res.data
     })
+    handleLoginSuccess(data.accessToken,res.data)
   } catch (error: any) {
     console.error('登录失败:', error)
     ElMessage.error(error.message || '登录失败，请检查账号密码！')
