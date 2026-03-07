@@ -7,6 +7,7 @@ const Layout = () => import('@/components/layout/index.vue');
 const Home = () => import('@/pages/home/index.vue');
 const Login = () => import('@/pages/login/index.vue');
 const NotFound = () => import('@/components/notFound/index.vue');
+const UserInfo = ()=>import('@/pages/userinfo/index.vue')
 
 // 定义路由配置
 const routes: RouteRecordRaw[] = [
@@ -22,6 +23,15 @@ const routes: RouteRecordRaw[] = [
         component: Home,
         meta: {
           title: '首页',
+          requiresAuth: true, // 需要登录
+        },
+      },
+      {
+        path: 'userinfo',
+        name: 'UserInfo',
+        component: UserInfo,
+        meta: {
+          title: '用户信息',
           requiresAuth: true, // 需要登录
         },
       },
