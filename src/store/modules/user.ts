@@ -10,8 +10,10 @@ interface STATE {
   accessToken:string
   refreshToken:string
   userInfo:UserInfo 
-  menusLoaded: boolean
+  menusLoaded: Boolean
   menus:any[]
+  isCollapse:Boolean
+  menuWight:String
 }
 // 定义 Store（参数1：唯一标识，参数2：状态配置）
 export const useUserStore = defineStore('user', {
@@ -20,10 +22,14 @@ export const useUserStore = defineStore('user', {
     refreshToken:'',
     menusLoaded:false,
     userInfo: {},
-    menus:[]
+    menus:[],
+    isCollapse:false,
+    menuWight:'200px'
   }),
   getters: {
- 
+    menuWidth: (state) => {
+      return state.isCollapse ? '80px' : '200px'
+    }
   },
   actions: {
     set_state(data:STATE){
@@ -32,6 +38,9 @@ export const useUserStore = defineStore('user', {
       this.userInfo = data.userInfo;
       this.menus = data.menus
     },
+    set_isCollapse(data:Boolean){
+      this.isCollapse = data
+    }
   },
   // 数据持久化
   persist: {

@@ -1,14 +1,6 @@
 <template>
   <div class="menu-wrapper">
-    <!-- 上方 Logo 区域，预留插槽便于自定义 -->
-    <div class="logo-area">
-      <slot name="logo">
-        <div class="default-logo">
-          <span class="logo-text">Admin</span>
-        </div>
-      </slot>
-    </div>
-
+    <Logo/>
     <!-- 菜单区域：使用 element-plus 的菜单组件，数据从 userStore 获取 -->
     <el-menu
       :default-active="activeMenu"
@@ -45,6 +37,7 @@ import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '@/store/modules/user';
 import MenuItem from './MenuItem.vue'; // 引入递归子组件
+import Logo from './logo/index.vue'
 const router = useRouter();
 const route = useRoute();
 
@@ -56,7 +49,8 @@ const menuList = computed(() => userStore.$state.menus || []);
 const activeMenu = computed(() => route.path);
 
 // 控制菜单折叠（可根据需要从props或store传入）
-const isCollapse = ref(false);
+const isCollapse = computed(()=>userStore.isCollapse);
+
 // 菜单选择处理函数
 const handleMenuSelect = (index: string) => {
   // 如果是外部链接，使用 window.open 打开
@@ -85,59 +79,3 @@ const findMenuItemByPath = (menus: any[], path: string): any => {
   return null;
 };
 </script>
-
-<style lang="scss" scoped>
-.menu-wrapper {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  background-color: #304156;
-}
-
-.logo-area {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  padding-left: 20px;
-  color: #fff;
-  background-color: #1f2d3d;
-}
-
-.default-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  img {
-    width: 32px;
-    height: 32px;
-    border-radius: 4px;
-  }
-}
-
-.logo-text {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  white-space: nowrap;
-}
-
-.el-menu-vertical {
-  flex: 1;
-  border-right: none;
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  &:not(.el-menu--collapse) {
-    width: 200px;
-  }
-
-  &.el-menu--collapse {
-    width: 64px;
-
-    .logo-text {
-      display: none;
-    }
-  }
-}
-</style>
