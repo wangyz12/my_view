@@ -1,12 +1,436 @@
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+// src/pages/login/index.scss
+
+// 深色商务风格变量 - 优化色彩层次
+$primary-color: #2d7aff; // 主色调 - 明亮的商务蓝
+$primary-light: #4f8eff; // 浅蓝 - 悬停效果
+$primary-dark: #1a5ad9; // 深蓝 - 按下效果
+$primary-glow: rgba(45, 122, 255, 0.3); // 蓝色光晕
+
+// 卡片背景层次 - 从深到浅，层层递进
+$bg-deepest: rgba(10, 15, 22, 0.98); // 最深 - 背景
+$bg-card: rgba(18, 25, 35, 0.98); // 卡片主体 - 比背景亮一点
+$bg-card-hover: rgba(22, 30, 42, 0.98); // 卡片悬停
+$bg-surface: rgba(25, 35, 48, 0.95); // 表面元素
+$bg-input: rgba(12, 18, 26, 0.9); // 输入框背景
+$bg-input-hover: rgba(16, 24, 34, 0.95); // 输入框悬停
+$bg-input-focus: rgba(20, 28, 40, 0.98); // 输入框聚焦
+
+// 文字颜色层次 - 从亮到暗
+$text-primary: #ffffff; // 主要文字 - 纯白
+$text-secondary: #e8ecf2; // 次要文字 - 亮灰
+$text-tertiary: #b4c0d0; // 辅助文字 - 中灰
+$text-muted: #7e8b9f; // 禁用文字 - 暗灰
+$text-placeholder: #5a677a; // 占位文字 - 更暗
+
+// 边框颜色层次
+$border-deep: rgba(0, 0, 0, 0.5); // 最深边框
+$border-dark: rgba(255, 255, 255, 0.05); // 深色边框
+$border-medium: rgba(255, 255, 255, 0.08); // 中色边框
+$border-light: rgba(255, 255, 255, 0.12); // 亮色边框
+$border-lighter: rgba(255, 255, 255, 0.15); // 更亮边框
+
+// 阴影层次
+$shadow-color: rgba(0, 0, 0, 0.8);
+$shadow-light: rgba(0, 0, 0, 0.4);
+$shadow-glow: rgba(45, 122, 255, 0.2);
+
+// 卡片容器样式
+:deep(.el-card) {
+  position: relative;
+  width: 440px;
+  border: none !important;
+  border-radius: 28px !important;
+  background: $bg-card !important;
+  box-shadow: 
+    0 30px 60px -20px $shadow-color,
+    0 0 0 1px $border-light inset,
+    0 0 0 1px rgba($primary-color, 0.1) !important;
+  transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+  z-index: 10;
+
+  // 卡片边缘光效 - 更精致
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 29px;
+    padding: 1px;
+    background: linear-gradient(165deg, 
+      rgba($primary-color, 0.2) 0%,
+      rgba(255, 255, 255, 0.1) 20%,
+      rgba($primary-color, 0.1) 40%,
+      transparent 70%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  // 底部投影 - 增强立体感
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 5%;
+    width: 90%;
+    height: 30px;
+    background: radial-gradient(ellipse at 50% 0%, $shadow-color 0%, transparent 80%);
+    filter: blur(12px);
+    z-index: -1;
+    opacity: 0.7;
+  }
+
+  // 卡片头部
+  .el-card__header {
+    padding: 40px 40px 20px !important;
+    background: linear-gradient(180deg, 
+      rgba($primary-color, 0.05) 0%,
+      transparent 100%
+    ) !important;
+    border-bottom: 1px solid $border-dark !important;
+    position: relative;
+
+    // 头部顶部光晕
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 20%;
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(90deg, 
+        transparent,
+        rgba($primary-color, 0.3),
+        transparent
+      );
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 500;
+      color: $text-primary;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      position: relative;
+      display: inline-block;
+
+      // 标题装饰线 - 使用主色调
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 45px;
+        height: 3px;
+        background: linear-gradient(90deg, $primary-color, rgba($primary-color, 0.3));
+        border-radius: 3px;
+        box-shadow: 0 0 10px $primary-glow;
+      }
+    }
+
+    p {
+      margin: 18px 0 0;
+      font-size: 0.938rem;
+      color: $text-tertiary;
+      font-weight: 400;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  // 卡片主体
+  .el-card__body {
+    padding: 30px 40px 42px !important;
+    background: transparent !important;
+    position: relative;
+  }
 }
 
+// 表单项容器
+:deep(.el-form-item) {
+  margin-bottom: 28px;
+  position: relative;
+
+  // 表单项之间的视觉分隔 - 更柔和
+  &:not(:last-child) {
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -14px;
+      left: 10%;
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, 
+        transparent,
+        $border-dark,
+        transparent
+      );
+    }
+  }
+
+  // 输入框容器
+  .el-input__wrapper {
+    background: $bg-input !important;
+    border: 1px solid $border-medium;
+    border-radius: 14px !important;
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.3),
+      inset 0 1px 2px rgba(255, 255, 255, 0.02) !important;
+    padding: 12px 18px !important;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: $bg-input-hover !important;
+      border-color: rgba($primary-color, 0.3);
+      box-shadow: 
+        0 6px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.03) !important;
+    }
+
+    &.is-focus {
+      background: $bg-input-focus !important;
+      border-color: $primary-color !important;
+      box-shadow: 
+        0 0 0 3px rgba($primary-color, 0.2),
+        0 8px 20px rgba(0, 0, 0, 0.5),
+        inset 0 1px 2px rgba(255, 255, 255, 0.03) !important;
+    }
+
+    // 输入框前缀图标
+    .el-input__prefix {
+      margin-right: 12px;
+      
+      .el-icon {
+        font-size: 18px;
+        color: $text-muted;
+        transition: all 0.2s ease;
+        filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+      }
+    }
+
+    // 输入框内容
+    .el-input__inner {
+      color: $text-primary;
+      font-size: 0.938rem;
+      font-weight: 400;
+      height: 24px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+
+      &::placeholder {
+        color: $text-placeholder;
+        font-weight: 400;
+        font-size: 0.875rem;
+      }
+    }
+
+    // 密码切换图标
+    .el-input__suffix .el-icon {
+      color: $text-muted;
+      
+      &:hover {
+        color: $text-tertiary;
+      }
+    }
+  }
+
+  // 输入框聚焦时图标颜色变化
+  .el-input__wrapper.is-focus .el-input__prefix .el-icon {
+    color: $primary-color;
+  }
+}
+
+// 验证码区域
+:deep(.el-form-item) .flex {
+  gap: 12px;
+  
+  .el-input__wrapper {
+    flex: 1;
+  }
+
+  img {
+    width: 120px;
+    height: 50px;
+    border-radius: 12px !important;
+    border: 1px solid $border-medium;
+    background: $bg-deepest;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    &:hover {
+      border-color: $primary-color;
+      background: $bg-input-hover;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+// 登录按钮 - 突出但不过分
+:deep(.el-button) {
+  height: 56px !important;
+  border-radius: 16px !important;
+  font-size: 1.05rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 1px;
+  background: linear-gradient(145deg, $primary-color, $primary-dark) !important;
+  border: none !important;
+  margin-top: 24px;
+  color: $text-primary !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 12px 24px -10px rgba($primary-color, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2) !important;
+
+  // 按钮顶部高光
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+  }
+
+  &:hover {
+    background: linear-gradient(145deg, $primary-light, $primary-color) !important;
+    transform: translateY(-2px);
+    box-shadow: 
+      0 20px 30px -12px rgba($primary-color, 0.7),
+      0 8px 20px rgba(0, 0, 0, 0.5),
+      inset 0 1px 3px rgba(255, 255, 255, 0.3) !important;
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 
+      0 8px 20px -8px rgba($primary-color, 0.5),
+      0 4px 12px rgba(0, 0, 0, 0.4),
+      inset 0 1px 2px rgba(255, 255, 255, 0.1) !important;
+  }
+
+  // 加载状态
+  &.is-loading {
+    opacity: 0.9;
+    background: linear-gradient(145deg, $primary-dark, darken($primary-dark, 5%)) !important;
+    
+    &::before {
+      display: none;
+    }
+
+    .el-icon.is-loading {
+      animation: rotating 1s linear infinite;
+      margin-right: 8px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+// 底部信息区
+:deep(.mt-5) {
+  margin-top: 32px !important;
+  padding-top: 24px;
+  position: relative;
+
+  // 分隔线 - 更精致
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent,
+      $border-light,
+      rgba($primary-color, 0.2),
+      $border-light,
+      transparent
+    );
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.813rem;
+    color: $text-muted;
+    line-height: 1.6;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    
+    // 测试账号区域
+    .test-account {
+      margin-top: 16px;
+      padding: 10px 18px;
+      background: $bg-deepest;
+      border-radius: 30px;
+      border: 1px solid $border-medium;
+      display: inline-block;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 0.75rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+      span {
+        color: $text-tertiary;
+      }
+
+      strong {
+        color: $primary-light;
+        font-weight: 500;
+        margin: 0 6px;
+        text-shadow: 0 0 10px rgba($primary-light, 0.3);
+      }
+
+      &:hover {
+        border-color: rgba($primary-color, 0.3);
+        background: $bg-input;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      }
+    }
+  }
+}
+
+// 错误提示样式
+:deep(.el-form-item.is-error) {
+  .el-input__wrapper {
+    border-color: #f43f5e !important;
+    background: rgba(244, 63, 94, 0.05) !important;
+    
+    &:hover, &.is-focus {
+      border-color: #f43f5e !important;
+      box-shadow: 
+        0 0 0 3px rgba(244, 63, 94, 0.15),
+        0 8px 20px rgba(0, 0, 0, 0.5) !important;
+    }
+  }
+  
+  .el-form-item__error {
+    color: #fb7185;
+    font-size: 0.75rem;
+    padding-top: 8px;
+    padding-left: 16px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+}
+
+// 动画定义
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -18,13 +442,51 @@
   }
 }
 
-@keyframes scaleIn {
+@keyframes rotating {
   from {
-    opacity: 0;
-    transform: scale(0.9);
+    transform: rotate(0deg);
   }
   to {
-    opacity: 1;
-    transform: scale(1);
+    transform: rotate(360deg);
+  }
+}
+
+// 卡片入场动画
+:deep(.el-card) {
+  animation: slideIn 0.5s ease-out;
+}
+
+// 淡入淡出动画
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+// 响应式调整
+@media (max-width: 640px) {
+  :deep(.el-card) {
+    width: 90% !important;
+
+    .el-card__header {
+      padding: 30px 24px 16px !important;
+
+      h2 {
+        font-size: 1.75rem;
+      }
+    }
+
+    .el-card__body {
+      padding: 24px 24px 32px !important;
+    }
+  }
+
+  :deep(.el-form-item) .flex img {
+    width: 100px;
+    height: 46px;
   }
 }

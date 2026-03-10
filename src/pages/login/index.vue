@@ -1,8 +1,7 @@
 <!-- src/pages/login/index.vue -->
 <template>
-  <div
-    class="login-container relative min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-800 to-purple-600 overflow-hidden"
-  >
+  <div class="login-container relative min-h-screen flex items-center justify-center overflow-hidden">
+  <BusinessBackground />
     <!-- 过渡遮罩：使用 Tailwind 类替代自定义样式 -->
     <transition name="fade">
       <div
@@ -29,7 +28,6 @@
           <p class="mt-1 mb-0 text-sm text-gray-400">欢迎使用本系统</p>
         </div>
       </template>
-
       <el-form
         ref="formRef"
         :model="loginForm"
@@ -121,6 +119,8 @@ import { login as loginApi } from '@/api/modules/login';
 import { getMenuListApi, getCaptcha } from '@/api';
 import storage from '@/utils/storage';
 import { getGreeting } from '@/utils/timeUtils';
+import BusinessBackground from './components/BusinessBackground/BusinessBackground.vue';
+import {loginRules} from './config'
 const router = useRouter();
 const userStore = useUserStore();
 
@@ -136,31 +136,6 @@ const loginForm = reactive({
   captchaUuid:'',
   captchaCode:''
 });
-
-// 表单校验规则
-const loginRules = {
-  account: [
-    { required: true, message: '请输入用户名', trigger: 'blur' },
-    {
-      min: 3,
-      max: 20,
-      message: '长度在 3 到 20 个字符',
-      trigger: 'blur',
-    },
-  ],
-  password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    {
-      min: 6,
-      max: 20,
-      message: '长度在 6 到 20 个字符',
-      trigger: 'blur',
-    },
-  ],
-  captchaCode: [
-    { required: true, message: '请输入验证码', trigger: 'blur' },
-  ],
-};
 
 // 登录提交
 const submit = async () => {
