@@ -1,5 +1,5 @@
 // api/modules/user.ts
-import { post } from '../../index'
+import { post,get } from '../../index'
 export interface LOGINPARAMS  {
   account:string;
   password:string
@@ -7,6 +7,16 @@ export interface LOGINPARAMS  {
 export interface UPDATEPAW  {
   oldPassword:string;
   newPassword:string
+}
+
+/**
+ * 获取验证码
+ * @param params 登录参数 { username: string, password: string }
+ * @returns Promise<{ token: string; userInfo: { id: number; name: string; avatar?: string } }>
+ */
+export const getCaptcha = (params:any) => {
+  // 替换为你的真实后台登录接口地址
+  return get<any>('/captcha/getCaptcha',params)
 }
 /**
  * 登录接口

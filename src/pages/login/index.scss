@@ -1,8 +1,16 @@
-/* src/styles/animations.css */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(-30px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -19,23 +27,4 @@
     opacity: 1;
     transform: scale(1);
   }
-}
-
-@keyframes rotating {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }

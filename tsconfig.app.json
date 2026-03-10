@@ -1,4 +1,3 @@
-// tsconfig.app.json
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
