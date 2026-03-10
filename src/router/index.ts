@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-rou
 import { useUserStore } from '@/store/modules/user';
 import storage from '@/utils/storage';
 // 定义路由组件
-const Layout = () => import('@/components/layout/index.vue');
+const Layout = () => import('@/layout/index.vue');
 const Home = () => import('@/pages/home/index.vue');
 const Login = () => import('@/pages/login/index.vue');
 const NotFound = () => import('@/components/notFound/index.vue');
