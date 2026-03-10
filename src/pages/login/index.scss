@@ -261,7 +261,6 @@ $shadow-glow: rgba(45, 122, 255, 0.2);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 
     &:hover {
-      border-color: $primary-color;
       background: $bg-input-hover;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
       transform: translateY(-1px);

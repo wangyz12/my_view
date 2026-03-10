@@ -9,9 +9,6 @@
         class="fixed inset-0 bg-white/95 backdrop-blur-sm flex items-center justify-center z-[9999]"
       >
         <div class="flex flex-col items-center gap-4 animate-[scaleIn_0.5s_ease]">
-          <el-icon class="is-loading !text-4xl text-indigo-500">
-            <Loading />
-          </el-icon>
           <span class="text-lg font-medium text-indigo-500">{{ transitionText }}</span>
         </div>
       </div>
