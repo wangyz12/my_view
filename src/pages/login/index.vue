@@ -103,7 +103,7 @@
 
       <!-- 底部提示 -->
       <div class="mt-5 text-center text-xs text-gray-400">
-        <p>测试账号：test / www13com_</p>
+        <p>测试：admin / admin123_</p>
       </div>
     </el-card>
   </div>
@@ -131,8 +131,8 @@ const transitionText = ref('正在登录...');
 const imgSrc = ref('')
 // 表单数据
 const loginForm = reactive({
-  account: 'test',
-  password: 'www13com_',
+  account: 'admin',
+  password: 'admin123_',
   captchaUuid:'',
   captchaCode:''
 });
@@ -194,9 +194,9 @@ const submit = async () => {
     }
     ElMessage.error(errorMsg);
     showTransition.value = false;
+    getCaptchaFunc()
   } finally {
     loading.value = false;
-    getCaptchaFunc()
   }
 };
 const getCaptchaFunc = async () => {
