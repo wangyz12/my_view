@@ -1,7 +1,7 @@
 import { Plugin } from 'vite';
 import path from 'path';
 // 在每个页面中script中添加name属性 用于路由缓存，
-// 此插件就是解放defineOptions 改用script中的name属性去缓存页面
+// 此插件就是解放defineOptions 改用script中的name去做路由缓存
 const autoSetScriptName = (): Plugin => {
   return {
     name: 'auto-set-component-name',
@@ -9,7 +9,7 @@ const autoSetScriptName = (): Plugin => {
     enforce: 'pre',
     transform(code, id) {
       if (/\.vue$/.test(id) && !/node_modules/.test(id)) {
-        console.log('处理原始Vue文件:', id);
+        // console.log('处理原始Vue文件:', id);
         
         const fileName = path.basename(id, '.vue');
         const componentName = toPascalCase(fileName);
