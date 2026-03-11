@@ -24,7 +24,8 @@ export const useUserStore = defineStore('user', {
     userInfo: {},
     menus:[],
     isCollapse:false,
-    menuWight:'200px'
+    menuWight:'200px',
+    tabs:[]
   }),
   getters: {
     menuWidth: (state) => {

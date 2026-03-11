@@ -3,6 +3,7 @@ import vue from "@vitejs/plugin-vue";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
+import autoSetScriptName from './plugins/autoSetComponentsScriptName'
 // 关键：导入 path 模块（Node.js 内置，需安装 @types/node 确保 TS 识别）
 import path from "path";
 
@@ -10,7 +11,7 @@ import path from "path";
 export default defineConfig({
   server: {
     port: 5173, // 设置开发服务器端口（可选）
-    open: true, // 启动后自动打开浏览器
+    open: false, // 启动后自动打开浏览器
   },
   // 新增：配置路径别名
   resolve: {
@@ -33,7 +34,15 @@ export default defineConfig({
     },
   },
   plugins: [
-    vue(),
+    vue({
+      script: {
+        // 启用 defineModel 支持
+        defineModel: true,
+        // 启用 props 解构支持
+        propsDestructure: true,
+        // 支持 script setup 上的 name 属性
+      }
+    }),
     AutoImport({
       // 1. 配置自动导入 Vue 核心 API（ref、reactive、onMounted 等）
       imports: [
@@ -52,5 +61,6 @@ export default defineConfig({
     Components({
       resolvers: [ElementPlusResolver()],
     }),
+    autoSetScriptName(),
   ],
 });

@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/node20/tsconfig.json",
-  "include": ["vite.config.*", "vitest.config.*", "cypress.config.*", "playwright.config.*"],
+  "include": ["vite.config.*", "vitest.config.*", "cypress.config.*", "playwright.config.*",
+  "plugins/**/*.ts"],
   "compilerOptions": {
     "composite": true, // 关键：开启组合项目
     "noEmit": false,   // 基础配置

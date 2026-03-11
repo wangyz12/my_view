@@ -34,9 +34,6 @@ import Head from './head/index.vue';
 import { useUserStore } from '@/store/modules/user';
 
 const userStore = useUserStore();
-defineOptions({
-  name: 'Layout',
-});
 // 水印内容
 const watermarkContent = computed(() => {
   const userInfo = userStore.userInfo;

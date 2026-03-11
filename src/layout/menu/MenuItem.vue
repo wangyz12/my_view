@@ -39,9 +39,6 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-defineOptions({
-  name: 'MenuItem',
-});
 const props = defineProps<{
   menuItem: any; // 菜单项数据
   basePath?: string; // 父级路径，用于拼接
