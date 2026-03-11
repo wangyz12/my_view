@@ -19,6 +19,7 @@
           <el-header>
             <Head />
           </el-header>
+          <Breadcrumb/>
           <el-main class="main-content">
             <router-view class="router-view"></router-view>
           </el-main>
@@ -31,6 +32,7 @@
 <script setup lang="ts">
 import Menu from './menu/index.vue';
 import Head from './head/index.vue';
+import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import { useUserStore } from '@/store/modules/user';
 
 const userStore = useUserStore();

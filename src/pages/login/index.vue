@@ -151,6 +151,7 @@ const submit = async () => {
     // 3. 获取菜单数据
     transitionText.value = '正在加载资源...';
     const res: any = await getMenuListApi();
+    console.log(JSON.stringify(res.data))
     const menus = res.data || [];
     storage.set('menus', menus);
     // 4. 保存用户信息到store

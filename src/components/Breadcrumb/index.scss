@@ -1,0 +1,75 @@
+.tag-view {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #e4e7ed;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  .tag-tabs {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 4px;
+    
+    &::-webkit-scrollbar {
+      height: 0;
+    }
+    
+    .tag-item {
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      height: 32px;
+      line-height: 32px;
+      background: #f5f5f5;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #666;
+      border: 1px solid transparent;
+      transition: all 0.3s;
+      white-space: nowrap;
+      
+      &:hover {
+        background: #e9e9e9;
+        color: #333;
+        
+        .close-btn {
+          display: inline-flex;
+        }
+      }
+      
+      &.active {
+        background: #ecf5ff;
+        color: #409EFF;
+        border-color: #d9ecff;
+      }
+      
+      .el-icon {
+        margin-right: 4px;
+      }
+      
+      .tag-title {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .close-btn {
+        margin-left: 4px;
+        padding: 2px;
+        border-radius: 50%;
+        display: none;
+        
+        &:hover {
+          background: rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
+  
+  .tag-actions {
+    margin-left: 8px;
+  }
+}

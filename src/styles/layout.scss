@@ -2,8 +2,9 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  .head-box {
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  .header-box  {
+    border-bottom: 1px solid #e4e7ed;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
   }
   .menu-wrapper {
     height: 100%;
