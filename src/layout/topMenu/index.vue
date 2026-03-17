@@ -46,6 +46,11 @@ const menuList = computed(() => userStore.$state.menus || []);
 // 路由实例，用于高亮当前菜单
 const activeMenu = computed(() => route.path);
 
+// 根据主题模式计算hover背景色
+const hoverBgColor = computed(() => {
+  return themeStore.isDarkMode ? '#263445' : '#f5f7fa';
+});
+
 // 菜单选择处理函数
 const handleMenuSelect = (index: string) => {
   // 如果是外部链接，使用 window.open 打开
@@ -93,7 +98,7 @@ const findMenuItemByPath = (menus: any[], path: string): any => {
 
   :deep(.el-menu-item:hover),
   :deep(.el-sub-menu__title:hover) {
-    background-color: #263445 !important;
+    background-color: v-bind(hoverBgColor) !important;
   }
 }
 </style>

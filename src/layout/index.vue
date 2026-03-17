@@ -43,7 +43,7 @@ const watermarkContent = computed(() => {
 
 // 水印字体配置 - 根据主题模式调整颜色
 const watermarkFont = computed(() => ({
-  color: themeStore.isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+  color: themeStore.isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.08)',
   fontSize: 16,
   fontWeight: 'normal',
   fontFamily: 'Microsoft Yahei, sans-serif',
