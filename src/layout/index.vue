@@ -1,43 +1,38 @@
 <!-- src/layout/Layout.vue -->
 <template>
-  <div class="common-layout">
+  <div class="common-layout" :class="{ 'dark-mode': themeStore.isDarkMode, 'light-mode': themeStore.isLightMode }">
     <el-watermark
+      v-if="isWater"
       :content="watermarkContent"
       :font="watermarkFont"
       :gap="[100, 100]"
       :rotate="-30"
       :z-index="10"
     >
-      <el-container class="layout">
-        <el-aside
-          :width="userStore.menuWidth"
-          class="aside-transition"
-        >
-          <Menu />
-        </el-aside>
-        <el-container>
-          <el-header>
-            <Head />
-          </el-header>
-          <Breadcrumb/>
-          <el-main class="main-content">
-            <router-view class="router-view"></router-view>
-          </el-main>
-        </el-container>
-      </el-container>
+      <LayoutContent />
     </el-watermark>
+    <LayoutContent v-else />
   </div>
 </template>
 
 <script setup lang="ts">
-import Menu from './menu/index.vue';
-import Head from './head/index.vue';
-import Breadcrumb from '@/components/Breadcrumb/index.vue'
+import { computed } from 'vue'
+import LayoutContent from './LayoutContent.vue'
 import { useUserStore } from '@/store/modules/user';
+import { useThemeStore } from '@/store/modules/theme';
 
 const userStore = useUserStore();
+const themeStore = useThemeStore();
+const isWater = computed(()=>{
+  return themeStore.watermark.enabled
+})
 // 水印内容
 const watermarkContent = computed(() => {
+  // 如果用户自定义了水印文字
+  if (themeStore.watermark.text) {
+    return [themeStore.watermark.text]
+  }
+  // 否则使用默认（用户名+电话+日期）
   const userInfo = userStore.userInfo;
   return [
     userInfo?.username || '内部资料',
@@ -45,32 +40,21 @@ const watermarkContent = computed(() => {
     new Date().toLocaleDateString(),
   ];
 });
-// 水印字体配置
-const watermarkFont = {
-  color: 'rgba(0, 0, 0, 0.1)',
+
+// 水印字体配置 - 根据主题模式调整颜色
+const watermarkFont = computed(() => ({
+  color: themeStore.isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
   fontSize: 16,
   fontWeight: 'normal',
   fontFamily: 'Microsoft Yahei, sans-serif',
-};
+}));
 </script>
+
 <style lang="scss" scoped>
-:deep(.el-header) {
-  padding: 0 !important;
-}
-
-:deep(.el-main) {
-  padding: 10px !important;
-}
-
-.aside-transition {
-  transition: width 0.3s ease-in-out;
-  /* 添加宽度过渡效果 */
+.common-layout {
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
-  /* 确保内容不会在过渡期间溢出 */
-}
 
-/* 可选：为菜单内部的元素也添加过渡效果 */
-:deep(.el-menu) {
-  transition: all 0.3s ease-in-out;
 }
 </style>

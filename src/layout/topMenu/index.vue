@@ -1,13 +1,11 @@
 <template>
-  <div class="menu-wrapper">
-    <Logo v-if="themeStore.showLogo" @goHome="goHome"/>
-    <!-- 菜单区域：使用 element-plus 的菜单组件，数据从 userStore 获取 -->
+  <div class="top-menu-wrapper">
+    <!-- 菜单区域：横向菜单 -->
     <el-menu
       :default-active="activeMenu"
-      :collapse="isCollapse"
       :unique-opened="true"
-      :collapse-transition="false"
-      class="el-menu-vertical"
+      mode="horizontal"
+      class="top-menu"
       :background-color="themeStore.menuBgColor"
       :text-color="themeStore.menuTextColor"
       :active-text-color="themeStore.themeColor"
@@ -15,9 +13,7 @@
     >
       <!-- 静态首页菜单项 -->
       <el-menu-item index="/home">
-        <el-icon>
-          <el-icon><HomeFilled /></el-icon>
-        </el-icon>
+        <el-icon><HomeFilled /></el-icon>
         <span>首页</span>
       </el-menu-item>
       <template v-if="menuList && menuList.length">
@@ -33,16 +29,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '@/store/modules/user';
 import { useThemeStore } from '@/store/modules/theme';
-import MenuItem from './MenuItem.vue'; // 引入递归子组件
-import Logo from './logo/index.vue'
+import MenuItem from './../menu/MenuItem.vue'; // 引入递归子组件
 
-const themeStore = useThemeStore();
 const router = useRouter();
 const route = useRoute();
+const themeStore = useThemeStore();
 
 // 获取用户store中的菜单数据
 const userStore = useUserStore();
@@ -50,9 +45,6 @@ const menuList = computed(() => userStore.$state.menus || []);
 
 // 路由实例，用于高亮当前菜单
 const activeMenu = computed(() => route.path);
-
-// 控制菜单折叠（可根据需要从props或store传入）
-const isCollapse = computed(()=>userStore.isCollapse);
 
 // 菜单选择处理函数
 const handleMenuSelect = (index: string) => {
@@ -70,6 +62,7 @@ const handleMenuSelect = (index: string) => {
   // 内部路由跳转
   router.push(index);
 };
+
 // 根据路径查找菜单项（用于判断是否为外部链接）
 const findMenuItemByPath = (menus: any[], path: string): any => {
   for (const menu of menus) {
@@ -81,7 +74,26 @@ const findMenuItemByPath = (menus: any[], path: string): any => {
   }
   return null;
 };
-const goHome = ()=>{
-  router.push('/home')
-}
 </script>
+
+<style lang="scss" scoped>
+.top-menu-wrapper {
+  flex: 1;
+  overflow: hidden;
+}
+
+.top-menu {
+  border-bottom: none !important;
+  background-color: transparent !important;
+
+  :deep(.el-menu-item),
+  :deep(.el-sub-menu__title) {
+    background-color: transparent !important;
+  }
+
+  :deep(.el-menu-item:hover),
+  :deep(.el-sub-menu__title:hover) {
+    background-color: #263445 !important;
+  }
+}
+</style>
