@@ -10,8 +10,7 @@
 
 **后端仓库地址：** [https://gitee.com/W_admin_code/node_temp](https://gitee.com/W_admin_code/node_temp)
 
-**前端仓库地址：** [https://gitee.com/W_admin_code/my-vue3-project](https://gitee.com/W_admin_code/my-vue3-project) (请根据实际情况更新此地址)
-
+**前端仓库地址：** [https://gitee.com/W_admin_code/my-vue3-project](https://gitee.com/W_admin_code/my-vue3-project) 
 ## Features
 
 - **Dynamic Routing**: Routes are generated dynamically based on menu permissions
@@ -104,8 +103,8 @@ Axios-based request utility with interceptors for authentication and error handl
 ## 项目关联
 
 ### 后端项目
-- **仓库地址：** [https://gitee.com/w_18769913293/node_temp](https://gitee.com/w_18769913293/node_temp)
-- **技术栈：** Node.js + Express/TypeScript + MySQL
+- **仓库地址：** [https://gitee.com/W_admin_code/node_temp](https://gitee.com/W_admin_code/node_temp)
+- **技术栈：** Node.js + Express + TypeScript + MongoDB 
 - **主要功能：** 提供 RESTful API 接口，包括用户认证、权限管理、数据 CRUD 等
 
 ### 前后端交互
