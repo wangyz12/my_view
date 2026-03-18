@@ -1,478 +1,416 @@
-<!-- src/components/BusinessBackground.vue -->
+<!-- src/pages/login/components/BusinessBackground/BusinessBackground.vue -->
 <template>
-  <div class="business-bg absolute inset-0 overflow-hidden">
-    <!-- 基础渐变层 -->
-    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"></div>
+  <div 
+    ref="backgroundRef"
+    class="business-background"
+    @mousemove="handleMouseMove"
+  >
+    <!-- 深色渐变背景 -->
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black"></div>
     
-    <!-- 网格背景 -->
-    <div class="absolute inset-0 opacity-30">
-      <div class="absolute inset-0" :style="gridStyle"></div>
-    </div>
-    
-    <!-- 动态光点 -->
-    <div class="absolute inset-0">
-      <div
-        v-for="i in 12"
-        :key="i"
-        class="absolute rounded-full blur-3xl animate-float"
-        :class="`light-spot-${i}`"
-        :style="getLightSpotStyle(i)"
-      ></div>
-    </div>
-    
-    <!-- 流动线条 Canvas -->
-    <canvas
-      ref="flowLinesCanvas"
-      class="absolute inset-0 pointer-events-none"
-      :style="{ opacity: 0.6 }"
-    ></canvas>
-    
-    <!-- 鼠标水波纹 Canvas -->
-    <canvas
-      ref="rippleCanvas"
-      class="absolute inset-0"
-      @mousemove="handleMouseMove"
-      @mouseleave="handleMouseLeave"
-    ></canvas>
-    
-    <!-- 扫描线效果 -->
-    <div class="absolute inset-0 opacity-30 pointer-events-none">
-      <div class="scan-line"></div>
-    </div>
-    
-    <!-- 装饰性线条 -->
-    <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-      <!-- 流动的SVG线条 -->
-      <path
-        v-for="i in 3"
-        :key="`flow-path-${i}`"
-        :d="getFlowPath(i)"
-        class="stroke-cyan-400/20"
-        stroke-width="2"
-        fill="none"
+    <!-- ===== 流星雨 ===== -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div 
+        v-for="meteor in meteors"
+        :key="meteor.id"
+        class="absolute"
+        :style="{
+          left: `${meteor.x}%`,
+          top: `${meteor.y}%`,
+          width: `${meteor.length}px`,
+          height: '2px',
+          transform: `rotate(${meteor.angle}deg)`,
+          opacity: meteor.opacity,
+          transition: 'opacity 0.1s linear',
+          zIndex: meteor.isHit ? 20 : 1
+        }"
       >
-        <animate
-          attributeName="d"
-          :values="getFlowPathValues(i)"
-          dur="20s"
-          repeatCount="indefinite"
-          calcMode="spline"
-          keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"
-        />
-      </path>
-    </svg>
-    
-    <!-- 数字代码雨效果（极简版） -->
-    <div class="absolute inset-0 opacity-10 code-rain">
-      <div
-        v-for="col in 10"
-        :key="col"
-        class="absolute top-0 text-xs text-cyan-400 font-mono"
-        :style="{ left: `${col * 10}%`, animationDelay: `${col * 0.3}s` }"
-      >
-        <div v-for="row in 20" :key="row" class="code-char">
-          {{ getRandomChar() }}
-        </div>
+        <!-- 流星头部（亮星） -->
+        <div 
+          class="absolute right-0 w-4 h-4 rounded-full"
+          :style="{
+            background: `radial-gradient(circle at center, 
+              ${meteor.color} 0%, 
+              ${meteor.color}80 50%, 
+              transparent 100%)`,
+            transform: 'translate(50%, -35%)',
+            filter: 'blur(2px)',
+            boxShadow: `0 0 20px ${meteor.color}`
+          }"
+        ></div>
+        
+        <!-- 流星尾迹（渐变线） -->
+        <div 
+          class="absolute inset-0"
+          :style="{
+            background: `linear-gradient(90deg, 
+              transparent 0%, 
+              ${meteor.color}20 20%, 
+              ${meteor.color} 50%, 
+              ${meteor.color}20 80%, 
+              transparent 100%)`,
+            filter: 'blur(1px)',
+            boxShadow: `0 0 15px ${meteor.color}`
+          }"
+        ></div>
       </div>
+    </div>
+    
+    <!-- ===== 烟花效果 ===== -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div 
+        v-for="firework in fireworks"
+        :key="firework.id"
+        class="absolute"
+        :style="{
+          left: `${firework.x}px`,
+          top: `${firework.y}px`,
+          transform: 'translate(-50%, -50%)',
+          zIndex: 1000
+        }"
+      >
+        <!-- 烟花粒子 -->
+        <div 
+          v-for="(particle, index) in firework.particles"
+          :key="index"
+          class="absolute"
+          :style="{
+            left: '0',
+            top: '0',
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            background: particle.color,
+            borderRadius: particle.shape === 'circle' ? '50%' : '0',
+            transform: `rotate(${particle.angle}deg) translateX(${particle.distance}px)`,
+            opacity: particle.opacity,
+            boxShadow: `0 0 ${particle.glow}px ${particle.color}`,
+            filter: 'blur(1px)',
+            transition: 'all 0.05s linear'
+          }"
+          :class="{
+            'star-shape': particle.shape === 'star',
+            'diamond-shape': particle.shape === 'diamond'
+          }"
+        ></div>
+      </div>
+    </div>
+    
+    <!-- ===== 背景星辰 ===== -->
+    <div class="absolute inset-0">
+      <div 
+        v-for="i in 50"
+        :key="'star-' + i"
+        class="absolute rounded-full"
+        :style="{
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+          width: `${Math.random() * 3 + 1}px`,
+          height: `${Math.random() * 3 + 1}px`,
+          background: `radial-gradient(circle at center, 
+            ${colors[Math.floor(Math.random() * colors.length)]} 0%, 
+            transparent 100%)`,
+          opacity: Math.random() * 0.5 + 0.2,
+          filter: 'blur(0.5px)',
+          animation: `twinkle ${Math.random() * 3 + 2}s ease-in-out infinite`
+        }"
+      ></div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
-// Canvas引用
-const flowLinesCanvas = ref<HTMLCanvasElement>()
-const rippleCanvas = ref<HTMLCanvasElement>()
+const backgroundRef = ref<HTMLElement>()
 
-// 网格样式
-const gridStyle = computed(() => ({
-  backgroundImage: `
-    linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)
-  `,
-  backgroundSize: '50px 50px'
-}))
-
-// 流动线条动画
-let flowLinesCtx: CanvasRenderingContext2D | null = null
-let flowAnimationFrame: number
-let flowLines: FlowLine[] = []
-
-interface FlowLine {
-  points: { x: number; y: number }[]
-  color: any
-  width: number
-  speed: number
-  offset: number
-  phase: number
-}
-
-const initFlowLines = (width: number, height: number) => {
-  const lines: FlowLine[] = []
-  const colors = [
-    'rgba(59, 130, 246, 0.3)',  // 蓝色
-    'rgba(139, 92, 246, 0.3)',  // 紫色
-    'rgba(6, 182, 212, 0.3)',   // 青色
-    'rgba(168, 85, 247, 0.3)',  // 紫罗兰
-  ]
-  
-  // 创建多条流动线条
-  for (let i = 0; i < 8; i++) {
-    const points: { x: number; y: number }[] = []
-    const startY = height * (0.2 + Math.random() * 0.6)
-    const amplitude = 50 + Math.random() * 100
-    const frequency = 0.002 + Math.random() * 0.003
-    
-    for (let x = -100; x < width + 100; x += 20) {
-      const y = startY + Math.sin(x * frequency) * amplitude
-      points.push({ x, y })
-    }
-    
-    lines.push({
-      points,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      width: 1 + Math.random() * 2,
-      speed: 0.2 + Math.random() * 0.3,
-      offset: Math.random() * 100,
-      phase: Math.random() * Math.PI * 2
-    })
-  }
-  
-  return lines
-}
-
-const drawFlowLines = () => {
-  if (!flowLinesCtx || !flowLinesCanvas.value) return
-  
-  const canvas = flowLinesCanvas.value
-  const ctx = flowLinesCtx
-  
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
-  
-  flowLines.forEach(line => {
-    ctx.beginPath()
-    ctx.strokeStyle = line.color
-    ctx.lineWidth = line.width
-    
-    // 更新线条点，产生流动效果
-    const updatedPoints:any = line.points.map(point => {
-      const time = Date.now() * 0.001 * line.speed
-      const newY = point.y + Math.sin(point.x * 0.01 + time + line.phase) * 10
-      return { x: point.x, y: newY }
-    })
-    
-    ctx.moveTo(updatedPoints[0].x, updatedPoints[0].y)
-    for (let i = 1; i < updatedPoints.length; i++) {
-      ctx.lineTo(updatedPoints[i].x, updatedPoints[i].y)
-    }
-    
-    ctx.stroke()
-  })
-  
-  flowAnimationFrame = requestAnimationFrame(drawFlowLines)
-}
-
-// 鼠标水波纹效果
-let rippleCtx: CanvasRenderingContext2D | null = null
-let rippleAnimationFrame: number
-let mouseX = -1000
-let mouseY = -1000
-let ripples: Ripple[] = []
-
-interface Ripple {
+// 流星配置
+interface Meteor {
+  id: number
   x: number
   y: number
-  radius: number
-  maxRadius: number
-  strength: number
+  length: number
+  angle: number
+  color: string
+  opacity: number
   speed: number
+  isHit: boolean
 }
 
-const initRipples = () => {
-  ripples = []
+// 烟花粒子配置
+interface FireworkParticle {
+  size: number
+  color: string
+  angle: number
+  distance: number
+  opacity: number
+  shape: 'circle' | 'star' | 'diamond'
+  glow: number
 }
 
-const createRipple = (x: number, y: number) => {
-  ripples.push({
+// 烟花配置
+interface Firework {
+  id: number
+  x: number
+  y: number
+  particles: FireworkParticle[]
+  createTime: number
+}
+
+const meteors = ref<Meteor[]>([])
+const fireworks = ref<Firework[]>([])
+let meteorId = 0
+let fireworkId = 0
+let animationFrameId: number
+let mouseX = 0
+let mouseY = 0
+
+// 颜色配置
+const colors = [
+  '#3b82f6', // 蓝
+  '#8b5cf6', // 紫
+  '#ec4899', // 粉
+  '#06b6d4', // 青
+  '#f59e0b', // 橙
+  '#10b981', // 绿
+  '#ef4444', // 红
+  '#f97316'  // 橙黄
+]
+
+// 生成流星
+const generateMeteor = () => {
+  meteorId++
+  
+  // 从左上角区域随机开始（x: -10% 到 20%, y: -10% 到 20%）
+  const startX = -10 + Math.random() * 30
+  const startY = -10 + Math.random() * 30
+  
+  meteors.value.push({
+    id: meteorId,
+    x: startX,
+    y: startY,
+    length: Math.random() * 80 + 60, // 流星长度 60-140px
+    angle: 45, // 固定45度角，从左上到右下
+    color: colors[Math.floor(Math.random() * colors.length)],
+    opacity: Math.random() * 0.4 + 0.4, // 0.4-0.8
+    speed: Math.random() * 0.15 + 0.1, // 移动速度
+    isHit: false
+  })
+  
+  // 限制流星数量
+  if (meteors.value.length > 30) {
+    meteors.value = meteors.value.slice(-30)
+  }
+}
+
+// 创建烟花效果
+const createFirework = (x: number, y: number, hitMeteorId: number) => {
+  // 标记被击中的流星消失
+  const meteorIndex = meteors.value.findIndex(m => m.id === hitMeteorId)
+  if (meteorIndex !== -1) {
+    meteors.value.splice(meteorIndex, 1)
+  }
+  
+  fireworkId++
+  
+  const particles: FireworkParticle[] = []
+  const particleCount = 36 // 粒子数量
+  
+  // 烟花主色
+  const mainColor = colors[Math.floor(Math.random() * colors.length)]
+  const secondaryColor = colors[Math.floor(Math.random() * colors.length)]
+  
+  for (let i = 0; i < particleCount; i++) {
+    const angle = (i / particleCount) * 360
+    const shape = Math.random() > 0.7 
+      ? (Math.random() > 0.5 ? 'star' : 'diamond') 
+      : 'circle'
+    
+    particles.push({
+      size: Math.random() * 8 + 4, // 4-12px
+      color: i % 3 === 0 ? secondaryColor : mainColor,
+      angle,
+      distance: 0,
+      opacity: 1,
+      shape,
+      glow: Math.random() * 15 + 10 // 10-25px
+    })
+  }
+  
+  fireworks.value.push({
+    id: fireworkId,
     x,
     y,
-    radius: 0,
-    maxRadius: 150,
-    strength: 1,
-    speed: 2
+    particles,
+    createTime: Date.now()
   })
+  
+  // 限制烟花数量
+  if (fireworks.value.length > 5) {
+    fireworks.value = fireworks.value.slice(-5)
+  }
 }
 
-const drawRipples = () => {
-  if (!rippleCtx || !rippleCanvas.value) return
+// 处理鼠标移动
+const handleMouseMove = (event: MouseEvent) => {
+  if (!backgroundRef.value) return
   
-  const canvas = rippleCanvas.value
-  const ctx = rippleCtx
+  const rect = backgroundRef.value.getBoundingClientRect()
+  mouseX = event.clientX - rect.left
+  mouseY = event.clientY - rect.top
   
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  // 检查流星是否击中鼠标
+  checkMeteorHit()
+}
+
+// 检查流星是否击中鼠标
+const checkMeteorHit = () => {
+  if (!backgroundRef.value) return
   
-  // 绘制水波纹
-  ripples = ripples.filter(ripple => {
-    ripple.radius += ripple.speed
-    ripple.strength *= 0.98
+  const rect = backgroundRef.value.getBoundingClientRect()
+  const mouseXPercent = (mouseX / rect.width) * 100
+  const mouseYPercent = (mouseY / rect.height) * 100
+  
+  meteors.value.forEach(meteor => {
+    if (meteor.isHit) return // 已经击中的忽略
     
-    if (ripple.radius < ripple.maxRadius && ripple.strength > 0.01) {
-      // 绘制波纹
-      ctx.beginPath()
-      ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2)
-      
-      // 创建渐变效果
-      const gradient = ctx.createRadialGradient(
-        ripple.x, ripple.y, 0,
-        ripple.x, ripple.y, ripple.radius
-      )
-      gradient.addColorStop(0, `rgba(59, 130, 246, ${ripple.strength * 0.3})`)
-      gradient.addColorStop(0.5, `rgba(139, 92, 246, ${ripple.strength * 0.2})`)
-      gradient.addColorStop(1, 'rgba(59, 130, 246, 0)')
-      
-      ctx.strokeStyle = gradient
-      ctx.lineWidth = 2
-      ctx.stroke()
-      
-      // 绘制内部光晕
-      ctx.beginPath()
-      ctx.arc(ripple.x, ripple.y, ripple.radius * 0.3, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(59, 130, 246, ${ripple.strength * 0.1})`
-      ctx.fill()
-      
-      return true
+    // 流星的位置（百分比转像素）
+    const meteorXPixel = (meteor.x / 100) * rect.width
+    const meteorYPixel = (meteor.y / 100) * rect.height
+    
+    // 计算距离（像素）
+    const distance = Math.sqrt(
+      Math.pow(meteorXPixel - mouseX, 2) + 
+      Math.pow(meteorYPixel - mouseY, 2)
+    )
+    
+    // 如果流星头部距离鼠标小于40px，判定为击中
+    if (distance < 40) {
+      meteor.isHit = true
+      createFirework(mouseX, mouseY, meteor.id)
     }
-    return false
   })
+}
+
+// 更新流星位置
+const updateMeteors = () => {
+  const rect = backgroundRef.value?.getBoundingClientRect()
+  if (!rect) return
   
-  // 如果鼠标在画布内，持续产生波纹
-  if (mouseX > 0 && mouseX < (rippleCanvas.value?.width || 0) &&
-      mouseY > 0 && mouseY < (rippleCanvas.value?.height || 0)) {
-    if (Math.random() > 0.7) {
-      createRipple(
-        mouseX + (Math.random() - 0.5) * 30,
-        mouseY + (Math.random() - 0.5) * 30
-      )
+  meteors.value.forEach(meteor => {
+    if (meteor.isHit) return // 击中的流星不移动
+    
+    // 沿45度角移动（x和y增加相同的量）
+    meteor.x += meteor.speed * 0.8
+    meteor.y += meteor.speed
+    
+    // 如果流星移出屏幕右下角，重置到左上角
+    if (meteor.x > 110 || meteor.y > 110) {
+      meteor.x = -10 + Math.random() * 20
+      meteor.y = -10 + Math.random() * 20
+      meteor.color = colors[Math.floor(Math.random() * colors.length)]
+      meteor.opacity = Math.random() * 0.4 + 0.4
+      meteor.speed = Math.random() * 0.15 + 0.1
     }
+  })
+}
+
+// 更新烟花效果
+const updateFireworks = () => {
+  const now = Date.now()
+  
+  fireworks.value = fireworks.value.filter(firework => {
+    const age = now - firework.createTime
+    
+    if (age > 1000) { // 1秒后消失
+      return false
+    }
+    
+    const progress = age / 1000 // 0-1
+    
+    // 更新烟花粒子
+    firework.particles.forEach(particle => {
+      if (progress < 0.2) {
+        // 爆炸扩散阶段 (0-0.2秒)
+        particle.distance = 40 * (progress / 0.2)
+        particle.opacity = 1
+      } else if (progress < 0.6) {
+        // 保持阶段 (0.2-0.6秒)
+        particle.distance = 40 + 20 * ((progress - 0.2) / 0.4)
+        particle.opacity = 1
+      } else {
+        // 消失阶段 (0.6-1秒)
+        particle.distance = 60 + 20 * ((progress - 0.6) / 0.4)
+        particle.opacity = 1 - ((progress - 0.6) / 0.4)
+      }
+      
+      // 粒子旋转
+      particle.angle += 2
+    })
+    
+    return true
+  })
+}
+
+// 动画循环
+const animate = () => {
+  // 随机生成新流星
+  if (Math.random() < 0.02) { // 2%概率每帧生成
+    generateMeteor()
   }
   
-  rippleAnimationFrame = requestAnimationFrame(drawRipples)
-}
-
-// 鼠标事件处理
-const handleMouseMove = (e: MouseEvent) => {
-  const rect = (e.target as HTMLCanvasElement).getBoundingClientRect()
-  mouseX = e.clientX - rect.left
-  mouseY = e.clientY - rect.top
+  updateMeteors()
+  updateFireworks()
   
-  // 创建主波纹
-  if (Math.random() > 0.5) {
-    createRipple(mouseX, mouseY)
-  }
+  animationFrameId = requestAnimationFrame(animate)
 }
 
-const handleMouseLeave = () => {
-  mouseX = -1000
-  mouseY = -1000
-}
-
-// 获取流动路径
-const getFlowPath = (index: number) => {
-  const width = window.innerWidth
-  const height = window.innerHeight
-  const y = height * (0.3 + index * 0.2)
-  
-  return `M0,${y} Q${width * 0.25},${y - 50} ${width * 0.5},${y} T${width},${y}`
-}
-
-const getFlowPathValues = (index: number) => {
-  const width = window.innerWidth
-  const height = window.innerHeight
-  const y = height * (0.3 + index * 0.2)
-  
-  return [
-    `M0,${y} Q${width * 0.25},${y - 50} ${width * 0.5},${y} T${width},${y}`,
-    `M0,${y} Q${width * 0.25},${y + 50} ${width * 0.5},${y} T${width},${y}`,
-    `M0,${y} Q${width * 0.25},${y - 50} ${width * 0.5},${y} T${width},${y}`
-  ].join(';')
-}
-
-// 生成随机字符
-const getRandomChar = () => {
-  const chars = '01アイウエオカキクケコサシスセソタチツテト'
-  return chars[Math.floor(Math.random() * chars.length)]
-}
-
-// 光点样式
-const getLightSpotStyle = (index: number) => {
-  const positions = [
-    { top: '10%', left: '15%', size: '300px', color: 'rgba(59, 130, 246, 0.15)' },
-    { top: '60%', left: '80%', size: '400px', color: 'rgba(139, 92, 246, 0.15)' },
-    { top: '30%', left: '70%', size: '350px', color: 'rgba(6, 182, 212, 0.1)' },
-    { top: '80%', left: '20%', size: '450px', color: 'rgba(168, 85, 247, 0.1)' },
-    { top: '40%', left: '40%', size: '500px', color: 'rgba(59, 130, 246, 0.1)' },
-    { top: '20%', left: '85%', size: '300px', color: 'rgba(139, 92, 246, 0.12)' },
-    { top: '70%', left: '10%', size: '400px', color: 'rgba(6, 182, 212, 0.12)' },
-    { top: '15%', left: '45%', size: '350px', color: 'rgba(168, 85, 247, 0.1)' },
-    { top: '85%', left: '60%', size: '450px', color: 'rgba(59, 130, 246, 0.1)' },
-    { top: '45%', left: '25%', size: '400px', color: 'rgba(139, 92, 246, 0.12)' },
-    { top: '25%', left: '55%', size: '350px', color: 'rgba(6, 182, 212, 0.1)' },
-    { top: '55%', left: '75%', size: '400px', color: 'rgba(168, 85, 247, 0.1)' }
-  ]
-  
-  const pos:any = positions[(index - 1) % positions.length]
-  return {
-    top: pos.top,
-    left: pos.left,
-    width: pos.size,
-    height: pos.size,
-    background: `radial-gradient(circle, ${pos.color} 0%, transparent 70%)`,
-    animation: `float ${15 + index * 2}s infinite alternate ${index * 0.5}s`,
-    transform: 'translate(-50%, -50%)'
-  }
-}
-
-// 初始化Canvas
+// 初始化
 onMounted(() => {
-  // 设置Canvas尺寸
-  const setCanvasSize = () => {
-    if (flowLinesCanvas.value) {
-      flowLinesCanvas.value.width = window.innerWidth
-      flowLinesCanvas.value.height = window.innerHeight
-    }
-    if (rippleCanvas.value) {
-      rippleCanvas.value.width = window.innerWidth
-      rippleCanvas.value.height = window.innerHeight
-    }
+  // 初始生成一些流星
+  for (let i = 0; i < 15; i++) {
+    setTimeout(() => {
+      generateMeteor()
+    }, i * 200)
   }
   
-  setCanvasSize()
-  
-  // 初始化上下文
-  if (flowLinesCanvas.value) {
-    flowLinesCtx = flowLinesCanvas.value.getContext('2d')
-    flowLines = initFlowLines(window.innerWidth, window.innerHeight)
-    drawFlowLines()
-  }
-  
-  if (rippleCanvas.value) {
-    rippleCtx = rippleCanvas.value.getContext('2d')
-    initRipples()
-    drawRipples()
-  }
-  
-  // 监听窗口大小变化
-  window.addEventListener('resize', () => {
-    setCanvasSize()
-    if (flowLinesCanvas.value) {
-      flowLines = initFlowLines(window.innerWidth, window.innerHeight)
+  // 添加自定义动画样式
+  const style = document.createElement('style')
+  style.textContent = `
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
     }
-  })
+    
+    .star-shape {
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+    
+    .diamond-shape {
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+  `
+  document.head.appendChild(style)
+  
+  // 启动动画
+  animationFrameId = requestAnimationFrame(animate)
 })
 
+// 清理
 onUnmounted(() => {
-  if (flowAnimationFrame) {
-    cancelAnimationFrame(flowAnimationFrame)
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId)
   }
-  if (rippleAnimationFrame) {
-    cancelAnimationFrame(rippleAnimationFrame)
-  }
-  window.removeEventListener('resize', () => {})
+  meteors.value = []
+  fireworks.value = []
 })
 </script>
 
 <style scoped>
-/* 扫描线动画 */
-.scan-line {
-  position: absolute;
-  top: -10%;
-  left: 0;
-  width: 100%;
-  height: 20%;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(59, 130, 246, 0.1),
-    transparent
-  );
-  animation: scan 8s linear infinite;
+.business-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: auto;
 }
-
-@keyframes scan {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(1000%);
-  }
-}
-
-/* 浮动动画 */
-@keyframes float {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.2);
-    opacity: 0.8;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.5;
-  }
-}
-
-.animate-float {
-  animation: float 8s ease-in-out infinite;
-}
-
-/* 代码雨动画 */
-.code-rain {
-  pointer-events: none;
-}
-
-.code-char {
-  opacity: 0;
-  animation: fadeInOut 3s linear infinite;
-  margin: 5px 0;
-}
-
-@keyframes fadeInOut {
-  0%, 100% {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* 为每一列设置不同的动画延迟 */
-.code-rain > div:nth-child(1) .code-char { animation-delay: 0s; }
-.code-rain > div:nth-child(2) .code-char { animation-delay: 0.3s; }
-.code-rain > div:nth-child(3) .code-char { animation-delay: 0.6s; }
-.code-rain > div:nth-child(4) .code-char { animation-delay: 0.9s; }
-.code-rain > div:nth-child(5) .code-char { animation-delay: 1.2s; }
-.code-rain > div:nth-child(6) .code-char { animation-delay: 1.5s; }
-.code-rain > div:nth-child(7) .code-char { animation-delay: 1.8s; }
-.code-rain > div:nth-child(8) .code-char { animation-delay: 2.1s; }
-.code-rain > div:nth-child(9) .code-char { animation-delay: 2.4s; }
-.code-rain > div:nth-child(10) .code-char { animation-delay: 2.7s; }
-
-/* 光点自定义动画延迟 */
-.light-spot-1 { animation-delay: 0s; }
-.light-spot-2 { animation-delay: 0.5s; }
-.light-spot-3 { animation-delay: 1s; }
-.light-spot-4 { animation-delay: 1.5s; }
-.light-spot-5 { animation-delay: 2s; }
-.light-spot-6 { animation-delay: 2.5s; }
-.light-spot-7 { animation-delay: 3s; }
-.light-spot-8 { animation-delay: 3.5s; }
-.light-spot-9 { animation-delay: 4s; }
-.light-spot-10 { animation-delay: 4.5s; }
-.light-spot-11 { animation-delay: 5s; }
-.light-spot-12 { animation-delay: 5.5s; }
 </style>

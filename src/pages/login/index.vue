@@ -65,10 +65,10 @@
         </el-form-item>
 
         <!-- 验证码 -->
-        <el-form-item prop="captchaCode">
+        <el-form-item prop="code">
           <div class="flex w-full gap-2">
             <el-input
-              v-model="loginForm.captchaCode"
+              v-model="loginForm.code"
               placeholder="请输入验证码"
               :disabled="loading"
               size="large"
@@ -112,8 +112,8 @@ import { ElMessage } from 'element-plus';
 import { User, Lock, Loading } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/store/modules/user';
-import { login as loginApi } from '@/api/modules/login';
-import { getMenuListApi, getCaptcha } from '@/api';
+import { login as loginApi, getCaptcha } from '@/api/modules/login';
+import { getMenuListApi } from '@/api/modules/menu';
 import storage from '@/utils/storage';
 import { getGreeting } from '@/utils/timeUtils';
 import BusinessBackground from './components/BusinessBackground/BusinessBackground.vue';
@@ -129,9 +129,9 @@ const imgSrc = ref('')
 // 表单数据
 const loginForm = reactive({
   account: 'admin',
-  password: 'admin123_',
-  captchaUuid:'',
-  captchaCode:''
+  password: 'Admin_123',
+  uuid:'',
+  code:''
 });
 
 // 登录提交
@@ -146,22 +146,48 @@ const submit = async () => {
     // 1. 调用登录接口
     transitionText.value = '正在验证身份...';
     const { data }: any = await loginApi(loginForm);
+    
     // 2. 保存token
     storage.set('token', data.accessToken);
-    // 3. 获取菜单数据
-    transitionText.value = '正在加载资源...';
-    const res: any = await getMenuListApi();
-    console.log(JSON.stringify(res.data))
-    const menus = res.data || [];
-    storage.set('menus', menus);
-    // 4. 保存用户信息到store
+    
+    // 3. 获取用户权限信息（菜单、权限标识、角色）
+    transitionText.value = '正在加载权限信息...';
+    
+    // 使用新的权限API获取完整权限信息
+    const { getCurrentUserMenus, getCurrentUserPermissions, getCurrentUserDataScope } = await import('@/api/system/userRole');
+    const { getUserDetail } = await import('@/api/system/user');
+    
+    // 并行获取权限信息
+    const [menuRes, permRes, dataScopeRes, userDetailRes] = await Promise.all([
+      getCurrentUserMenus(),
+      getCurrentUserPermissions(),
+      getCurrentUserDataScope(),
+      getUserDetail(data.userInfo.id)
+    ]);
+    
+    const menus = menuRes.data || [];
+    const permissions = permRes.data || [];
+    const roles = userDetailRes.data.roles || [];
+    
+    // 4. 保存用户信息到store（包含权限信息）
     userStore.set_state({
       accessToken: data.accessToken,
       refreshToken: data.refreshToken,
-      userInfo: data.userInfo,
+      userInfo: {
+        ...data.userInfo,
+        ...userDetailRes.data
+      },
       menusLoaded: true,
       menus: menus,
+      permissions: permissions,
+      roles: roles,
+      isSuperAdmin: roles.some((role: any) => role.name === 'admin')
     });
+    
+    // 5. 持久化存储权限信息
+    storage.set('menus', menus);
+    storage.set('permissions', permissions);
+    storage.set('roles', roles);
     // 5. 显示欢迎消息
     const greeting = getGreeting(new Date());
     const userName =
@@ -198,8 +224,8 @@ const submit = async () => {
   }
 };
 const getCaptchaFunc = async () => {
-  const {data}:any = await getCaptcha({uuid:loginForm.captchaUuid})
-  loginForm.captchaUuid = data.uuid
+  const {data}:any = await getCaptcha({uuid:loginForm.uuid})
+  loginForm.uuid = data.uuid
   imgSrc.value = 'data:image/svg+xml;utf8,' + encodeURIComponent(data.image);
 }
 // 页面加载时清除可能残留的过渡遮罩

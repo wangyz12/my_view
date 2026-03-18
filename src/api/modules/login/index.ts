@@ -2,7 +2,9 @@
 import { post,get } from '../../index'
 export interface LOGINPARAMS  {
   account:string;
-  password:string
+  password:string;
+  uuid?: string;
+  code?: string;
 }
 export interface UPDATEPAW  {
   oldPassword:string;

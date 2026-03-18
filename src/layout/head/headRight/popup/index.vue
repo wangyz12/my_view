@@ -26,7 +26,7 @@
 import { ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { upDatePsw,type UPDATEPAW } from '@/api'
+import {changePassword} from '@/api/modules/login'
 
 // 定义要发射的事件 - 通知对话框关闭
 const emit = defineEmits<{
@@ -38,7 +38,7 @@ const emit = defineEmits<{
 const formRef = ref<FormInstance>()
 
 // 表单数据
-const loginForm = ref<UPDATEPAW>({
+const loginForm = ref<any>({
   oldPassword: '',
   newPassword: ''
 })
@@ -65,7 +65,7 @@ const handleConfirm = async () => {
     loading.value = true
     // 表单验证
     await formRef.value.validate()
-    const res:any = await upDatePsw(loginForm.value)
+    const res:any = await changePassword(loginForm.value)
     if(res.code === 200){
       // 触发成功事件，传递数据
       emit('success', {

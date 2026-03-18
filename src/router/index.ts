@@ -2,12 +2,21 @@
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router';
 import { useUserStore } from '@/store/modules/user';
 import storage from '@/utils/storage';
+import { checkRoutePermission, initUserPermissions } from '@/utils/auth';
+
 // 定义路由组件
 const Layout = () => import('@/layout/index.vue');
 const Home = () => import('@/pages/home/index.vue');
 const Login = () => import('@/pages/login/index.vue');
 const NotFound = () => import('@/components/notFound/index.vue');
-const UserInfo = ()=>import('@/pages/userinfo/index.vue')
+const UserInfo = () => import('@/pages/userinfo/index.vue');
+const Setting = () => import('@/pages/system/setting/index.vue');
+
+// 系统管理页面
+const UserManagement = () => import('@/pages/system/user/index.vue');
+const RoleManagement = () => import('@/pages/system/role/index.vue');
+const MenuManagement = () => import('@/pages/system/menu/index.vue');
+const DeptManagement = () => import('@/pages/system/dept/index.vue');
 
 // 定义路由配置
 const routes: RouteRecordRaw[] = [
@@ -23,7 +32,8 @@ const routes: RouteRecordRaw[] = [
         component: Home,
         meta: {
           title: '首页',
-          requiresAuth: true, // 需要登录
+          requiresAuth: true,
+          icon: 'home',
         },
       },
       {
@@ -32,8 +42,76 @@ const routes: RouteRecordRaw[] = [
         component: UserInfo,
         meta: {
           title: '用户信息',
-          requiresAuth: true, // 需要登录
+          requiresAuth: true,
+          icon: 'user',
         },
+      },
+      {
+        path: 'system',
+        name: 'System',
+        redirect: '/system/user',
+        meta: {
+          title: '系统管理',
+          requiresAuth: true,
+          icon: 'system',
+          permission: 'system',
+        },
+        children: [
+          {
+            path: 'user',
+            name: 'UserManagement',
+            component: UserManagement,
+            meta: {
+              title: '用户管理',
+              requiresAuth: true,
+              icon: 'user',
+              permission: 'system:user:list',
+            },
+          },
+          {
+            path: 'role',
+            name: 'RoleManagement',
+            component: RoleManagement,
+            meta: {
+              title: '角色管理',
+              requiresAuth: true,
+              icon: 'peoples',
+              permission: 'system:role:list',
+            },
+          },
+          {
+            path: 'menu',
+            name: 'MenuManagement',
+            component: MenuManagement,
+            meta: {
+              title: '菜单管理',
+              requiresAuth: true,
+              icon: 'tree-table',
+              permission: 'system:menu:list',
+            },
+          },
+          {
+            path: 'dept',
+            name: 'DeptManagement',
+            component: DeptManagement,
+            meta: {
+              title: '部门管理',
+              requiresAuth: true,
+              icon: 'tree',
+              permission: 'system:dept:list',
+            },
+          },
+          {
+            path: 'setting',
+            name: 'Setting',
+            component: Setting,
+            meta: {
+              title: '系统设置',
+              requiresAuth: true,
+              icon: 'setting',
+            },
+          },
+        ],
       },
     ],
   },
@@ -43,7 +121,16 @@ const routes: RouteRecordRaw[] = [
     component: Login,
     meta: {
       title: '登录',
-      requiresAuth: false, // 不需要登录
+      requiresAuth: false,
+    },
+  },
+  {
+    path: '/401',
+    name: 'Unauthorized',
+    component: () => import('@/components/Unauthorized/index.vue'),
+    meta: {
+      title: '无权限访问',
+      requiresAuth: false,
     },
   },
   {
@@ -72,8 +159,8 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
-  // 设置页面标题（支持动态参数）
-  const defaultTitle = '我的应用';
+  // 设置页面标题
+  const defaultTitle = 'RBAC管理系统';
   if (to.meta.title) {
     const title = typeof to.meta.title === 'function' ? to.meta.title(to.params) : to.meta.title;
     document.title = `${title} - ${defaultTitle}`;
@@ -86,36 +173,9 @@ router.beforeEach(async (to, from) => {
   const token = userStore.accessToken || storage.get('token');
   const isLoggedIn = !!token;
 
-  // 如果已登录但未获取用户信息，尝试获取
-  // if (isLoggedIn && !userStore.userInfo) {
-  //   try {
-  //     await userStore.getUserInfo()
-  //   } catch (error) {
-  //     console.error('获取用户信息失败:', error)
-  //     // token 无效，清除登录状态
-  //     userStore.logout()
-  //     return {
-  //       path: '/login',
-  //       query: { redirect: to.fullPath }
-  //     }
-  //   }
-  // }
-
-  // 权限检查
-  // if (to.meta.roles && userStore.userInfo) {
-  //   const hasRole = to.meta.roles.some(role =>
-  //     userStore.userInfo.roles?.includes(role)
-  //   )
-  //   if (!hasRole) {
-  //     return '/403' // 无权限页面
-  //   }
-  // }
-
-  // 登录页处理
-  if (to.path === '/login') {
-    if (isLoggedIn) {
-      return from.path === '/' ? '/home' : from.fullPath;
-    }
+  // 白名单路由（不需要登录）
+  const whiteList = ['/login', '/401', '/404'];
+  if (whiteList.includes(to.path)) {
     return true;
   }
 
@@ -125,6 +185,39 @@ router.beforeEach(async (to, from) => {
       path: '/login',
       query: { redirect: to.fullPath },
     };
+  }
+
+  // 已登录但访问登录页，重定向到首页
+  if (to.path === '/login') {
+    return from.path === '/' ? '/home' : from.fullPath;
+  }
+
+  // 初始化用户权限（如果尚未初始化）
+  if (isLoggedIn && (!userStore.menus || userStore.menus.length === 0)) {
+    try {
+      const success = await initUserPermissions();
+      if (!success) {
+        // 权限初始化失败，可能是token失效
+        userStore.clear_state();
+        return {
+          path: '/login',
+          query: { redirect: to.fullPath },
+        };
+      }
+    } catch (error) {
+      console.error('权限初始化失败:', error);
+      userStore.clear_state();
+      return {
+        path: '/login',
+        query: { redirect: to.fullPath },
+      };
+    }
+  }
+
+  // 权限检查
+  const permissionResult = checkRoutePermission(to, from);
+  if (permissionResult !== true) {
+    return permissionResult;
   }
 
   return true;

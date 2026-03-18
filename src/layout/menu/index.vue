@@ -13,13 +13,6 @@
       :active-text-color="themeStore.themeColor"
       @select="handleMenuSelect"
     >
-      <!-- 静态首页菜单项 -->
-      <el-menu-item index="/home">
-        <el-icon>
-          <el-icon><HomeFilled /></el-icon>
-        </el-icon>
-        <span>首页</span>
-      </el-menu-item>
       <template v-if="menuList && menuList.length">
         <MenuItem
           v-for="item in menuList"
