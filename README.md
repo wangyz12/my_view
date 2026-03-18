@@ -2,7 +2,15 @@
 
 # Vue 3 Admin Dashboard
 
-A modern admin dashboard built with Vue 3, TypeScript, and Vite. This project provides a comprehensive foundation for building enterprise-level admin applications with dynamic routing, user management, role-based access control, and a flexible theming system.
+一个基于 Vue 3、TypeScript 和 Vite 构建的现代化管理后台系统。本项目提供了一个完整的企业级管理应用基础框架，包含动态路由、用户管理、角色权限控制、部门管理、菜单配置和灵活的主题定制系统。
+
+## 项目简介
+
+这是一个全栈管理后台系统的前端部分，采用现代化的技术栈和架构设计。系统支持动态权限控制、多主题切换、响应式布局，适用于各种企业级管理应用场景。
+
+**后端仓库地址：** [https://gitee.com/w_18769913293/node_temp](https://gitee.com/w_18769913293/node_temp)
+
+**前端仓库地址：** [https://gitee.com/w_18769913293/my-vue3-project](https://gitee.com/w_18769913293/my-vue3-project) (请根据实际情况更新此地址)
 
 ## Features
 
@@ -92,6 +100,25 @@ State management using Pinia with the following modules:
 ### API
 
 Axios-based request utility with interceptors for authentication and error handling. API modules are organized by feature domain.
+
+## 项目关联
+
+### 后端项目
+- **仓库地址：** [https://gitee.com/w_18769913293/node_temp](https://gitee.com/w_18769913293/node_temp)
+- **技术栈：** Node.js + Express/TypeScript + MySQL
+- **主要功能：** 提供 RESTful API 接口，包括用户认证、权限管理、数据 CRUD 等
+
+### 前后端交互
+1. **接口规范：** 遵循 RESTful API 设计原则
+2. **认证方式：** JWT Token 认证
+3. **数据格式：** JSON 格式传输
+4. **跨域处理：** 已配置 CORS 支持
+
+### 开发流程
+1. 后端开发 API 接口并部署
+2. 前端根据接口文档进行开发
+3. 前后端联调测试
+4. 部署上线
 
 ## License
 
