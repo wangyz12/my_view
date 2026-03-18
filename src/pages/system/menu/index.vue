@@ -1,31 +1,5 @@
 <template>
   <div class="menu-management">
-    <el-card class="search-card">
-      <el-form :model="searchForm" inline>
-        <el-form-item label="菜单名称">
-          <el-input v-model="searchForm.title" placeholder="请输入菜单名称" clearable @clear="handleSearch"
-            @keyup.enter="handleSearch" />
-        </el-form-item>
-        <el-form-item label="菜单类型">
-          <el-select v-model="searchForm.type" placeholder="全部" clearable>
-            <el-option label="菜单" value="menu" />
-            <el-option label="按钮" value="button" />
-            <el-option label="内嵌页面" value="iframe" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="searchForm.hidden" placeholder="全部" clearable>
-            <el-option label="显示" :value="false" />
-            <el-option label="隐藏" :value="true" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="handleSearch">搜索</el-button>
-          <el-button @click="resetSearch">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
-
     <el-card class="table-card">
       <template #header>
         <div class="card-header">
@@ -211,7 +185,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
 import { Plus, Delete, Search, Edit, DeleteFilled, Setting, User, Lock, Menu, Document, Folder, Grid, Collection, ChatDotRound, Bell, Star, Share, Download, Upload, Refresh, More, Close, Check, ArrowRight, ArrowLeft, ArrowUp, ArrowDown, CaretRight, CaretLeft, CaretTop, CaretBottom, ZoomIn, ZoomOut, Plus as IconPlus, Minus, CirclePlus, CircleClose, CircleCheck, CircleCloseFilled, CircleCheckFilled, WarningFilled, InfoFilled, SuccessFilled, Warning, QuestionFilled, RemoveFilled, CirclePlusFilled, Remove, View, Hide, Tools, Monitor, Iphone, Location, Connection, Coordinate, Service, Timer, Calendar, Filter, Operation, Position, Rank, Sort, Tickets, Finished, CopyDocument, DocumentCopy, DocumentChecked, DataBoard, DataLine, PieChart, Histogram, SetUp, Reading, Notebook, Box, Wallet, CreditCard, Money, Goods, SoldOut, ShoppingCart, ShoppingBag, Present, Box as BoxIcon, Van, Printer, Camera, Headset, Phone, Microphone, VideoCamera, VideoPause, VideoPlay, Film, Picture, PictureRounded, UploadFilled, Download as DownloadIcon, Files, FolderOpened, FolderDelete, FolderChecked, FolderRemove, FolderAdd, CollectionTag, AlarmClock, CoffeeCup, Watermelon, IceCream, IceDrink, IceTea, Coffee, Orange, Pear, Apple, Cherry, Grape, Sugar, Dessert, HotWater, Bowl, KnifeFork, Burger, Dish, Chicken, Food, Fries, IceCreamSquare, Lollipop, MilkTea, Pear as PearIcon, IceCreamRound } from '@element-plus/icons-vue'
-import { getMenuTree, createMenu, updateMenu, deleteMenu, batchDeleteMenus } from '@/api/system/menu'
+import { getMenuTree, createMenu, updateMenu, deleteMenu,  } from '@/api/system/menu'
 import { getCurrentUserMenus } from '@/api/system/userRole'
 import { dynamicRouteManager } from '@/router/dynamic'
 import { useUserStore } from '@/store/modules/user'
@@ -352,20 +326,6 @@ const loadMenuTree = async () => {
     loading.value = false
   }
 }
-
-// 搜索
-const handleSearch = () => {
-  loadMenuTree()
-}
-
-// 重置搜索
-const resetSearch = () => {
-  searchForm.title = ''
-  searchForm.type = ''
-  searchForm.hidden = ''
-  loadMenuTree()
-}
-
 // 表格选择变化
 const handleSelectionChange = (rows: any[]) => {
   selectedRows.value = rows
@@ -449,8 +409,10 @@ const handleBatchDelete = () => {
     cancelButtonText: '取消'
   }).then(async () => {
     try {
-      const menuIds = selectedRows.value.map(row => row.id)
-      await batchDeleteMenus(menuIds)
+      // 逐个删除菜单
+      for (const row of selectedRows.value) {
+        await deleteMenu(row.id)
+      }
       ElMessage.success('批量删除成功')
       selectedRows.value = []
       loadMenuTree()
@@ -528,9 +490,11 @@ const handleSubmit = async () => {
       }
 
       if (isAdd.value) {
+        // 新增时发送pid
         await createMenu(params)
         ElMessage.success('新增成功')
       } else {
+        // 编辑时也发送pid，但确保空字符串被正确处理
         await updateMenu(params)
         ElMessage.success('更新成功')
       }

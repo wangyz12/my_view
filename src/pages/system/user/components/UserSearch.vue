@@ -21,7 +21,7 @@
         />
       </el-form-item>
       <el-form-item label="状态">
-        <el-select v-model="searchForm.status" placeholder="全部" clearable>
+        <el-select v-model="searchForm.status" placeholder="全部" style="width: 200px" clearable>
           <el-option label="正常" value="0" />
           <el-option label="停用" value="1" />
         </el-select>

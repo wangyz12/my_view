@@ -18,18 +18,10 @@ export function getAllMenus() {
   })
 }
 
-// 获取菜单详情
-export function getMenuDetail(id: string) {
-  return request({
-    url: `/menu/detail/${id}`,
-    method: 'get'
-  })
-}
-
 // 创建菜单
 export function createMenu(data: any) {
   return request({
-    url: '/menu/create',
+    url: '/menu/addMenu',
     method: 'post',
     data
   })
@@ -38,8 +30,8 @@ export function createMenu(data: any) {
 // 更新菜单
 export function updateMenu(data: any) {
   return request({
-    url: `/menu/update/${data.id}`,
-    method: 'put',
+    url: '/menu/updateMenu',
+    method: 'post',
     data
   })
 }
@@ -47,19 +39,13 @@ export function updateMenu(data: any) {
 // 删除菜单
 export function deleteMenu(id: string) {
   return request({
-    url: `/menu/delete/${id}`,
-    method: 'delete'
+    url: '/menu/delMenu',
+    method: 'post',
+    data: { id }
   })
 }
 
-// 批量删除菜单
-export function batchDeleteMenus(ids: string[]) {
-  return request({
-    url: '/menu/batch-delete',
-    method: 'post',
-    data: { ids }
-  })
-}
+
 
 // 获取当前用户菜单
 export function getCurrentUserMenus() {
