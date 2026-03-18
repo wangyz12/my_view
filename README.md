@@ -8,9 +8,9 @@
 
 这是一个全栈管理后台系统的前端部分，采用现代化的技术栈和架构设计。系统支持动态权限控制、多主题切换、响应式布局，适用于各种企业级管理应用场景。
 
-**后端仓库地址：** [https://gitee.com/w_18769913293/node_temp](https://gitee.com/w_18769913293/node_temp)
+**后端仓库地址：** [https://gitee.com/W_admin_code/node_temp](https://gitee.com/W_admin_code/node_temp)
 
-**前端仓库地址：** [https://gitee.com/w_18769913293/my-vue3-project](https://gitee.com/w_18769913293/my-vue3-project) (请根据实际情况更新此地址)
+**前端仓库地址：** [https://gitee.com/W_admin_code/my-vue3-project](https://gitee.com/W_admin_code/my-vue3-project) (请根据实际情况更新此地址)
 
 ## Features
 
