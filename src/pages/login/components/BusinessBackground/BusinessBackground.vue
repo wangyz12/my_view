@@ -130,7 +130,7 @@ interface Meteor {
   y: number
   length: number
   angle: number
-  color: string
+  color: any
   opacity: number
   speed: number
   isHit: boolean
@@ -139,7 +139,7 @@ interface Meteor {
 // 烟花粒子配置
 interface FireworkParticle {
   size: number
-  color: string
+  color: any
   angle: number
   distance: number
   opacity: number

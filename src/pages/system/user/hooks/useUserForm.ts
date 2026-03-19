@@ -105,7 +105,7 @@ export function useUserForm() {
   }
 
   // 处理部门ID（如果是数组，取最后一个）
-  const processDeptId = (deptId: string | string[]): string => {
+  const processDeptId = (deptId: string | string[]): any => {
     if (Array.isArray(deptId) && deptId.length > 0) {
       return deptId[deptId.length - 1]
     }
