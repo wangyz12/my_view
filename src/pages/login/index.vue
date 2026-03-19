@@ -156,13 +156,12 @@ const submit = async () => {
     // 使用新的权限API获取完整权限信息
     const { getCurrentUserMenus, getCurrentUserPermissions, getCurrentUserDataScope } = await import('@/api/system/userRole');
     const { getUserDetail } = await import('@/api/system/user');
-    
     // 并行获取权限信息
     const [menuRes, permRes, dataScopeRes, userDetailRes] = await Promise.all([
       getCurrentUserMenus(),
       getCurrentUserPermissions(),
       getCurrentUserDataScope(),
-      getUserDetail(data.userInfo.id)
+      getUserDetail(data.user.id)
     ]);
     
     const menus = menuRes.data || [];
