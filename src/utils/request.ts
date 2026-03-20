@@ -1,8 +1,10 @@
 // src/utils/request.ts
 import axios, { type AxiosInstance, type AxiosError, type AxiosResponse } from 'axios' // 关键：添加 AxiosResponse 导入
 import type { CustomAxiosRequestConfig, CustomInternalRequestConfig, ApiResponse } from '../types/api'
-import { ElMessage, ElLoading } from 'element-plus' // 结合 Element Plus 提示/加载
+import { ElMessage } from 'element-plus' // 结合 Element Plus 提示/加载
 import { storageToken } from './storage' // 导入 Token 快捷方法
+import { startProgress, finishProgress, failProgress } from './progress'
+
 // 创建 Axios 实例（指定自定义请求配置类型）
 const service: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL, // 环境变量（VITE_ 开头）
@@ -12,19 +14,12 @@ const service: AxiosInstance = axios.create({
   }
 })
 
-// 加载中实例（用于全局加载状态）
-let loadingInstance: ReturnType<typeof ElLoading.service> | null = null
-
 // 请求拦截器（严格类型约束）
 service.interceptors.request.use(
   (config: CustomInternalRequestConfig) => {
-    // 处理自定义配置：显示加载中
+    // 处理自定义配置：显示顶部进度条
     if (config.showLoading !== false) {
-      loadingInstance = ElLoading.service({
-        lock: true,
-        text: '加载中...',
-        background: 'rgba(0, 0, 0, 0.5)'
-      })
+      startProgress()
     }
     const token = storageToken.get()
     if (token && config.headers) {
@@ -33,6 +28,8 @@ service.interceptors.request.use(
     return config
   },
   (error: AxiosError) => {
+    // 请求发送失败时也完成进度条
+    failProgress()
     ElMessage.error('请求发送失败：' + error.message)
     return Promise.reject(error)
   }
@@ -41,8 +38,8 @@ service.interceptors.request.use(
 // 响应拦截器（严格类型约束）
 service.interceptors.response.use(
   (response: any) => {
-    // 关闭加载中
-    if (loadingInstance) loadingInstance.close()
+    // 完成进度条
+    finishProgress()
 
     const res = response.data
     // 业务逻辑判断（根据实际接口状态码调整）
@@ -53,8 +50,8 @@ service.interceptors.response.use(
     return res
   },
   (error: AxiosError) => {
-    // 关闭加载中
-    if (loadingInstance) loadingInstance.close()
+    // 失败进度条
+    failProgress()
 
     // 统一处理网络错误
     // 补充类型断言，避免 error.response?.data 报 any 类型

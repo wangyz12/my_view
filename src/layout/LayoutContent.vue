@@ -1,4 +1,7 @@
 <template>
+  <!-- 全局进度条 -->
+  <ProgressBar :active="progressActive" :progress="progressValue" :is-error="progressIsError" />
+  
   <!-- 侧边栏布局 -->
   <el-container v-if="themeStore.isSideLayout" class="layout">
     <el-aside
@@ -50,13 +53,17 @@ import Head from './head/index.vue';
 import Logo from './menu/logo/index.vue'
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import RouteCache from '@/components/RouteCache/index.vue'
+import ProgressBar from '@/components/ProgressBar/index.vue'
 import { useUserStore } from '@/store/modules/user';
 import { useThemeStore } from '@/store/modules/theme';
 import { useRouter } from 'vue-router';
+import { useProgress } from '@/utils/progress'
 
 const userStore = useUserStore();
 const themeStore = useThemeStore();
 const router = useRouter();
+
+const { progress: progressValue, active: progressActive, isError: progressIsError } = useProgress()
 
 const goHome = () => {
   router.push('/home')

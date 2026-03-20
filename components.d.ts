@@ -59,6 +59,7 @@ declare module 'vue' {
     IndexSimple: typeof import('./src/components/MenuSearch/index-simple.vue')['default']
     MenuSearch: typeof import('./src/components/MenuSearch/index.vue')['default']
     NotFound: typeof import('./src/components/notFound/index.vue')['default']
+    ProgressBar: typeof import('./src/components/ProgressBar/index.vue')['default']
     RouteCache: typeof import('./src/components/RouteCache/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

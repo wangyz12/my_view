@@ -3,6 +3,7 @@ import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-rou
 import { useUserStore } from '@/store/modules/user';
 import storage from '@/utils/storage';
 import { checkRoutePermission, initUserPermissions } from '@/utils/auth';
+import { startProgress, finishProgress, failProgress } from '@/utils/progress';
 
 // 定义路由组件
 const Layout = () => import('@/layout/index.vue');
@@ -20,6 +21,7 @@ const DeptManagement = () => import('@/pages/system/dept/index.vue');
 
 // 演示页面
 const CacheDemo = () => import('@/pages/demo/CacheDemo.vue');
+const LoadingDemo = () => import('@/pages/demo/LoadingDemo.vue');
 
 // 定义路由配置
 const routes: RouteRecordRaw[] = [
@@ -125,6 +127,16 @@ const routes: RouteRecordRaw[] = [
               keepAlive: true, // 明确指定需要缓存
             },
           },
+          {
+            path: 'loading-demo',
+            name: 'LoadingDemo',
+            component: LoadingDemo,
+            meta: {
+              title: 'Loading演示',
+              requiresAuth: true,
+              icon: 'Loading',
+            },
+          },
         ],
       },
     ],
@@ -173,6 +185,11 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
+  // 开始路由跳转进度条（排除某些路由）
+  if (to.path !== from.path) {
+    startProgress();
+  }
+  
   // 设置页面标题
   const defaultTitle = 'RBAC管理系统';
   if (to.meta.title) {
@@ -190,11 +207,13 @@ router.beforeEach(async (to, from) => {
   // 白名单路由（不需要登录）
   const whiteList = ['/login', '/401', '/404'];
   if (whiteList.includes(to.path)) {
+    finishProgress();
     return true;
   }
 
   // 登录检查
   if (!isLoggedIn) {
+    finishProgress();
     return {
       path: '/login',
       query: { redirect: to.fullPath },
@@ -203,6 +222,7 @@ router.beforeEach(async (to, from) => {
 
   // 已登录但访问登录页，重定向到首页
   if (to.path === '/login') {
+    finishProgress();
     return from.path === '/' ? '/home' : from.fullPath;
   }
 
@@ -213,6 +233,7 @@ router.beforeEach(async (to, from) => {
       if (!success) {
         // 权限初始化失败，可能是token失效
         userStore.clear_state();
+        finishProgress();
         return {
           path: '/login',
           query: { redirect: to.fullPath },
@@ -221,6 +242,7 @@ router.beforeEach(async (to, from) => {
     } catch (error) {
       console.error('权限初始化失败:', error);
       userStore.clear_state();
+      finishProgress();
       return {
         path: '/login',
         query: { redirect: to.fullPath },
@@ -231,9 +253,24 @@ router.beforeEach(async (to, from) => {
   // 权限检查
   const permissionResult = checkRoutePermission(to, from);
   if (permissionResult !== true) {
+    finishProgress();
     return permissionResult;
   }
 
   return true;
+});
+
+// 路由跳转完成后完成进度条
+router.afterEach(() => {
+  // 延迟完成进度条，让页面有足够时间加载数据
+  setTimeout(() => {
+    finishProgress();
+  }, 100);
+});
+
+// 路由跳转错误时失败进度条
+router.onError((error) => {
+  console.error('路由错误:', error);
+  failProgress();
 });
 export default router;

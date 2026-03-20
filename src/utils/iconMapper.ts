@@ -43,7 +43,6 @@ const iconMap: Record<string, string> = {
   'unlock': 'Unlock',
   'eye': 'View',
   'eye-close': 'Hide',
-  'star': 'Star',
   'heart': 'Heart',
   'share': 'Share',
   'link': 'Link',

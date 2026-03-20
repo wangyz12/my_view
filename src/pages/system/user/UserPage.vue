@@ -75,8 +75,8 @@ const {
   
   // 方法
   loadUserList,
-  handleSearch: internalHandleSearch,
-  resetSearch: internalResetSearch,
+  handleSearch,
+  resetSearch,
   handleSelectionChange,
   handleSizeChange: internalHandleSizeChange,
   handleCurrentChange: internalHandleCurrentChange,
