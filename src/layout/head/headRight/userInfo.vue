@@ -44,10 +44,16 @@ const dropdList: DROPDLIST[] = [
   { label: '修改密码', value: '2', type: 'popup' },
   { label: '退出登录', value: '3', type: 'msgbox' },
 ];
+import { useBreadcrumbStore } from '@/store/modules/breadcrumb'
+
+const breadcrumbStore = useBreadcrumbStore()
+
 // 统一跳转登录
 const unificationOut = async (str: string) => {
   storage.clear()
   await userStore.clear_state()
+  // 重置标签页
+  breadcrumbStore.resetTabs()
   ElMessage.success(str)
   setTimeout(() => router.push('/login'), 500)
 }

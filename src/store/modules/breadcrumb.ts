@@ -99,6 +99,20 @@ export const useBreadcrumbStore = defineStore('breadcrumb', () => {
     }
   }
 
+  // 重置标签页（退出登录时调用）
+  const resetTabs = () => {
+    tabs.value = [
+      {
+        path: '/home',
+        title: '首页',
+        icon: getIconComponentName('home'),
+        name: 'Home',
+        closable: false  // 首页不可关闭
+      }
+    ]
+    activeTabPath.value = '/home'
+  }
+
   return {
     tabs,
     activeTabPath,
@@ -109,7 +123,8 @@ export const useBreadcrumbStore = defineStore('breadcrumb', () => {
     closeOtherTabs,
     closeAllTabs,
     setActiveTab,
-    updateTabTitle
+    updateTabTitle,
+    resetTabs
   }
 }, {
   // 数据持久化

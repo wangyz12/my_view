@@ -5,7 +5,7 @@
         <el-icon><Lock /></el-icon>
       </div>
       <h1 class="error-title">403</h1>
-      <p class="error-desc">抱歉，您没有访问该页面的权限</p>
+      <p class="error-desc">抱歉，您没有访问该页面的权限,请联系管理员添加权限</p>
       <div class="error-actions">
         <el-button type="primary" @click="goBack">返回上一页</el-button>
         <el-button @click="goHome">返回首页</el-button>

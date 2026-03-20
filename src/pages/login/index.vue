@@ -100,7 +100,8 @@
 
       <!-- 底部提示 -->
       <div class="mt-5 text-center text-xs text-gray-400">
-        <p>测试：admin / admin123_</p>
+        <p>管理员：admin / Admin_123</p>
+        <p>普通：user / User_123</p>
       </div>
     </el-card>
   </div>
@@ -112,6 +113,7 @@ import { ElMessage } from 'element-plus';
 import { User, Lock, Loading } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/store/modules/user';
+import { useBreadcrumbStore } from '@/store/modules/breadcrumb';
 import { login as loginApi, getCaptcha } from '@/api/modules/login';
 import { getMenuListApi } from '@/api/modules/menu';
 import storage from '@/utils/storage';
@@ -120,6 +122,7 @@ import BusinessBackground from './components/BusinessBackground/BusinessBackgrou
 import {loginRules} from './config'
 const router = useRouter();
 const userStore = useUserStore();
+const breadcrumbStore = useBreadcrumbStore();
 
 // 状态管理
 const loading = ref(false);
@@ -187,6 +190,9 @@ const submit = async () => {
     storage.set('menus', menus);
     storage.set('permissions', permissions);
     storage.set('roles', roles);
+    
+    // 6. 重置标签页（确保新用户登录时看到干净的标签页）
+    breadcrumbStore.resetTabs();
     // 5. 显示欢迎消息
     const greeting = getGreeting(new Date());
     const userName =
