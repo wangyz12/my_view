@@ -6,8 +6,8 @@
       :default-active="activeMenu"
       :collapse="isCollapse"
       :unique-opened="true"
-      :collapse-transition="false"
-      class="el-menu-vertical"
+      :collapse-transition="true"
+      class="el-menu-vertical transition-all duration-300 ease-in-out"
       :background-color="themeStore.menuBgColor"
       :text-color="themeStore.menuTextColor"
       :active-text-color="themeStore.themeColor"
@@ -32,7 +32,6 @@ import { useUserStore } from '@/store/modules/user';
 import { useThemeStore } from '@/store/modules/theme';
 import MenuItem from './MenuItem.vue'; // 引入递归子组件
 import Logo from './logo/index.vue'
-
 const themeStore = useThemeStore();
 const router = useRouter();
 const route = useRoute();

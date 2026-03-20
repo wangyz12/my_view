@@ -1,0 +1,247 @@
+/* 菜单折叠动画样式 */
+
+/* 菜单容器动画 */
+.menu-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background:#fff !important;
+}
+
+/* Element Plus 菜单组件宽度动画 */
+.el-menu-vertical {
+  flex: 1;
+  border-right: none !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* 非折叠状态 - 完整宽度 */
+.el-menu-vertical:not(.el-menu--collapse) {
+  width: 200px !important;
+  min-width: 200px !important;
+}
+
+/* 折叠状态 - 紧凑宽度 */
+.el-menu-vertical.el-menu--collapse {
+  width: 80px !important;
+  min-width: 80px !important;
+}
+
+/* 菜单项动画 */
+.el-menu-item,
+.el-sub-menu__title {
+  transition: all 0.2s ease !important;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* 折叠状态下的菜单项 */
+.el-menu--collapse .el-menu-item,
+.el-menu--collapse .el-sub-menu__title {
+  padding: 0 20px !important;
+  justify-content: center;
+}
+
+/* 菜单图标动画 */
+.el-menu-item .el-icon,
+.el-sub-menu__title .el-icon {
+  transition: all 0.2s ease;
+  margin-right: 8px;
+}
+
+.el-menu--collapse .el-menu-item .el-icon,
+.el-menu--collapse .el-sub-menu__title .el-icon {
+  margin-right: 0;
+  transform: scale(1.1);
+}
+
+/* 菜单文字动画 */
+.el-menu-item span,
+.el-sub-menu__title span {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.el-menu--collapse .el-menu-item span,
+.el-menu--collapse .el-sub-menu__title span {
+  opacity: 0;
+  max-width: 0;
+  margin-left: 0;
+}
+
+/* 子菜单箭头动画 */
+.el-sub-menu__title .el-sub-menu__icon-arrow {
+  transition: transform 0.3s ease;
+}
+
+.el-sub-menu.is-opened .el-sub-menu__icon-arrow {
+  transform: rotate(180deg);
+}
+
+.el-menu--collapse .el-sub-menu__title .el-sub-menu__icon-arrow {
+  display: none;
+}
+
+/* 侧边栏容器动画 */
+.el-aside {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: hidden !important;
+}
+
+/* Logo 区域动画 */
+.logo-area {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.logo-area.collapsed {
+  padding-left: 0;
+  justify-content: center;
+}
+
+/* 菜单项悬停效果 */
+.el-menu-item:hover,
+.el-sub-menu__title:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.el-menu-item:hover .el-icon,
+.el-sub-menu__title:hover .el-icon {
+  transform: scale(1.1);
+}
+
+/* 激活状态 */
+.el-menu-item.is-active {
+  background-color: rgba(var(--el-color-primary-rgb), 0.2) !important;
+}
+
+.el-menu-item.is-active .el-icon {
+  color: var(--el-color-primary) !important;
+}
+
+/* 暗黑模式适配 */
+:deep(.dark) .el-menu-vertical {
+  background-color: var(--el-bg-color) !important;
+}
+
+:deep(.dark) .el-menu-item:hover,
+:deep(.dark) .el-sub-menu__title:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+:deep(.dark) .el-menu-item.is-active {
+  background-color: rgba(var(--el-color-primary-rgb), 0.1) !important;
+}
+
+/* 折叠时的工具提示 */
+.el-menu--collapse .el-menu-item,
+.el-menu--collapse .el-sub-menu__title {
+  position: relative;
+}
+
+.el-menu--collapse .el-menu-item:hover::after,
+.el-menu--collapse .el-sub-menu__title:hover::after {
+  content: attr(data-title);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--el-bg-color-overlay);
+  color: var(--el-text-color-primary);
+  padding: 6px 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 9999;
+  box-shadow: var(--el-box-shadow-light);
+  font-size: 12px;
+  margin-left: 8px;
+  border: 1px solid var(--el-border-color);
+  animation: tooltipFadeIn 0.2s ease;
+}
+
+/* 工具提示动画 */
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-10px, -50%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .el-menu-vertical:not(.el-menu--collapse) {
+    width: 180px !important;
+    min-width: 180px !important;
+  }
+  
+  .el-menu-vertical.el-menu--collapse {
+    width: 80px !important;
+    min-width: 80px !important;
+  }
+}
+
+/* 平滑滚动 */
+.el-menu-vertical::-webkit-scrollbar {
+  width: 6px;
+}
+
+.el-menu-vertical::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.el-menu-vertical::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.el-menu-vertical::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 折叠动画关键帧 */
+@keyframes menuExpand {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes menuCollapse {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+}
+
+.el-menu-vertical:not(.el-menu--collapse) .el-menu-item span,
+.el-menu-vertical:not(.el-menu--collapse) .el-sub-menu__title span {
+  animation: menuExpand 0.3s ease;
+}
+
+.el-menu-vertical.el-menu--collapse .el-menu-item span,
+.el-menu-vertical.el-menu--collapse .el-sub-menu__title span {
+  animation: menuCollapse 0.3s ease;
+}

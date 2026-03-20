@@ -34,7 +34,7 @@
       <div class="top-header-content">
         <Logo v-if="themeStore.showLogo" class="top-logo" @goHome="goHome" />
         <TopMenu />
-        <Head class="top-head" />
+        <Head class="top-head" :isShow='false'/>
       </div>
     </el-header>
     <el-container class="top-container">

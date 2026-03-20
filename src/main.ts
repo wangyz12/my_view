@@ -8,6 +8,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs';
 import pinia from '@/store';
 import '@/styles/index.scss';
+import '@/styles/menu-collapse.css';
 import { setupRouter } from '@/utils/router';
 import { useThemeStore } from '@/store/modules/theme';
 import { permission, role } from '@/directives/permission';
