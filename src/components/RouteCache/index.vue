@@ -1,7 +1,7 @@
 <template>
   <router-view v-slot="{ Component, route }">
     <keep-alive :include="cachedRoutes">
-      <component :is="Component" :key="route.fullPath" />
+      <component :is="Component" :key="route.fullPath" class="full-page"/>
     </keep-alive>
   </router-view>
 </template>

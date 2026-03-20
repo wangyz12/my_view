@@ -21,7 +21,29 @@ body {
   -webkit-font-smoothing: antialiased;
   line-height: $line-height-base;
 }
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+.full-page {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+// 页面宽高100% + 溢出滚动
+.full-box{
+  width: 100%;
+  height: 100%;
+  overflow: auto !important;
+}
 // 全局链接样式
 a {
   color: $primary-color;
