@@ -203,12 +203,35 @@ const themeColors = [
 .settings-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 8px 16px;
-  font-size: 14px;
-
+  padding: 8px 12px;
+  min-width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+  
   .el-icon {
-    margin-right: 4px;
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover .el-icon {
+    transform: scale(1.1);
+  }
+  
+  .btn-text {
+    font-size: 13px;
+    font-weight: 500;
   }
 }
 
