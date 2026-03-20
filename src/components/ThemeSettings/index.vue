@@ -154,6 +154,35 @@
 
         <el-divider />
 
+        <!-- 路由缓存设置 -->
+        <div class="setting-item">
+          <div class="setting-label">
+            <el-icon><Cpu /></el-icon>
+            路由缓存
+          </div>
+          <div class="cache-settings">
+            <div class="cache-switch">
+              <el-switch v-model="themeStore.enableRouteCache" />
+              <span class="cache-label">启用页面缓存</span>
+            </div>
+            <div v-if="themeStore.enableRouteCache" class="cache-count">
+              <el-text type="info" size="small">最大缓存页面数</el-text>
+              <el-slider
+                v-model="themeStore.maxCacheCount"
+                :min="1"
+                :max="20"
+                :step="1"
+                show-stops
+                show-input
+                size="small"
+                style="margin-top: 8px;"
+              />
+            </div>
+          </div>
+        </div>
+
+        <el-divider />
+
         <!-- 重置按钮 -->
         <el-button type="primary" @click="themeStore.resetSettings" style="width: 100%">
           <el-icon><RefreshLeft /></el-icon>
@@ -167,6 +196,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useThemeStore } from '@/store/modules/theme'
+import { Cpu } from '@element-plus/icons-vue'
 
 const themeStore = useThemeStore()
 const drawerVisible = ref(false)
@@ -264,6 +294,31 @@ const themeColors = [
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+// 缓存设置
+.cache-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cache-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cache-label {
+  font-size: 14px;
+  color: var(--el-text-color-regular);
+}
+
+.cache-count {
+  padding: 12px;
+  background: var(--el-fill-color-light);
+  border-radius: 8px;
+  border: 1px solid var(--el-border-color-light);
 }
 
 // 布局选项

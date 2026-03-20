@@ -18,6 +18,9 @@ const RoleManagement = () => import('@/pages/system/role/index.vue');
 const MenuManagement = () => import('@/pages/system/menu/index.vue');
 const DeptManagement = () => import('@/pages/system/dept/index.vue');
 
+// 演示页面
+const CacheDemo = () => import('@/pages/demo/CacheDemo.vue');
+
 // 定义路由配置
 const routes: RouteRecordRaw[] = [
   {
@@ -33,7 +36,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '首页',
           requiresAuth: true,
-          icon: 'home',
+          icon: 'HomeFilled',
         },
       },
       {
@@ -43,7 +46,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '用户信息',
           requiresAuth: true,
-          icon: 'user',
+          icon: 'UserFilled',
         },
       },
       {
@@ -53,7 +56,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '系统管理',
           requiresAuth: true,
-          icon: 'system',
+          icon: 'Setting',
           permission: 'system',
         },
         children: [
@@ -64,7 +67,7 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '用户管理',
               requiresAuth: true,
-              icon: 'user',
+              icon: 'User',
               permission: 'system:user:list',
             },
           },
@@ -75,7 +78,7 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '角色管理',
               requiresAuth: true,
-              icon: 'peoples',
+              icon: 'Avatar',
               permission: 'system:role:list',
             },
           },
@@ -86,7 +89,7 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '菜单管理',
               requiresAuth: true,
-              icon: 'tree-table',
+              icon: 'Menu',
               permission: 'system:menu:list',
             },
           },
@@ -97,7 +100,7 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '部门管理',
               requiresAuth: true,
-              icon: 'tree',
+              icon: 'OfficeBuilding',
               permission: 'system:dept:list',
             },
           },
@@ -108,7 +111,18 @@ const routes: RouteRecordRaw[] = [
             meta: {
               title: '系统设置',
               requiresAuth: true,
-              icon: 'setting',
+              icon: 'Tools',
+            },
+          },
+          {
+            path: 'cache-demo',
+            name: 'CacheDemo',
+            component: CacheDemo,
+            meta: {
+              title: '缓存演示',
+              requiresAuth: true,
+              icon: 'cpu',
+              keepAlive: true, // 明确指定需要缓存
             },
           },
         ],

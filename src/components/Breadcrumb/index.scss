@@ -1,9 +1,11 @@
 .tag-view {
   display: flex;
   align-items: center;
-  background: #fff;
-  border-bottom: 1px solid #e4e7ed;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  background: var(--el-bg-color);
+  border-bottom: 1px solid var(--el-border-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  
   .tag-tabs {
     flex: 1;
     display: flex;
@@ -11,65 +13,172 @@
     overflow-x: auto;
     overflow-y: hidden;
     gap: 4px;
+    padding: 4px 0;
     
     &::-webkit-scrollbar {
-      height: 0;
+      height: 4px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: var(--el-fill-color-light);
+      border-radius: 2px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--el-border-color);
+      border-radius: 2px;
+      
+      &:hover {
+        background: var(--el-border-color-dark);
+      }
     }
     
     .tag-item {
       display: flex;
       align-items: center;
-      padding: 0 8px;
+      padding: 0 12px;
       height: 32px;
       line-height: 32px;
-      background: #f5f5f5;
-      border-radius: 4px;
+      background: var(--el-fill-color-light);
+      border-radius: 6px;
       cursor: pointer;
       font-size: 13px;
-      color: #666;
+      font-weight: 500;
+      color: var(--el-text-color-secondary);
       border: 1px solid transparent;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
       white-space: nowrap;
+      user-select: none;
       
       &:hover {
-        background: #e9e9e9;
-        color: #333;
+        background: var(--el-fill-color);
+        color: var(--el-text-color-primary);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         
         .close-btn {
           display: inline-flex;
+          opacity: 1;
         }
       }
       
       &.active {
-        background: #ecf5ff;
-        color: #409EFF;
-        border-color: #d9ecff;
+        background: var(--el-color-primary-light-9);
+        color: var(--el-color-primary);
+        border-color: var(--el-color-primary-light-7);
+        box-shadow: 0 2px 8px rgba(var(--el-color-primary-rgb), 0.15);
+        
+        .el-icon {
+          color: var(--el-color-primary);
+        }
       }
       
       .el-icon {
-        margin-right: 4px;
+        margin-right: 6px;
+        color: var(--el-text-color-secondary);
+        font-size: 14px;
+        transition: color 0.3s ease;
       }
       
       .tag-title {
-        max-width: 120px;
+        max-width: 140px;
         overflow: hidden;
         text-overflow: ellipsis;
+        transition: color 0.3s ease;
       }
       
       .close-btn {
-        margin-left: 4px;
+        margin-left: 6px;
         padding: 2px;
         border-radius: 50%;
         display: none;
+        opacity: 0;
+        transition: all 0.3s ease;
         
         &:hover {
-          background: rgba(0, 0, 0, 0.1);
+          background: var(--el-color-primary-light-8);
+          color: var(--el-color-primary);
+          transform: scale(1.1);
         }
       }
     }
   }
   
   .tag-actions {
-    margin-left: 8px;
+    margin-left: 12px;
+    flex-shrink: 0;
+    
+    .el-button {
+      padding: 6px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: var(--el-fill-color);
+        color: var(--el-color-primary);
+      }
+    }
+  }
+}
+
+// 暗黑模式适配
+:global(.dark) {
+  .tag-view {
+    background: var(--el-bg-color);
+    border-bottom-color: var(--el-border-color-dark);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    
+    .tag-tabs {
+      .tag-item {
+        background: var(--el-fill-color-darker);
+        
+        &:hover {
+          background: var(--el-fill-color-dark);
+        }
+        
+        &.active {
+          background: var(--el-color-primary-dark-2);
+          border-color: var(--el-color-primary);
+          box-shadow: 0 2px 8px rgba(var(--el-color-primary-rgb), 0.3);
+        }
+      }
+    }
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .tag-view {
+    .tag-tabs {
+      .tag-item {
+        padding: 0 8px;
+        
+        .tag-title {
+          max-width: 100px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .tag-view {
+    .tag-tabs {
+      .tag-item {
+        padding: 0 6px;
+        
+        .tag-title {
+          max-width: 80px;
+        }
+        
+        .el-icon {
+          margin-right: 4px;
+        }
+      }
+    }
+    
+    .tag-actions {
+      margin-left: 8px;
+    }
   }
 }

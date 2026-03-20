@@ -17,7 +17,7 @@
       </el-header>
       <Breadcrumb v-if="themeStore.showTagsView"/>
       <el-main class="main-content">
-        <router-view class="router-view"></router-view>
+        <route-cache class="router-view"></route-cache>
       </el-main>
     </el-container>
   </el-container>
@@ -37,7 +37,7 @@
     <el-container class="top-container">
       <Breadcrumb v-if="themeStore.showTagsView"/>
       <el-main class="main-content">
-        <router-view class="router-view"></router-view>
+        <route-cache class="router-view"></route-cache>
       </el-main>
     </el-container>
   </el-container>
@@ -49,6 +49,7 @@ import TopMenu from './topMenu/index.vue';
 import Head from './head/index.vue';
 import Logo from './menu/logo/index.vue'
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
+import RouteCache from '@/components/RouteCache/index.vue'
 import { useUserStore } from '@/store/modules/user';
 import { useThemeStore } from '@/store/modules/theme';
 import { useRouter } from 'vue-router';

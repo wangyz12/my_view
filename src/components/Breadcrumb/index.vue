@@ -51,12 +51,12 @@
 import { watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useBreadcrumbStore, type TabItem } from '@/store/modules/breadcrumb'
+import { getIconComponentName } from '@/utils/iconMapper'
 import { Close, ArrowDown, CircleClose, FolderDelete } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()
 const breadcrumbStore = useBreadcrumbStore()
-
 // 监听路由变化，自动添加标签页
 watch(
   () => route.path,
@@ -65,10 +65,13 @@ watch(
     const { title, icon } = route.meta
     
     if (title) {
+      // 使用图标映射工具获取正确的图标名称
+      const mappedIcon = getIconComponentName(icon as string)
+      
       breadcrumbStore.addTab({
         path: newPath,
         title: title as string,
-        icon: icon as string,
+        icon: mappedIcon,
         name: route.name as string
       })
     }

@@ -24,6 +24,9 @@ interface ThemeState {
     enabled: boolean
     text: string
   }
+  // 路由缓存设置
+  enableRouteCache: boolean
+  maxCacheCount: number
 }
 
 export const useThemeStore = defineStore('theme', {
@@ -38,6 +41,9 @@ export const useThemeStore = defineStore('theme', {
       enabled: true,
       text: '', // 空字符串表示使用默认（用户名）
     },
+    // 路由缓存设置
+    enableRouteCache: true, // 默认启用路由缓存
+    maxCacheCount: 10, // 最大缓存页面数量
   }),
 
   getters: {
@@ -61,6 +67,8 @@ export const useThemeStore = defineStore('theme', {
     logoBgColor: (state) => state.themeMode === 'dark' ? '#1f2d3d' : '#ffffff',
     // Logo文字色
     logoTextColor: (state) => state.themeMode === 'dark' ? '#ffffff' : '#303133',
+    // 是否启用路由缓存
+    isRouteCacheEnabled: (state) => state.enableRouteCache,
   },
 
   actions: {
@@ -127,6 +135,21 @@ export const useThemeStore = defineStore('theme', {
       }
     },
 
+    // 设置路由缓存
+    setRouteCache(enabled: boolean) {
+      this.enableRouteCache = enabled
+    },
+    
+    // 设置最大缓存数量
+    setMaxCacheCount(count: number) {
+      this.maxCacheCount = Math.max(1, Math.min(count, 20)) // 限制在1-20之间
+    },
+    
+    // 切换路由缓存
+    toggleRouteCache() {
+      this.enableRouteCache = !this.enableRouteCache
+    },
+
     // 重置所有设置
     resetSettings() {
       this.layout = 'side'
@@ -136,6 +159,8 @@ export const useThemeStore = defineStore('theme', {
       this.showTagsView = true
       this.themeMode = 'dark'
       this.watermark = { enabled: true, text: '' }
+      this.enableRouteCache = true
+      this.maxCacheCount = 10
       this.setThemeColor('#409EFF')
       this.setThemeMode('dark')
     },
@@ -144,6 +169,6 @@ export const useThemeStore = defineStore('theme', {
   // 数据持久化
   persist: {
     key: 'theme-store',
-    paths: ['layout', 'showLogo', 'fixedHeader', 'themeColor', 'showTagsView', 'themeMode', 'watermark'],
+    paths: ['layout', 'showLogo', 'fixedHeader', 'themeColor', 'showTagsView', 'themeMode', 'watermark', 'enableRouteCache', 'maxCacheCount'],
   },
 })

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { getIconComponentName } from '@/utils/iconMapper'
 
 export interface TabItem {
   path: string
@@ -15,7 +16,7 @@ export const useBreadcrumbStore = defineStore('breadcrumb', () => {
     {
       path: '/home',
       title: '首页',
-      icon: 'HomeFilled',
+      icon: getIconComponentName('home'),
       name: 'Home',
       closable: false  // 首页不可关闭
     }
@@ -110,4 +111,10 @@ export const useBreadcrumbStore = defineStore('breadcrumb', () => {
     setActiveTab,
     updateTabTitle
   }
+}, {
+  // 数据持久化
+  persist: {
+    key: 'breadcrumb-store',
+    paths: ['tabs', 'activeTabPath'],
+  },
 })
