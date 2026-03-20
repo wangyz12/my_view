@@ -11,6 +11,7 @@
 **后端仓库地址：** [https://gitee.com/W_admin_code/node_temp](https://gitee.com/W_admin_code/node_temp)
 
 **前端仓库地址：** [https://gitee.com/W_admin_code/my_admin](https://gitee.com/W_admin_code/my_admin) 
+演示地址：https://temp-code.top/
 ## Features
 
 - **Dynamic Routing**: Routes are generated dynamically based on menu permissions
