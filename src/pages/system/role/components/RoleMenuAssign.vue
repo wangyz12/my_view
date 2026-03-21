@@ -14,10 +14,10 @@
     <!-- 菜单类型过滤 -->
     <div class="filter-area">
       <el-radio-group v-model="menuType" @change="handleTypeChange">
-        <el-radio-button label="">全部</el-radio-button>
-        <el-radio-button label="dir">目录</el-radio-button>
-        <el-radio-button label="menu">菜单</el-radio-button>
-        <el-radio-button label="button">按钮</el-radio-button>
+        <el-radio-button :value="''">全部</el-radio-button>
+        <el-radio-button :value="'dir'">目录</el-radio-button>
+        <el-radio-button :value="'menu'">菜单</el-radio-button>
+        <el-radio-button :value="'button'">按钮</el-radio-button>
       </el-radio-group>
     </div>
 

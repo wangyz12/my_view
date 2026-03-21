@@ -79,9 +79,9 @@
         </el-form-item>
         <el-form-item label="菜单类型" prop="type">
           <el-radio-group v-model="formData.type" @change="handleTypeChange">
-            <el-radio label="menu">菜单</el-radio>
-            <el-radio label="button">按钮</el-radio>
-            <el-radio label="iframe">内嵌页面</el-radio>
+            <el-radio :value="'menu'">菜单</el-radio>
+            <el-radio :value="'button'">按钮</el-radio>
+            <el-radio :value="'iframe'">内嵌页面</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="菜单名称" prop="title">
@@ -128,8 +128,8 @@
         </el-form-item>
         <el-form-item label="打开方式" prop="target" v-if="formData.external && formData.type !== 'button'">
           <el-radio-group v-model="formData.target">
-            <el-radio label="_self">当前窗口</el-radio>
-            <el-radio label="_blank">新窗口</el-radio>
+            <el-radio :value="'_self'">当前窗口</el-radio>
+            <el-radio :value="'_blank'">新窗口</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
