@@ -327,8 +327,6 @@ $shadow-glow: rgba(45, 122, 255, 0.2);
   // 加载状态
   &.is-loading {
     opacity: 0.9;
-    background: linear-gradient(145deg, $primary-dark, darken($primary-dark, 5%)) !important;
-    
     &::before {
       display: none;
     }

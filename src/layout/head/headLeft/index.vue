@@ -56,7 +56,7 @@ const goHome = () => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .top-layout-logo {
   :deep(.logo-area) {
     background-color: transparent;
