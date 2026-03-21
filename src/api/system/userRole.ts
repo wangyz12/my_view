@@ -3,6 +3,7 @@ import request from '@/utils/request'
 
 // 为用户分配角色
 export function assignUserRoles(data: any) {
+  console.log('📡 分配用户角色 API 调用:', data)
   return request({
     url: '/user-role/assign',
     method: 'post',

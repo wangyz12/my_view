@@ -79,6 +79,7 @@ export function getRoleDeptTree(roleId: string) {
 
 // 分配角色菜单
 export function assignRoleMenus(roleId: string, menuIds: string[]) {
+  console.log('📡 分配角色菜单 API 调用:', { roleId, menuIds })
   return request({
     url: `/role/${roleId}/assign-menus`,
     method: 'post',
@@ -113,6 +114,7 @@ export function getDeptTree() {
 
 // 获取角色已分配的菜单
 export function getRoleMenus(roleId: string) {
+  console.log('📡 获取角色已有菜单 API 调用:', roleId)
   return request({
     url: `/role/${roleId}/menus`,
     method: 'get'
@@ -121,6 +123,7 @@ export function getRoleMenus(roleId: string) {
 
 // 获取角色已分配的部门
 export function getRoleDepts(roleId: string) {
+  console.log('📡 获取角色已有部门 API 调用:', roleId)
   return request({
     url: `/role/${roleId}/depts`,
     method: 'get'

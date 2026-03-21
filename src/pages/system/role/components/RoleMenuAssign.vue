@@ -68,12 +68,18 @@
         <span class="value">{{ typeStats.button }} 个</span>
       </div>
     </div>
+    
+    <!-- 操作按钮 -->
+    <div class="action-area">
+      <el-button @click="handleCancel">取消</el-button>
+      <el-button type="primary" @click="handleSubmit" :loading="submitting">确定</el-button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue'
-import { ElTree } from 'element-plus'
+import { ElTree, ElMessage } from 'element-plus'
 import { Search } from '@element-plus/icons-vue'
 import { getMenuTree } from '@/api/system/menu'
 import { getRoleMenus, assignRoleMenus } from '@/api/system/role'
@@ -87,7 +93,7 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'success'): void
-  (e: 'close'): void
+  (e: 'cancel'): void
 }>()
 
 // 树组件引用
@@ -103,6 +109,9 @@ const menuType = ref('')
 const menuTree = ref<any[]>([])
 const loading = ref(false)
 
+// 提交状态
+const submitting = ref(false)
+
 // 默认选中的菜单ID
 const defaultCheckedKeys = ref<string[]>([])
 
@@ -116,9 +125,12 @@ const treeProps = {
 const loadMenuTree = async () => {
   try {
     loading.value = true
+    console.log('📡 加载菜单树...')
     const res = await getMenuTree()
+    console.log('✅ 菜单树响应:', res)
     if (res.code === 200) {
       menuTree.value = res.data || []
+      console.log('📊 菜单树数据加载完成，数量:', menuTree.value.length)
     }
   } catch (error) {
     console.error('加载菜单树失败:', error)
@@ -130,9 +142,20 @@ const loadMenuTree = async () => {
 // 加载角色已分配的菜单
 const loadRoleMenus = async () => {
   try {
+    console.log('📡 加载角色已有菜单，角色ID:', props.roleId)
     const res = await getRoleMenus(props.roleId)
+    console.log('✅ 角色菜单响应:', res)
     if (res.code === 200) {
       defaultCheckedKeys.value = res.data || []
+      console.log('📋 角色已有菜单ID:', defaultCheckedKeys.value)
+      
+      // 等待树组件渲染完成后设置选中的菜单
+      setTimeout(() => {
+        if (treeRef.value && defaultCheckedKeys.value.length > 0) {
+          console.log('🎯 设置默认选中的菜单:', defaultCheckedKeys.value)
+          treeRef.value.setCheckedKeys(defaultCheckedKeys.value)
+        }
+      }, 100)
     }
   } catch (error) {
     console.error('加载角色菜单失败:', error)
@@ -223,11 +246,36 @@ const getSelectedMenuIds = (): string[] => {
   return treeRef.value?.getCheckedKeys() as string[] || []
 }
 
-// 保存分配
+// 处理提交
+const handleSubmit = async () => {
+  try {
+    submitting.value = true
+    
+    const menuIds = getSelectedMenuIds()
+    console.log('分配菜单参数:', { roleId: props.roleId, menuIds })
+    await assignRoleMenus(props.roleId, menuIds)
+    
+    ElMessage.success('菜单分配成功')
+    emit('success')
+  } catch (error: any) {
+    console.error('分配菜单失败:', error)
+    ElMessage.error(error.response?.data?.msg || error.message || '分配失败')
+    throw error // 重新抛出错误，让弹框保持打开
+  } finally {
+    submitting.value = false
+  }
+}
+
+// 处理取消
+const handleCancel = () => {
+  emit('cancel')
+}
+
+// 保存分配（保持向后兼容）
 const saveAssignment = async (): Promise<boolean> => {
   try {
     const menuIds = getSelectedMenuIds()
-    await assignRoleMenus(props.roleId, { menuIds })
+    await assignRoleMenus(props.roleId, menuIds)
     return true
   } catch (error) {
     console.error('分配菜单失败:', error)
@@ -320,5 +368,13 @@ defineExpose({
   font-size: 16px;
   font-weight: bold;
   color: #409eff;
+}
+
+.action-area {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #e4e7ed;
 }
 </style>

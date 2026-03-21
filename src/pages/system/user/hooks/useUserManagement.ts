@@ -398,6 +398,7 @@ export function useUserManagement() {
         userId: currentUserId.value,
         roleIds: selectedRoleIds.value
       }
+      console.log('📡 分配用户角色参数:', params)
       await assignUserRoles(params)
       ElMessage.success('角色分配成功')
       roleDialogVisible.value = false

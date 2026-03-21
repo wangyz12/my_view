@@ -110,7 +110,7 @@ const handleReset = () => {
 // 新增角色
 const handleAdd = async () => {
   try {
-    const result = await popupService.show(RoleForm, {
+    await popupService.show(RoleForm, {
       isEdit: false,
       initialData: {
         name: '',
@@ -121,20 +121,25 @@ const handleAdd = async () => {
       }
     }, {
       title: '新增角色',
-      width: '500px'
+      width: '500px',
+      onSuccess: async (data: any) => {
+        try {
+          await createRole(data)
+          ElMessage.success('新增成功')
+          loadRoleList()
+        } catch (error: any) {
+          console.error('新增角色失败:', error)
+          ElMessage.error(error.response?.data?.msg || error.message || '新增失败')
+          throw error // 重新抛出错误，让弹框保持打开
+        }
+      },
+      onCancel: () => {
+        console.log('用户取消了新增操作')
+      }
     })
-    
-    if (result && result.validate()) {
-      const formData = result.getFormData()
-      
-      await createRole(formData)
-      ElMessage.success('新增成功')
-      loadRoleList()
-    }
   } catch (error: any) {
     if (error.message !== 'cancel') {
-      console.error('新增角色失败:', error)
-      ElMessage.error(error.message || '新增失败')
+      console.error('新增角色弹框错误:', error)
     }
   }
 }
@@ -142,7 +147,7 @@ const handleAdd = async () => {
 // 编辑角色
 const handleEdit = async (row: any) => {
   try {
-    const result = await popupService.show(RoleForm, {
+    await popupService.show(RoleForm, {
       isEdit: true,
       initialData: {
         name: row.name,
@@ -153,20 +158,25 @@ const handleEdit = async (row: any) => {
       }
     }, {
       title: '编辑角色',
-      width: '500px'
+      width: '500px',
+      onSuccess: async (data: any) => {
+        try {
+          await updateRole(row.id, data)
+          ElMessage.success('更新成功')
+          loadRoleList()
+        } catch (error: any) {
+          console.error('更新角色失败:', error)
+          ElMessage.error(error.response?.data?.msg || error.message || '更新失败')
+          throw error // 重新抛出错误，让弹框保持打开
+        }
+      },
+      onCancel: () => {
+        console.log('用户取消了编辑操作')
+      }
     })
-    
-    if (result && result.validate()) {
-      const formData = result.getFormData()
-      
-      await updateRole(row.id, formData)
-      ElMessage.success('更新成功')
-      loadRoleList()
-    }
   } catch (error: any) {
     if (error.message !== 'cancel') {
-      console.error('编辑角色失败:', error)
-      ElMessage.error(error.message || '更新失败')
+      console.error('编辑角色弹框错误:', error)
     }
   }
 }
@@ -240,27 +250,23 @@ const handleRefresh = () => {
 // 分配菜单
 const handleMenuAssign = async (row: any) => {
   try {
-    const result = await popupService.show(RoleMenuAssign, {
+    await popupService.show(RoleMenuAssign, {
       roleId: row.id,
       roleName: row.label
     }, {
       title: `分配菜单权限 - ${row.label}`,
       width: '700px',
-      height: '600px'
-    })
-    
-    if (result && result.saveAssignment) {
-      const success = await result.saveAssignment()
-      if (success) {
+      height: '600px',
+      onSuccess: () => {
         ElMessage.success('菜单分配成功')
-      } else {
-        ElMessage.error('菜单分配失败')
+      },
+      onCancel: () => {
+        console.log('用户取消了菜单分配操作')
       }
-    }
+    })
   } catch (error: any) {
     if (error.message !== 'cancel') {
-      console.error('分配菜单失败:', error)
-      ElMessage.error(error.message || '分配失败')
+      console.error('分配菜单弹框错误:', error)
     }
   }
 }
@@ -268,27 +274,23 @@ const handleMenuAssign = async (row: any) => {
 // 分配部门
 const handleDeptAssign = async (row: any) => {
   try {
-    const result = await popupService.show(RoleDeptAssign, {
+    await popupService.show(RoleDeptAssign, {
       roleId: row.id,
       roleName: row.label
     }, {
       title: `分配部门权限 - ${row.label}`,
       width: '700px',
-      height: '600px'
-    })
-    
-    if (result && result.saveAssignment) {
-      const success = await result.saveAssignment()
-      if (success) {
+      height: '600px',
+      onSuccess: () => {
         ElMessage.success('部门分配成功')
-      } else {
-        ElMessage.error('部门分配失败')
+      },
+      onCancel: () => {
+        console.log('用户取消了部门分配操作')
       }
-    }
+    })
   } catch (error: any) {
     if (error.message !== 'cancel') {
-      console.error('分配部门失败:', error)
-      ElMessage.error(error.message || '分配失败')
+      console.error('分配部门弹框错误:', error)
     }
   }
 }

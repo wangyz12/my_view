@@ -71,12 +71,18 @@
         <el-button size="small" @click="selectEnabled">选择启用部门</el-button>
       </div>
     </div>
+    
+    <!-- 操作按钮 -->
+    <div class="action-area">
+      <el-button @click="handleCancel">取消</el-button>
+      <el-button type="primary" @click="handleSubmit" :loading="submitting">确定</el-button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue'
-import { ElTree } from 'element-plus'
+import { ElTree, ElMessage } from 'element-plus'
 import { Search, InfoFilled } from '@element-plus/icons-vue'
 import { getDeptTree } from '@/api/system/dept'
 import { getRoleDepts, assignRoleDepts } from '@/api/system/role'
@@ -90,7 +96,7 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'success'): void
-  (e: 'close'): void
+  (e: 'cancel'): void
 }>()
 
 // 树组件引用
@@ -102,6 +108,9 @@ const searchKeyword = ref('')
 // 部门树数据
 const deptTree = ref<any[]>([])
 const loading = ref(false)
+
+// 提交状态
+const submitting = ref(false)
 
 // 默认选中的部门ID
 const defaultCheckedKeys = ref<string[]>([])
@@ -116,9 +125,12 @@ const treeProps = {
 const loadDeptTree = async () => {
   try {
     loading.value = true
+    console.log('📡 加载部门树...')
     const res = await getDeptTree()
+    console.log('✅ 部门树响应:', res)
     if (res.code === 200) {
       deptTree.value = res.data || []
+      console.log('📊 部门树数据加载完成，数量:', deptTree.value.length)
     }
   } catch (error) {
     console.error('加载部门树失败:', error)
@@ -130,9 +142,20 @@ const loadDeptTree = async () => {
 // 加载角色已分配的部门
 const loadRoleDepts = async () => {
   try {
+    console.log('📡 加载角色已有部门，角色ID:', props.roleId)
     const res = await getRoleDepts(props.roleId)
+    console.log('✅ 角色部门响应:', res)
     if (res.code === 200) {
       defaultCheckedKeys.value = res.data || []
+      console.log('📋 角色已有部门ID:', defaultCheckedKeys.value)
+      
+      // 等待树组件渲染完成后设置选中的部门
+      setTimeout(() => {
+        if (treeRef.value && defaultCheckedKeys.value.length > 0) {
+          console.log('🎯 设置默认选中的部门:', defaultCheckedKeys.value)
+          treeRef.value.setCheckedKeys(defaultCheckedKeys.value)
+        }
+      }, 100)
     }
   } catch (error) {
     console.error('加载角色部门失败:', error)
@@ -259,11 +282,36 @@ const getSelectedDeptIds = (): string[] => {
   return treeRef.value?.getCheckedKeys() as string[] || []
 }
 
-// 保存分配
+// 处理提交
+const handleSubmit = async () => {
+  try {
+    submitting.value = true
+    
+    const deptIds = getSelectedDeptIds()
+    console.log('分配部门参数:', { roleId: props.roleId, deptIds })
+    await assignRoleDepts(props.roleId, deptIds)
+    
+    ElMessage.success('部门分配成功')
+    emit('success')
+  } catch (error: any) {
+    console.error('分配部门失败:', error)
+    ElMessage.error(error.response?.data?.msg || error.message || '分配失败')
+    throw error // 重新抛出错误，让弹框保持打开
+  } finally {
+    submitting.value = false
+  }
+}
+
+// 处理取消
+const handleCancel = () => {
+  emit('cancel')
+}
+
+// 保存分配（保持向后兼容）
 const saveAssignment = async (): Promise<boolean> => {
   try {
     const deptIds = getSelectedDeptIds()
-    await assignRoleDepts(props.roleId, { deptIds })
+    await assignRoleDepts(props.roleId, deptIds)
     return true
   } catch (error) {
     console.error('分配部门失败:', error)
@@ -379,5 +427,13 @@ defineExpose({
 .mode-actions {
   display: flex;
   gap: 8px;
+}
+
+.action-area {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #e4e7ed;
 }
 </style>

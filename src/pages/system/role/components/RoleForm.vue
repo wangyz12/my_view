@@ -1,63 +1,71 @@
 <template>
-  <el-form
-    ref="formRef"
-    :model="formData"
-    :rules="formRules"
-    label-width="100px"
-    class="role-form"
-  >
-    <el-form-item label="角色标识" prop="name">
-      <el-input
-        v-model="formData.name"
-        :placeholder="isEdit ? '角色标识（不可修改）' : '请输入角色标识（英文）'"
-        :disabled="isEdit"
-        clearable
-      />
-      <div class="form-tip">
-        提示：角色标识用于系统内部识别，创建后不可修改，如：admin, manager, user
-      </div>
-    </el-form-item>
+  <div class="role-form-container">
+    <el-form
+      ref="formRef"
+      :model="formData"
+      :rules="formRules"
+      label-width="100px"
+      class="role-form"
+    >
+      <el-form-item label="角色标识" prop="name">
+        <el-input
+          v-model="formData.name"
+          :placeholder="isEdit ? '角色标识（不可修改）' : '请输入角色标识（英文）'"
+          :disabled="isEdit"
+          clearable
+        />
+        <div class="form-tip">
+          提示：角色标识用于系统内部识别，创建后不可修改，如：admin, manager, user
+        </div>
+      </el-form-item>
 
-    <el-form-item label="角色名称" prop="label">
-      <el-input
-        v-model="formData.label"
-        placeholder="请输入角色名称"
-        clearable
-      />
-    </el-form-item>
+      <el-form-item label="角色名称" prop="label">
+        <el-input
+          v-model="formData.label"
+          placeholder="请输入角色名称"
+          clearable
+        />
+      </el-form-item>
 
-    <el-form-item label="数据权限" prop="dataScope">
-      <el-select v-model="formData.dataScope" placeholder="请选择数据权限" style="width: 100%">
-        <el-option label="全部数据权限" value="1" />
-        <el-option label="自定义数据权限" value="2" />
-        <el-option label="本部门数据权限" value="3" />
-        <el-option label="本部门及以下数据权限" value="4" />
-        <el-option label="仅本人数据权限" value="5" />
-      </el-select>
-    </el-form-item>
+      <el-form-item label="数据权限" prop="dataScope">
+        <el-select v-model="formData.dataScope" placeholder="请选择数据权限" style="width: 100%">
+          <el-option label="全部数据权限" value="1" />
+          <el-option label="自定义数据权限" value="2" />
+          <el-option label="本部门数据权限" value="3" />
+          <el-option label="本部门及以下数据权限" value="4" />
+          <el-option label="仅本人数据权限" value="5" />
+        </el-select>
+      </el-form-item>
 
-    <el-form-item label="状态" prop="status">
-      <el-radio-group v-model="formData.status">
-        <el-radio :value="'0'">启用</el-radio>
-        <el-radio :value="'1'">禁用</el-radio>
-      </el-radio-group>
-    </el-form-item>
+      <el-form-item label="状态" prop="status">
+        <el-radio-group v-model="formData.status">
+          <el-radio :value="'0'">启用</el-radio>
+          <el-radio :value="'1'">禁用</el-radio>
+        </el-radio-group>
+      </el-form-item>
 
-    <el-form-item label="备注" prop="remark">
-      <el-input
-        v-model="formData.remark"
-        type="textarea"
-        :rows="3"
-        placeholder="请输入备注信息"
-        maxlength="200"
-        show-word-limit
-      />
-    </el-form-item>
-  </el-form>
+      <el-form-item label="备注" prop="remark">
+        <el-input
+          v-model="formData.remark"
+          type="textarea"
+          :rows="3"
+          placeholder="请输入备注信息"
+          maxlength="200"
+          show-word-limit
+        />
+      </el-form-item>
+    </el-form>
+    
+    <!-- 操作按钮 -->
+    <div class="form-actions">
+      <el-button @click="handleCancel">取消</el-button>
+      <el-button type="primary" @click="handleSubmit" :loading="submitting">确定</el-button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, computed } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 
 interface Props {
@@ -71,8 +79,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: any): void
-  (e: 'validate', isValid: boolean): void
+  (e: 'success', data: any): void
+  (e: 'cancel'): void
 }>()
 
 // 表单引用
@@ -86,6 +94,9 @@ const formData = reactive({
   status: '0',
   remark: ''
 })
+
+// 提交状态
+const submitting = ref(false)
 
 // 表单验证规则
 const formRules: FormRules = {
@@ -108,12 +119,31 @@ watch(() => props.initialData, (newData) => {
   }
 }, { immediate: true })
 
-// 监听表单数据变化
-watch(formData, (newValue) => {
-  emit('update:modelValue', newValue)
-}, { deep: true })
+// 处理提交
+const handleSubmit = async () => {
+  if (!formRef.value) return
+  
+  try {
+    // 验证表单
+    await formRef.value.validate()
+    
+    submitting.value = true
+    
+    // 触发成功事件，传递表单数据
+    emit('success', { ...formData })
+  } catch (error) {
+    console.error('表单验证失败:', error)
+  } finally {
+    submitting.value = false
+  }
+}
 
-// 验证表单
+// 处理取消
+const handleCancel = () => {
+  emit('cancel')
+}
+
+// 验证表单（保持向后兼容）
 const validate = async (): Promise<boolean> => {
   if (!formRef.value) return false
   
@@ -125,7 +155,7 @@ const validate = async (): Promise<boolean> => {
   }
 }
 
-// 重置表单
+// 重置表单（保持向后兼容）
 const reset = () => {
   formRef.value?.resetFields()
   Object.assign(formData, {
@@ -137,7 +167,7 @@ const reset = () => {
   })
 }
 
-// 获取表单数据
+// 获取表单数据（保持向后兼容）
 const getFormData = () => ({ ...formData })
 
 defineExpose({
@@ -148,8 +178,12 @@ defineExpose({
 </script>
 
 <style scoped>
+.role-form-container {
+  padding: 20px 10px;
+}
+
 .role-form {
-  padding: 20px 10px 0;
+  margin-bottom: 20px;
 }
 
 .form-tip {
@@ -157,5 +191,13 @@ defineExpose({
   color: #999;
   margin-top: 5px;
   line-height: 1.4;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #e4e7ed;
 }
 </style>
