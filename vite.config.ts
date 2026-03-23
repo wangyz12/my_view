@@ -16,24 +16,23 @@ export default defineConfig({
     proxy: {
       // 代理所有以 /api 开头的请求
       '/api': {
-        target: 'http://47.102.196.166:3000',
-        changeOrigin: true, // 支持跨域
-        rewrite: (path) => path, // 可选：重写路径，去掉 /api 前缀
-        // 如果不需要重写路径，可以使用：
-        // rewrite: (path) => path,
-        // 配置响应头（可选）
+        target: 'https://47.102.196.166',  // 服务器地址
+        changeOrigin: true,                // 支持跨域
+        secure: false,                     // 忽略自签名证书错误
+        rewrite: (path) => path,           // 保留 /api 前缀
+        // 可选：查看代理日志
         configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('proxy error', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('Sending Request:', req.method, req.url);
+          });
           proxy.on('proxyRes', (proxyRes, req, res) => {
-            // 添加 CORS 头
-            res.setHeader('Access-Control-Allow-Origin', '*');
+            console.log('Received Response:', proxyRes.statusCode, req.url);
           });
         }
-      },
-      // 如果需要代理多个接口，可以继续添加
-      // '/auth': {
-      //   target: 'https://nodetemp-production.up.railway.app',
-      //   changeOrigin: true,
-      // },
+      }
     },
   },
   // 配置路径别名
