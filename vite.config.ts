@@ -16,7 +16,7 @@ export default defineConfig({
     proxy: {
       // 代理所有以 /api 开头的请求
       '/api': {
-        target: 'https://nodetemp-production.up.railway.app',
+        target: 'http://47.102.196.166:3000',
         changeOrigin: true, // 支持跨域
         rewrite: (path) => path, // 可选：重写路径，去掉 /api 前缀
         // 如果不需要重写路径，可以使用：
