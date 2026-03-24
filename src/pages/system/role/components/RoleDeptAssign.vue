@@ -295,7 +295,6 @@ const handleSubmit = async () => {
     emit('success')
   } catch (error: any) {
     console.error('分配部门失败:', error)
-    ElMessage.error(error.response?.data?.msg || error.message || '分配失败')
     throw error // 重新抛出错误，让弹框保持打开
   } finally {
     submitting.value = false

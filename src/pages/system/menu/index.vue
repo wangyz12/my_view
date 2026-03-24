@@ -504,7 +504,7 @@ const handleSubmit = async () => {
       // 更新菜单和路由
       await updateMenusAndRoutes()
     } catch (error: any) {
-      ElMessage.error(error.message || '操作失败')
+      console.log(error)
     }
   })
 }

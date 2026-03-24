@@ -276,7 +276,7 @@ const handleDelete = (row: any) => {
       ElMessage.success('删除成功')
       loadDeptTree()
     } catch (error: any) {
-      ElMessage.error(error.message || '删除失败')
+      console.log(error)
     }
   })
 }
@@ -300,7 +300,7 @@ const handleBatchDelete = () => {
       selectedRows.value = []
       loadDeptTree()
     } catch (error: any) {
-      ElMessage.error(error.message || '批量删除失败')
+      console.log(error)
     }
   })
 }
@@ -347,7 +347,7 @@ const handleSubmit = async () => {
       dialogVisible.value = false
       loadDeptTree()
     } catch (error: any) {
-      ElMessage.error(error.message || '操作失败')
+      console.log(error)
     }
   })
 }

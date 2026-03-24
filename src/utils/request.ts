@@ -4,6 +4,18 @@ import type { CustomAxiosRequestConfig, CustomInternalRequestConfig, ApiResponse
 import { ElMessage } from 'element-plus' // 结合 Element Plus 提示/加载
 import { storageToken } from './storage' // 导入 Token 快捷方法
 import { startProgress, finishProgress, failProgress } from './progress'
+import router from '@/router'
+
+// 扩展 Window 接口以包含自定义属性
+declare global {
+  interface Window {
+    hasShownAuthError?: boolean
+  }
+}
+
+// 权限错误处理状态
+let authErrorHandled = false
+let authErrorTimer: any = null
 
 // 创建 Axios 实例（指定自定义请求配置类型）
 const service: AxiosInstance = axios.create({
@@ -56,6 +68,37 @@ service.interceptors.response.use(
     // 统一处理网络错误
     // 补充类型断言，避免 error.response?.data 报 any 类型
     const errMsg = (error.response?.data as ApiResponse)?.msg || error.message || '服务器错误'
+    
+    // 处理 401 和 403 状态码
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      // 使用防抖机制：短时间内只处理一次权限错误
+      if (!authErrorHandled) {
+        authErrorHandled = true
+        
+        // 使用微任务确保在当前事件循环结束后执行
+        Promise.resolve().then(() => {
+          // 只弹一次消息通知
+          ElMessage.error('没有权限，请联系管理员添加权限')
+          
+          // 跳转到 401 页面
+          if (router.currentRoute.value.path !== '/401') {
+            router.push('/401')
+          }
+        })
+        
+        // 设置定时器，3秒后重置状态
+        if (authErrorTimer) {
+          clearTimeout(authErrorTimer)
+        }
+        authErrorTimer = setTimeout(() => {
+          authErrorHandled = false
+          authErrorTimer = null
+        }, 3000)
+      }
+      
+      return Promise.reject(error)
+    }
+    
     ElMessage.error(`请求错误：${errMsg}`)
     return Promise.reject(error)
   }
