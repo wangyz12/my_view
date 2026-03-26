@@ -38,7 +38,7 @@ interface Drone {
 // 全局实例
 // ======================
 const earthContainer = ref<HTMLElement | null>(null)
-let viewer: Cesium.Viewer | null = null
+let viewer: any= null
 let droneEntities: { entity: Cesium.Entity; positions: Cesium.Cartesian3[]; drone: Drone }[] = []
 let refreshInterval: number | null = null
 let loopInterval: number | null = null
@@ -140,7 +140,7 @@ const flyOneLoop = () => {
   if (!viewer) return
 
   // 重置所有无人机到起点
-  droneEntities.forEach((item) => {
+  droneEntities.forEach((item:any) => {
     item.entity.position = item.positions[0]
   })
 
