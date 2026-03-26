@@ -349,7 +349,7 @@ const selectRespondingDrone = (alarmLon: number, alarmLat: number) => {
   if (!viewer) return
   
   // 获取所有无人机当前位置
-  let closestDrone: Drone | null = null
+  let closestDrone: any = null
   let minDistance = Infinity
   
   droneList.forEach(drone => {
@@ -598,7 +598,7 @@ const restoreDronePatrolFromInterrupt = (drone: Drone) => {
     
     if (remainingPositions.length > 0) {
       // 创建新的位置属性，从中断位置开始
-      const prop = new Cesium.SampledPositionProperty()
+      const prop:any = new Cesium.SampledPositionProperty()
       const totalPerSegment = 80 / droneEntity.positions.length // 每个路径段的时间
       
       // 获取当前时间
