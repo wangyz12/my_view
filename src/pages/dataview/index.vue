@@ -1,12 +1,16 @@
 <template>
-  <div class="" ref="dataview">
-    123
+  <div class="low-air-web">
+    <CesiumEarth />
   </div>
 </template>
 
 <script setup lang="ts">
-const dataview = ref()
+import CesiumEarth from '@/components/CesiumEarth/cesiumEarth.vue'
 </script>
 
-<style lang="scss" scoped>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+}
 </style>

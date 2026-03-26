@@ -4,6 +4,7 @@ import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import autoSetScriptName from './plugins/autoSetComponentsScriptName'
+import cesium from 'vite-plugin-cesium' // 引入插件
 // 关键：导入 path 模块（Node.js 内置，需安装 @types/node 确保 TS 识别）
 import path from "path";
 
@@ -84,5 +85,6 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
     autoSetScriptName(),
+    cesium()
   ],
 });
