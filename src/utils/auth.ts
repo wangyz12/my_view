@@ -3,6 +3,7 @@ import { useUserStore } from '@/store/modules/user'
 import { getCurrentUserMenus, getCurrentUserPermissions, getCurrentUserDataScope } from '@/api/system/userRole'
 import { getUserDetail } from '@/api/system/user'
 import router from '@/router'
+import { dynamicRouteManager } from '@/router/dynamic'
 
 /**
  * 初始化用户权限
@@ -15,15 +16,20 @@ export async function initUserPermissions() {
     const menuRes = await getCurrentUserMenus()
     userStore.menus = menuRes.data
     
-    // 2. 获取用户权限标识
+    // 2. 生成动态路由
+    if (menuRes.data && menuRes.data.length > 0) {
+      await dynamicRouteManager.generateAndAddRoutes(menuRes.data)
+    }
+    
+    // 3. 获取用户权限标识
     const permRes = await getCurrentUserPermissions()
     userStore.setPermissions(permRes.data)
     
-    // 3. 获取用户数据权限
+    // 4. 获取用户数据权限
     const dataScopeRes = await getCurrentUserDataScope()
     // 数据权限信息可以存储在userInfo中或单独的状态中
     
-    // 4. 获取用户详情（包含角色信息）
+    // 5. 获取用户详情（包含角色信息）
     if (userStore.userInfo?.id) {
       const userDetailRes = await getUserDetail(userStore.userInfo.id)
       if (userDetailRes.data.roles) {
