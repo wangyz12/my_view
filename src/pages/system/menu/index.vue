@@ -494,6 +494,7 @@ const handleSubmit = async () => {
         await createMenu(params)
         ElMessage.success('新增成功')
       } else {
+        console.log(params)
         // 编辑时也发送pid，但确保空字符串被正确处理
         await updateMenu(params)
         ElMessage.success('更新成功')

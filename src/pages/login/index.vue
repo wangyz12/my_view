@@ -100,8 +100,11 @@
 
       <!-- 底部提示 -->
       <div class="mt-5 text-center text-xs text-gray-400">
-        <p>管理员：admin / Admin_123</p>
-        <p>普通：user / User_123</p>
+        <p>超级管理员: superadmin / SuperAdmin_123</p>
+        <p>管理员: admin / Admin_123</p>
+        <p>技术部经理: manager / Manager_123</p>
+        <p>开发工程师: developer / Developer_123</p>
+        <p>普通用户: user / User_123</p>
       </div>
     </el-card>
   </div>
@@ -131,8 +134,8 @@ const transitionText = ref('正在登录...');
 const imgSrc = ref('')
 // 表单数据
 const loginForm = reactive({
-  account: 'admin',
-  password: 'Admin_123',
+  account: 'superadmin',
+  password: 'SuperAdmin_123',
   uuid:'',
   code:''
 });

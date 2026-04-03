@@ -30,8 +30,8 @@ export function createMenu(data: any) {
 // 更新菜单
 export function updateMenu(data: any) {
   return request({
-    url: '/menu/updateMenu',
-    method: 'post',
+    url: `/menu/update/${data.id}`,
+    method: 'put',
     data
   })
 }
