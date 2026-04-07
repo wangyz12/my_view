@@ -18,6 +18,7 @@ export default defineConfig({
       // 代理所有以 /api 开头的请求
       '/api': {
         target: 'https://47.102.196.166',  // 服务器地址
+        // target:'http://localhost:3000', // 本地调试
         changeOrigin: true,                // 支持跨域
         secure: false,                     // 忽略自签名证书错误
         rewrite: (path) => path,           // 保留 /api 前缀
