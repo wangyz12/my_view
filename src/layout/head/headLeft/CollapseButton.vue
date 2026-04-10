@@ -1,36 +1,33 @@
 <template>
   <div class="collapse-button-container">
-    <!-- 明显的折叠按钮 -->
+    <!-- 折叠按钮 -->
     <div 
-      class="collapse-button flex items-center justify-center cursor-pointer transition-all duration-200"
+      class="collapse-btn"
       :class="[
-        userStore.isCollapse ? 'collapsed' : 'expanded',
-        themeStore.isDarkMode ? 'dark' : 'light'
+        themeStore.isDarkMode ? 'dark' : 'light',
+        { 'is-collapsed': userStore.isCollapse }
       ]"
       @click="toggleCollapse"
       @mouseenter="isHovering = true"
       @mouseleave="isHovering = false"
     >
-      <!-- 按钮主体 -->
-      <div class="button-body relative">
-        <!-- 图标 -->
-        <el-icon class="icon" :size="20">
-          <component :is="userStore.isCollapse ? Expand : Fold" />
-        </el-icon>
-        
-        <!-- 文字提示（悬停时显示） -->
+      <el-icon :size="18" class="btn-icon">
+        <component :is="userStore.isCollapse ? Expand : Fold" />
+      </el-icon>
+      
+      <!-- 悬停提示 -->
+      <Transition name="tooltip">
         <div 
           v-if="isHovering"
-          class="tooltip absolute left-full top-1/2 transform -translate-y-1/2 ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap z-50"
+          class="tooltip"
         >
           {{ userStore.isCollapse ? '展开菜单' : '折叠菜单' }}
         </div>
-      </div>
-      
+      </Transition>
     </div>
     
     <!-- 分隔线 -->
-    <div class="divider h-6 w-px mx-3" :class="themeStore.isDarkMode ? 'bg-gray-700' : 'bg-gray-300'"></div>
+    <div class="divider" :class="themeStore.isDarkMode ? 'divider-dark' : 'divider-light'"></div>
   </div>
 </template>
 
@@ -54,99 +51,132 @@ const toggleCollapse = () => {
   display: flex;
   align-items: center;
   height: 100%;
+  gap: 12px;
 }
 
-.collapse-button {
-  padding: 8px 12px;
-  border-radius: 8px;
+/* ========== 按钮基础样式 ========== */
+.collapse-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
 }
 
-.collapse-button.light {
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e7ed 100%);
-  border: 1px solid #dcdfe6;
-  color: #606266;
+/* 图标样式 */
+.btn-icon {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.collapse-button.light:hover {
-  background: linear-gradient(135deg, #e4e7ed 0%, #d3d6dd 100%);
-  border-color: #c0c4cc;
+/* 折叠状态图标旋转动画 */
+.collapse-btn.is-collapsed .btn-icon {
+  transform: rotate(0deg);
+}
+
+.collapse-btn:not(.is-collapsed) .btn-icon {
+  transform: rotate(0deg);
+}
+
+/* ========== 亮色主题 ========== */
+.collapse-btn.light {
+  background-color: #f5f7fa;
+  border: 1px solid #e4e7ed;
+  color: #5a6874;
+}
+
+.collapse-btn.light:hover {
+  background-color: #ecf5ff;
+  border-color: #409eff;
   color: #409eff;
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(64, 158, 255, 0.15);
 }
 
-.collapse-button.light:active {
+.collapse-btn.light:active {
   transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  background-color: #d9ecff;
 }
 
-.collapse-button.dark {
-  background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+/* ========== 暗色主题 ========== */
+.collapse-btn.dark {
+  background-color: #2d3748;
   border: 1px solid #4a5568;
-  color: #cbd5e0;
+  color: #a0aec0;
 }
 
-.collapse-button.dark:hover {
-  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-  border-color: #718096;
+.collapse-btn.dark:hover {
+  background-color: #3b4a5e;
+  border-color: #63b3ed;
   color: #63b3ed;
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.collapse-button.dark:active {
+.collapse-btn.dark:active {
   transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  background-color: #2d3748;
 }
 
-.collapse-button.collapsed .icon {
-  animation: rotateIn 0.3s ease;
-}
-
-.collapse-button.expanded .icon {
-  animation: rotateOut 0.3s ease;
-}
-
-@keyframes rotateIn {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(180deg);
-  }
-}
-
-@keyframes rotateOut {
-  from {
-    transform: rotate(180deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-
+/* ========== 悬停提示 ========== */
 .tooltip {
-  animation: fadeIn 0.2s ease;
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 10px;
+  background-color: #1f2937;
+  color: #f3f4f6;
+  font-size: 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  pointer-events: none;
+  letter-spacing: 0.3px;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translate(-10px, -50%);
-  }
-  to {
-    opacity: 1;
-    transform: translate(0, -50%);
-  }
+/* 亮色主题下提示框样式微调 */
+.collapse-btn.light .tooltip {
+  background-color: #1e293b;
 }
 
-.status-indicator {
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
+/* 暗色主题下提示框 */
+.collapse-btn.dark .tooltip {
+  background-color: #0f172a;
 }
 
-.collapse-button:hover .status-indicator {
-  opacity: 1;
+/* ========== 过渡动画 ========== */
+.tooltip-enter-active,
+.tooltip-leave-active {
+  transition: all 0.2s ease;
+}
+
+.tooltip-enter-from {
+  opacity: 0;
+  transform: translateY(-50%) translateX(-8px);
+}
+
+.tooltip-leave-to {
+  opacity: 0;
+  transform: translateY(-50%) translateX(-4px);
+}
+
+/* ========== 分隔线 ========== */
+.divider {
+  width: 1px;
+  height: 24px;
+}
+
+.divider-light {
+  background: linear-gradient(to bottom, transparent, #dcdfe6, transparent);
+}
+
+.divider-dark {
+  background: linear-gradient(to bottom, transparent, #4a5568, transparent);
 }
 </style>

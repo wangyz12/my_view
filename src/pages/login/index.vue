@@ -1,7 +1,7 @@
 <!-- src/pages/login/index.vue -->
 <template>
-  <div class="login-container relative min-h-screen flex items-center justify-center overflow-hidden">
-  <BusinessBackground />
+  <div class="login-container relative px-20 min-h-screen flex items-center justify-between overflow-hidden">
+    <BusinessBackground />
     <!-- 过渡遮罩：使用 Tailwind 类替代自定义样式 -->
     <transition name="fade">
       <div
@@ -13,14 +13,13 @@
         </div>
       </div>
     </transition>
-
+    <div class="flex imageBox pl-10">
+      <img :src="Group" alt="" class="w-[500px] h-[400px]">
+    </div>
     <!-- 登录卡片：简化类名，保留关键动画 -->
-    <el-card
-      class="w-[400px] rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] animate-[slideIn_0.5s_ease] transition-all duration-300"
-      :class="{ 'opacity-0 scale-95': showTransition }"
-    >
+    <el-card class="w-[400px] flex card">
       <template #header>
-        <div class="text-center">
+        <div class="card-header flex flex-col items-center">
           <h2 class="m-0 text-3xl text-gray-800">用户登录</h2>
           <p class="mt-1 mb-0 text-sm text-gray-400">欢迎使用本系统</p>
         </div>
@@ -39,7 +38,6 @@
             placeholder="请输入用户名"
             :disabled="loading"
             size="large"
-            class="[&_.el-input__wrapper]:rounded-lg [&_.el-input__wrapper]:px-3 [&_.el-input__wrapper]:py-1"
           >
             <template #prefix>
               <el-icon><User /></el-icon>
@@ -56,7 +54,6 @@
             :disabled="loading"
             size="large"
             show-password
-            class="[&_.el-input__wrapper]:rounded-lg [&_.el-input__wrapper]:px-3 [&_.el-input__wrapper]:py-1"
           >
             <template #prefix>
               <el-icon><Lock /></el-icon>
@@ -77,7 +74,6 @@
             <img
               :src="imgSrc"
               alt="验证码"
-              class="h-10 cursor-pointer rounded border border-gray-300"
               @click="getCaptchaFunc"
             />
           </div>
@@ -90,21 +86,18 @@
             :loading="loading"
             @click="submit"
             size="large"
-            class="w-full h-11 text-base rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 border-none transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_5px_20px_rgba(102,126,234,0.4)] active:translate-y-0"
+            class="w-[100%]"
             :loading-icon="Loading"
           >
             {{ loading ? '登录中...' : '登 录' }}
           </el-button>
         </el-form-item>
       </el-form>
-
       <!-- 底部提示 -->
-      <div class="mt-5 text-center text-xs text-gray-400">
-        <p>超级管理员: superadmin / SuperAdmin_123</p>
-        <p>管理员: admin / Admin_123</p>
-        <p>技术部经理: manager / Manager_123</p>
-        <p>开发工程师: developer / Developer_123</p>
-        <p>普通用户: user / User_123</p>
+      <div class="flex foot justify-between">
+       <span v-for="(item,i) in usernameList" :key="i" @click="testUser(item)">
+        {{ item.label }}
+       </span>
       </div>
     </el-card>
   </div>
@@ -118,11 +111,12 @@ import { useRouter } from 'vue-router';
 import { useUserStore } from '@/store/modules/user';
 import { useBreadcrumbStore } from '@/store/modules/breadcrumb';
 import { login as loginApi, getCaptcha } from '@/api/modules/login';
-import { getMenuListApi } from '@/api/modules/menu';
 import storage from '@/utils/storage';
 import { getGreeting } from '@/utils/timeUtils';
 import BusinessBackground from './components/BusinessBackground/BusinessBackground.vue';
-import {loginRules} from './config'
+import {loginRules,usernameList} from './config'
+import Group from '@/assets/login/Group.png'
+
 const router = useRouter();
 const userStore = useUserStore();
 const breadcrumbStore = useBreadcrumbStore();
@@ -241,8 +235,30 @@ onMounted(async () => {
   showTransition.value = false;
   await getCaptchaFunc()
 });
+// 测试账号点击
+const testUser = ({obj}:any)=>{
+  const {account,password} = obj
+  loginForm.account = account
+  loginForm.password = password
+} 
 </script>
 
 <style scoped lang="scss">
-@use './index.scss'
+.card{
+  position: relative;
+  box-shadow: none !important;
+  border: 0;
+}
+.imageBox{
+  position: relative;
+}
+.foot{
+  span{
+    color:#a3a3a3;
+    cursor: pointer;
+  }
+  span:hover{
+    color: #409EFF;
+  }
+}
 </style>
