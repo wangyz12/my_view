@@ -1,0 +1,69 @@
+.card {
+  position: relative;
+  box-shadow: none !important;
+  border: 0;
+}
+
+.imageBox {
+  position: relative;
+}
+
+.foot {
+  span {
+    color: #a3a3a3;
+    cursor: pointer;
+  }
+  span:hover {
+    color: #409eff;
+  }
+}
+
+/* ========== 联动入场动画 ========== */
+
+/* 左侧图片：从左侧滑入 + 淡入 */
+.image-slide {
+  animation: slideInFromLeft 1s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+}
+
+/* 右侧卡片：从右侧滑入 + 淡入（错峰延迟 0.15s） */
+.card-slide {
+  animation: slideInFromRight 1s cubic-bezier(0.2, 0.9, 0.4, 1.1) 0.15s forwards;
+  opacity: 0; /* 初始透明，动画结束后显示 */
+  transform: translateX(40px);
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 可选：添加一个整体的淡入效果到容器 */
+.login-container {
+  animation: containerFadeIn 1s ease-out forwards;
+}
+
+@keyframes containerFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

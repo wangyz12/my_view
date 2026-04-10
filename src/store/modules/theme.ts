@@ -6,6 +6,15 @@ type LayoutType = 'side' | 'top'
 // 主题模式：light-明亮, dark-暗黑
 type ThemeMode = 'light' | 'dark'
 
+// 页面动画类型
+export type PageAnimationType = 
+  | 'fade'           // 淡入淡出
+  | 'fade-slide'     // 淡入+上浮
+  | 'scale'          // 缩放淡入
+  | 'slide-x'        // 水平滑动
+  | 'slide-y'        // 垂直滑动
+  | 'none'           // 无动画
+
 interface ThemeState {
   // 布局类型
   layout: LayoutType
@@ -27,7 +36,10 @@ interface ThemeState {
   // 路由缓存设置
   enableRouteCache: boolean
   maxCacheCount: number
-  pagePadding:number
+  pagePadding: number
+  // ========== 新增：页面动画设置 ==========
+  pageAnimation: PageAnimationType
+  animationDuration: number
 }
 
 export const useThemeStore = defineStore('theme', {
@@ -45,7 +57,10 @@ export const useThemeStore = defineStore('theme', {
     // 路由缓存设置
     enableRouteCache: true, // 默认启用路由缓存
     maxCacheCount: 10, // 最大缓存页面数量
-    pagePadding:10
+    pagePadding: 10,
+    // ========== 新增：页面动画设置默认值 ==========
+    pageAnimation: 'fade-slide', // 默认淡入上浮动画
+    animationDuration: 250, // 默认动画时长 250ms
   }),
 
   getters: {
@@ -78,7 +93,7 @@ export const useThemeStore = defineStore('theme', {
     setLayout(layout: LayoutType) {
       this.layout = layout
     },
-    setPagePadding(data:number){
+    setPagePadding(data: number) {
       this.pagePadding = data
     },
     // 切换布局
@@ -154,6 +169,24 @@ export const useThemeStore = defineStore('theme', {
       this.enableRouteCache = !this.enableRouteCache
     },
 
+    // ========== 新增：页面动画设置 ==========
+    // 设置页面动画类型
+    setPageAnimation(animation: PageAnimationType) {
+      this.pageAnimation = animation
+    },
+    
+    // 设置动画时长
+    setAnimationDuration(duration: number) {
+      // 限制时长范围 100-500ms
+      this.animationDuration = Math.max(100, Math.min(duration, 500))
+    },
+    
+    // 重置动画设置
+    resetAnimationSettings() {
+      this.pageAnimation = 'fade-slide'
+      this.animationDuration = 250
+    },
+
     // 重置所有设置
     resetSettings() {
       this.layout = 'side'
@@ -161,18 +194,36 @@ export const useThemeStore = defineStore('theme', {
       this.fixedHeader = true
       this.themeColor = '#409EFF'
       this.showTagsView = true
-      this.themeMode = 'dark'
+      this.themeMode = 'light'
       this.watermark = { enabled: true, text: '' }
       this.enableRouteCache = true
       this.maxCacheCount = 10
+      this.pagePadding = 10
+      // 重置动画设置
+      this.pageAnimation = 'fade-slide'
+      this.animationDuration = 250
+      // 重新应用主题色
       this.setThemeColor('#409EFF')
-      this.setThemeMode('dark')
+      this.setThemeMode('light')
     },
   },
 
-  // 数据持久化
+  // 数据持久化（添加动画设置到持久化列表）
   persist: {
     key: 'theme-store',
-    paths: ['layout', 'showLogo', 'fixedHeader', 'themeColor', 'showTagsView', 'themeMode', 'watermark', 'enableRouteCache', 'maxCacheCount'],
+    paths: [
+      'layout', 
+      'showLogo', 
+      'fixedHeader', 
+      'themeColor', 
+      'showTagsView', 
+      'themeMode', 
+      'watermark', 
+      'enableRouteCache', 
+      'maxCacheCount',
+      'pagePadding',
+      'pageAnimation',      // 新增
+      'animationDuration'   // 新增
+    ],
   },
 })

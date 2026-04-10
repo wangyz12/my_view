@@ -1,13 +1,19 @@
 <template>
   <router-view v-slot="{ Component, route }">
-    <keep-alive :include="cachedRoutes">
-      <component :is="Component" :key="route.fullPath" class="full-page"/>
-    </keep-alive>
+    <transition 
+      :name="transitionName" 
+      :mode="transitionMode" 
+      :duration="transitionDuration"
+    >
+      <keep-alive :include="cachedRoutes">
+        <component :is="Component" :key="route.fullPath" class="full-page" />
+      </keep-alive>
+    </transition>
   </router-view>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useThemeStore } from '@/store/modules/theme'
 
@@ -17,6 +23,24 @@ const themeStore = useThemeStore()
 // 缓存的组件名称列表
 const cachedRoutes = ref<string[]>([])
 
+// ========== 动画相关计算属性 ==========
+// 动画名称（当动画为 none 时返回空字符串，禁用动画）
+const transitionName = computed(() => {
+  const animation = themeStore.pageAnimation
+  if (animation === 'none') return ''
+  return `route-${animation}`
+})
+
+// 动画模式：明确类型为 Vue transition 支持的 mode
+const transitionMode = computed<'out-in' | 'in-out' | 'default'>(() => 'out-in')
+
+// 动画时长
+const transitionDuration = computed(() => ({
+  enter: themeStore.animationDuration,
+  leave: themeStore.animationDuration
+}))
+
+// ========== 缓存逻辑 ==========
 // 需要缓存的页面（根据路由meta中的keepAlive配置）
 const shouldCache = (route: any): boolean => {
   // 如果全局缓存被禁用，则不缓存任何页面
@@ -58,7 +82,7 @@ const addToCache = (route: any) => {
       // 检查缓存数量限制
       if (cachedRoutes.value.length >= themeStore.maxCacheCount) {
         // 移除最旧的缓存（第一个）
-        const removed = cachedRoutes.value.shift()
+        cachedRoutes.value.shift()
       }
       
       cachedRoutes.value.push(componentName)
@@ -142,10 +166,8 @@ onMounted(() => {
   // 初始加载当前路由到缓存
   addToCache(route)
 })
-
-
 </script>
 
-<style lang="scss" scoped>
-// 路由缓存组件不需要额外的样式
+<style lang="scss">
+@use './index.scss'
 </style>

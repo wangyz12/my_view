@@ -1,11 +1,11 @@
 // 使用 CSS 变量，方便主题切换
 .theme-settings {
-  --settings-btn-size: 40px;
+  --settings-btn-size: 24px;
   --preview-sidebar-width: 18px;
   --preview-header-height: 12px;
 }
 
-.settings-btn {
+.setting {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -253,5 +253,40 @@
 
   &:active {
     transform: scale(0.98);
+  }
+}
+
+/* ========== 动画选项下拉样式 ========== */
+.animation-option-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  .animation-icon {
+    font-size: 16px;
+    width: 24px;
+  }
+  
+  .animation-desc {
+    font-size: 12px;
+    color: var(--el-text-color-secondary);
+    margin-left: auto;
+  }
+}
+
+.duration-slider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+  
+  .el-slider {
+    flex: 1;
+  }
+  
+  .duration-value {
+    font-size: 13px;
+    color: var(--el-text-color-secondary);
+    min-width: 45px;
   }
 }

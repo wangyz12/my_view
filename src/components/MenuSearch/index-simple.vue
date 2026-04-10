@@ -1,59 +1,39 @@
 <template>
   <div class="menu-search-simple">
     <!-- 搜索按钮 -->
-    <el-tooltip
-      v-if="!isExpanded"
-      content="搜索菜单 (F2)"
-      placement="bottom"
-      :show-after="300"
-    >
-      <el-button
-        class="search-btn"
-        type="primary"
-        plain
-        size="small"
-        :circle="true"
-        @click="toggleSearch"
-      >
-        <el-icon :size="16">
-          <Search />
-        </el-icon>
-      </el-button>
+    <el-tooltip content="搜索菜单 (F2)" placement="bottom" :show-after="300">
+      <el-icon :size="16" :style="iconColorStyle" class="search-btn-wrapper search-icon" @click="openSearchDialog">
+        <Search />
+      </el-icon>
     </el-tooltip>
-
-    <!-- 搜索框（展开时） -->
-    <div v-else class="search-expanded">
-      <div class="search-box">
+    <!-- 搜索弹窗 -->
+    <el-dialog
+      v-model="dialogVisible"
+      title="搜索菜单"
+      width="500px"
+      :close-on-click-modal="true"
+      :close-on-press-escape="true"
+      class="menu-search-dialog"
+      @close="handleDialogClose"
+    >
+      <div class="search-container">
         <el-input
           ref="searchInputRef"
           v-model="searchQuery"
-          class="search-input"
-          placeholder="输入菜单名称搜索..."
+          placeholder="输入菜单名称搜索...（支持快捷键 F2 打开）"
           :prefix-icon="Search"
           clearable
+          size="large"
           @input="handleSearch"
           @clear="clearSearch"
-          @keydown.esc="toggleSearch"
           @keydown.enter="handleEnter"
-          @click.stop
-        >
-          <template #suffix>
-            <el-icon
-              class="search-close"
-              @click="toggleSearch"
-            >
-              <Close />
-            </el-icon>
-          </template>
-        </el-input>
-
+        />
+        
         <!-- 搜索结果 -->
-        <div
-          v-if="showResults && filteredMenus.length > 0"
-          class="search-results"
-        >
+        <div v-if="showResults && filteredMenus.length > 0" class="results-container">
           <div class="results-header">
-            <span>↑↓键切换,Enter跳转,Esc退出</span>
+            <span>搜索结果（共 {{ filteredMenus.length }} 项）</span>
+            <span class="shortcut-hint">↑↓ 切换 | Enter 跳转</span>
           </div>
           <div class="results-list">
             <div
@@ -71,19 +51,19 @@
                 <div class="result-title">{{ item.title }}</div>
                 <div class="result-path">{{ item.path }}</div>
               </div>
+              <div class="result-action">
+                <el-button size="small" text type="primary">跳转</el-button>
+              </div>
             </div>
           </div>
         </div>
-
+        
         <!-- 无结果 -->
-        <div
-          v-else-if="showResults && searchQuery && filteredMenus.length === 0"
-          class="no-results"
-        >
-          <el-empty description="未找到匹配的菜单" :image-size="50" />
+        <div v-else-if="showResults && searchQuery && filteredMenus.length === 0" class="no-results">
+          <el-empty description="未找到匹配的菜单" :image-size="60" />
         </div>
       </div>
-    </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -91,19 +71,27 @@
 import { ref, computed, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/modules/user'
-import { Search, Close, Link } from '@element-plus/icons-vue'
+import { useThemeStore } from '@/store/modules/theme'
+import { Search } from '@element-plus/icons-vue'
 import type { ElInput } from 'element-plus'
 
 const router = useRouter()
 const userStore = useUserStore()
+const themeStore = useThemeStore()
 
 // 状态
-const isExpanded = ref(false)
+const dialogVisible = ref(false)
 const searchQuery = ref('')
 const showResults = ref(false)
 const activeIndex = ref(-1)
 const searchInputRef = ref<InstanceType<typeof ElInput>>()
-
+// 动态计算图标颜色（响应主题变化）
+const iconColorStyle = computed(() => {
+  if (themeStore.isDarkMode) {
+    return { color: '#f0f2f5' }  // 深色模式：亮白色
+  }
+  return { color: '#1f2d3d' }     // 浅色模式：深灰色
+})
 // 扁平化菜单
 const flattenMenus = computed(() => {
   const result: any[] = []
@@ -127,21 +115,26 @@ const filteredMenus = computed(() => {
   return flattenMenus.value.filter(menu => 
     menu.title?.toLowerCase().includes(query) ||
     menu.path?.toLowerCase().includes(query)
-  ).slice(0, 8)
+  )
 })
 
-// 切换搜索
-const toggleSearch = () => {
-  isExpanded.value = !isExpanded.value
-  if (isExpanded.value) {
-    nextTick(() => {
-      searchInputRef.value?.focus()
-    })
-  } else {
-    searchQuery.value = ''
-    showResults.value = false
-    activeIndex.value = -1
-  }
+// 打开搜索弹窗
+const openSearchDialog = () => {
+  dialogVisible.value = true
+  searchQuery.value = ''
+  showResults.value = false
+  activeIndex.value = -1
+  nextTick(() => {
+    searchInputRef.value&&searchInputRef.value.focus()
+  })
+}
+
+// 关闭弹窗
+const handleDialogClose = () => {
+  dialogVisible.value = false
+  searchQuery.value = ''
+  showResults.value = false
+  activeIndex.value = -1
 }
 
 // 处理搜索
@@ -176,19 +169,20 @@ const handleMenuClick = (menu: any) => {
   } else {
     router.push(menu.path)
   }
-  toggleSearch()
+  handleDialogClose()
 }
 
 // 键盘事件
 const handleKeyDown = (e: KeyboardEvent) => {
+  // F2 打开搜索
   if (e.key === 'F2') {
     e.preventDefault()
-    if (!isExpanded.value) {
-      toggleSearch()
+    if (!dialogVisible.value) {
+      openSearchDialog()
     }
   }
   
-  if (!isExpanded.value || !showResults.value) return
+  if (!dialogVisible.value || !showResults.value) return
   
   switch (e.key) {
     case 'ArrowUp':
@@ -201,7 +195,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
       break
     case 'Escape':
       e.preventDefault()
-      toggleSearch()
+      handleDialogClose()
       break
   }
 }
@@ -217,146 +211,5 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.menu-search-simple {
-  position: relative;
-}
-
-.search-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-}
-
-.search-expanded {
-  position: relative;
-  width: 300px;
-}
-
-.search-box {
-  position: relative;
-}
-
-.search-input {
-  :deep(.el-input__wrapper) {
-    border-radius: 20px;
-    padding: 0 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    
-    &:focus-within {
-      box-shadow: 0 4px 16px rgba(var(--el-color-primary-rgb), 0.2);
-    }
-  }
-}
-
-.search-close {
-  cursor: pointer;
-  color: var(--el-text-color-secondary);
-  
-  &:hover {
-    color: var(--el-color-primary);
-  }
-}
-
-.search-results {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  right: 0;
-  background: var(--el-bg-color);
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  border: 1px solid var(--el-border-color);
-  z-index: 9999;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.results-header {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--el-border-color);
-  font-size: 14px;
-  color: var(--el-text-color-secondary);
-  background: var(--el-fill-color-light);
-}
-
-.results-list {
-  padding: 8px 0;
-}
-
-.result-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 16px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  
-  &:hover {
-    background: var(--el-fill-color-light);
-  }
-  
-  &.active {
-    background: var(--el-fill-color);
-  }
-}
-
-.result-icon {
-  margin-right: 12px;
-  color: var(--el-color-primary);
-  font-size: 18px;
-}
-
-.result-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.result-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--el-text-color-primary);
-  margin-bottom: 2px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.result-path {
-  font-size: 12px;
-  color: var(--el-text-color-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.no-results {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  right: 0;
-  background: var(--el-bg-color);
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  border: 1px solid var(--el-border-color);
-  z-index: 9999;
-  padding: 20px;
-}
-
-// 响应式
-@media (max-width: 768px) {
-  .search-expanded {
-    width: 250px;
-  }
-}
-
-@media (max-width: 480px) {
-  .search-expanded {
-    width: 200px;
-  }
-}
+@use './index.scss';
 </style>

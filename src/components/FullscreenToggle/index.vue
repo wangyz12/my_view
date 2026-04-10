@@ -1,29 +1,16 @@
 <template>
   <div class="fullscreen-toggle">
-    <el-tooltip
-      :content="tooltipText"
-      placement="bottom"
-      :show-after="500"
-    >
-      <el-button
-        class="fullscreen-btn"
-        :type="buttonType"
-        :plain="!isFullscreen"
-        size="small"
-        :circle="isCircle"
-        @click="toggleFullscreen"
-        @keydown.esc="handleEscKey"
-      >
-        <el-icon :size="iconSize" :class="{ 'rotate-icon': isFullscreen }">
-          <FullScreen v-if="!isFullscreen" />
-          <Close v-else />
-        </el-icon>
-        <span v-if="showText" class="btn-text">
-          {{ isFullscreen ? '退出全屏' : '全屏' }}
-        </span>
-      </el-button>
+    <el-tooltip :content="tooltipText" placement="bottom" :show-after="500">
+      <el-icon :size="iconSize" :style="iconColorStyle" class="fullscreen-btn cursor-pointer" @click="toggleFullscreen"
+        @keydown.esc="handleEscKey" :class="{ 'rotate-icon': isFullscreen }">
+        <FullScreen v-if="!isFullscreen" />
+        <Close v-else />
+      </el-icon>
+      <span v-if="showText" class="btn-text">
+        {{ isFullscreen ? '退出全屏' : '全屏' }}
+      </span>
     </el-tooltip>
-    
+
     <!-- 快捷键提示 -->
     <div v-if="showShortcutHint" class="shortcut-hint">
       <el-text type="info" size="small">
@@ -37,7 +24,8 @@
 import { useFullscreen, useEventListener } from '@vueuse/core'
 // 图标会自动导入，无需显式导入
 import { computed, ref, onMounted, onUnmounted } from 'vue'
-
+import { useThemeStore } from '@/store/modules/theme'
+const themeStore = useThemeStore()
 const { isFullscreen, toggle, enter, exit } = useFullscreen()
 
 // 配置选项
@@ -52,7 +40,13 @@ const props = withDefaults(defineProps<{
   iconSize: 16,
   isCircle: false
 })
-
+// 动态计算图标颜色（响应主题变化）
+const iconColorStyle = computed(() => {
+  if (themeStore.isDarkMode) {
+    return { color: '#f0f2f5' }  // 深色模式：亮白色
+  }
+  return { color: '#1f2d3d' }     // 浅色模式：深灰色
+})
 // 计算属性
 const tooltipText = computed(() => {
   const action = isFullscreen.value ? '退出全屏' : '进入全屏'
@@ -83,7 +77,7 @@ useEventListener('keydown', (event: KeyboardEvent) => {
     event.preventDefault()
     toggleFullscreen()
   }
-  
+
   // ESC 键退出全屏
   if (event.key === 'Escape' && isFullscreen.value) {
     event.preventDefault()
@@ -121,100 +115,5 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.fullscreen-toggle {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.fullscreen-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 12px;
-  min-width: 40px;
-  height: 40px;
-  border-radius: v-bind('isCircle ? "50%" : "8px"');
-  transition: all 0.3s ease;
-  font-weight: 500;
-  
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  &:active {
-    transform: scale(0.98);
-  }
-  
-  .el-icon {
-    transition: transform 0.3s ease;
-  }
-  
-  &:hover .el-icon {
-    transform: scale(1.1);
-  }
-  
-  .btn-text {
-    font-size: 13px;
-    font-weight: 500;
-  }
-}
-
-// 图标旋转动画
-.rotate-icon {
-  animation: rotate 0.5s ease;
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(180deg);
-  }
-}
-
-// 全屏状态下的样式调整
-:fullscreen .fullscreen-btn,
-:-webkit-full-screen .fullscreen-btn,
-:-moz-full-screen .fullscreen-btn {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.4);
-  color: white;
-  
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.6);
-  }
-}
-
-// 快捷键提示
-.shortcut-hint {
-  opacity: 0.7;
-  transition: opacity 0.3s ease;
-  
-  &:hover {
-    opacity: 1;
-  }
-}
-
-// 响应式调整
-@media (max-width: 768px) {
-  .fullscreen-btn {
-    padding: 6px;
-    min-width: 36px;
-    height: 36px;
-    
-    .btn-text {
-      display: none;
-    }
-  }
-  
-  .shortcut-hint {
-    display: none;
-  }
-}
+@use './index.scss';
 </style>

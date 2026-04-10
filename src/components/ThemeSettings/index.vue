@@ -1,16 +1,7 @@
 <template>
   <div class="theme-settings">
-    <!-- 更大的设置按钮 -->
-    <el-button
-      class="settings-btn"
-      type="primary"
-      plain
-      size="small"
-      @click="drawerVisible = true"
-    >
-      <el-icon :size="16"><Setting /></el-icon>
-    </el-button>
-
+    <!-- 设置按钮 -->
+    <el-icon :size="18" class="setting cursor-pointer"  :style="iconColorStyle" @click="drawerVisible = true"><Setting /></el-icon>
     <!-- 设置抽屉 -->
     <el-drawer
       v-model="drawerVisible"
@@ -89,6 +80,8 @@
         </div>
 
         <el-divider />
+        
+        <!-- 页面间距 -->
         <div class="setting-item">
           <div class="setting-label">
             <el-icon><Cpu /></el-icon>
@@ -109,6 +102,7 @@
         </div>
 
         <el-divider />
+        
         <!-- Logo 显示设置 -->
         <div class="setting-item">
           <div class="setting-label">显示 Logo</div>
@@ -143,6 +137,54 @@
             >
               <el-icon v-if="themeStore.themeColor === color"><Check /></el-icon>
             </div>
+          </div>
+        </div>
+
+        <el-divider />
+
+        <!-- ========== 新增：页面动画设置 ========== -->
+        <div class="setting-item">
+          <div class="setting-label">
+            <el-icon><VideoPlay /></el-icon>
+            页面切换动画
+          </div>
+          <el-select
+            v-model="pageAnimation"
+            placeholder="请选择动画效果"
+            size="default"
+            style="width: 100%"
+            @change="handleAnimationChange"
+          >
+            <el-option
+              v-for="item in animationOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+              <div class="animation-option-item">
+                <span class="animation-icon">{{ item.icon }}</span>
+                <span>{{ item.label }}</span>
+                <span v-if="item.description" class="animation-desc">{{ item.description }}</span>
+              </div>
+            </el-option>
+          </el-select>
+        </div>
+
+        <!-- 动画时长设置（仅在非无动画时显示） -->
+        <div class="setting-item" v-if="themeStore.pageAnimation !== 'none'">
+          <div class="setting-label">
+            动画时长
+          </div>
+          <div class="duration-slider">
+            <el-slider
+              v-model="animationDuration"
+              :min="100"
+              :max="500"
+              :step="25"
+              :format-tooltip="(val:any) => `${val}ms`"
+              @change="handleDurationChange"
+            />
+            <span class="duration-value">{{ themeStore.animationDuration }}ms</span>
           </div>
         </div>
 
@@ -203,7 +245,7 @@
         <el-divider />
 
         <!-- 重置按钮 -->
-        <el-button type="primary" @click="themeStore.resetSettings" style="width: 100%">
+        <el-button type="primary" @click="handleReset" style="width: 100%">
           <el-icon><RefreshLeft /></el-icon>
           重置所有设置
         </el-button>
@@ -215,15 +257,62 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useThemeStore } from '@/store/modules/theme'
-import { Cpu } from '@element-plus/icons-vue'
-
+import { Cpu, VideoPlay } from '@element-plus/icons-vue'
 const themeStore = useThemeStore()
 const drawerVisible = ref(false)
 const watermarkText = ref(themeStore.watermark.text)
 
+// ========== 动画设置 ==========
+const pageAnimation = ref(themeStore.pageAnimation)
+const animationDuration = ref(themeStore.animationDuration)
+// 动态计算图标颜色（响应主题变化）
+const iconColorStyle = computed(() => {
+  if (themeStore.isDarkMode) {
+    return { color: '#f0f2f5' }  // 深色模式：亮白色
+  }
+  return { color: '#1f2d3d' }     // 浅色模式：深灰色
+})
+// 动画选项
+const animationOptions = [
+  { value: 'fade', label: '淡入淡出', icon: '🌫️', description: '平滑淡入淡出' },
+  { value: 'fade-slide', label: '淡入上浮', icon: '📤', description: '淡入+轻微上浮' },
+  { value: 'scale', label: '缩放淡入', icon: '🔍', description: '缩放+淡入效果' },
+  { value: 'slide-x', label: '水平滑动', icon: '⬅️➡️', description: '左右滑动切换' },
+  { value: 'slide-y', label: '垂直滑动', icon: '⬆️⬇️', description: '上下滑动切换' },
+  { value: 'none', label: '无动画', icon: '⏹️', description: '直接切换，无动画' },
+]
+
+// 处理动画类型变更
+const handleAnimationChange = (val: string) => {
+  themeStore.setPageAnimation(val as any)
+}
+
+// 处理动画时长变更
+const handleDurationChange = (val: number) => {
+  themeStore.setAnimationDuration(val)
+}
+
+// ========== 重置所有设置 ==========
+const handleReset = () => {
+  themeStore.resetSettings()
+  // 同步本地状态
+  pageAnimation.value = themeStore.pageAnimation
+  animationDuration.value = themeStore.animationDuration
+  watermarkText.value = themeStore.watermark.text
+}
+
 // 同步水印文字
 watch(() => themeStore.watermark.text, (val) => {
   watermarkText.value = val
+})
+
+// 同步动画设置（当外部修改时）
+watch(() => themeStore.pageAnimation, (val) => {
+  pageAnimation.value = val
+})
+
+watch(() => themeStore.animationDuration, (val) => {
+  animationDuration.value = val
 })
 
 const updateWatermark = () => {
@@ -245,4 +334,6 @@ const themeColors = [
 
 <style lang="scss" scoped>
 @import url(./index.scss);
+
+
 </style>

@@ -1,0 +1,156 @@
+.menu-search-simple {
+  position: relative;
+}
+
+/* ========== 搜索按钮 ========== */
+.search-btn-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  .search-icon {
+    font-size: 16px;
+    transition: all 0.2s ease;
+  }
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+/* ========== 搜索弹窗样式 ========== */
+.menu-search-dialog {
+  :deep(.el-dialog) {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  
+  :deep(.el-dialog__header) {
+    padding: 20px 24px 0;
+    border-bottom: none;
+  }
+  
+  :deep(.el-dialog__title) {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  :deep(.el-dialog__body) {
+    padding: 20px 24px 24px;
+  }
+}
+
+.search-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.results-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid var(--el-border-color-light);
+  border-radius: 12px;
+  background: var(--el-bg-color);
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--el-border-color-light);
+  font-size: 13px;
+  color: var(--el-text-color-secondary);
+  background: var(--el-fill-color-light);
+  
+  .shortcut-hint {
+    font-size: 12px;
+    color: var(--el-text-color-placeholder);
+  }
+}
+
+.results-list {
+  padding: 8px 0;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: var(--el-fill-color-light);
+  }
+  
+  &.active {
+    background: var(--el-fill-color);
+    border-left: 3px solid #409eff;
+  }
+}
+
+.result-icon {
+  margin-right: 12px;
+  color: #409eff;
+  font-size: 18px;
+}
+
+.result-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.result-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--el-text-color-primary);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result-path {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result-action {
+  opacity: 0;
+  transition: opacity 0.2s;
+  
+  .result-item:hover &,
+  .result-item.active & {
+    opacity: 1;
+  }
+}
+
+.no-results {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+/* 响应式 */
+@media (max-width: 640px) {
+  .menu-search-dialog {
+    :deep(.el-dialog) {
+      width: 90%;
+    }
+  }
+}
