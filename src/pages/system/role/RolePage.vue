@@ -316,7 +316,6 @@ onMounted(() => {
 
 <style scoped>
 .role-page {
-  padding: 20px;
   background: #fff;
   border-radius: 4px;
   min-height: calc(100vh - 100px);

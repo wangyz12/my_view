@@ -27,6 +27,7 @@ interface ThemeState {
   // 路由缓存设置
   enableRouteCache: boolean
   maxCacheCount: number
+  pagePadding:number
 }
 
 export const useThemeStore = defineStore('theme', {
@@ -44,6 +45,7 @@ export const useThemeStore = defineStore('theme', {
     // 路由缓存设置
     enableRouteCache: true, // 默认启用路由缓存
     maxCacheCount: 10, // 最大缓存页面数量
+    pagePadding:10
   }),
 
   getters: {
@@ -76,7 +78,9 @@ export const useThemeStore = defineStore('theme', {
     setLayout(layout: LayoutType) {
       this.layout = layout
     },
-
+    setPagePadding(data:number){
+      this.pagePadding = data
+    },
     // 切换布局
     toggleLayout() {
       this.layout = this.layout === 'side' ? 'top' : 'side'

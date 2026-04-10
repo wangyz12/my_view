@@ -89,7 +89,26 @@
         </div>
 
         <el-divider />
+        <div class="setting-item">
+          <div class="setting-label">
+            <el-icon><Cpu /></el-icon>
+            页面间距
+          </div>
+          <div class="cache-settings">
+            <el-slider
+              v-model="themeStore.pagePadding"
+              :min="0"
+              :max="50"
+              :step="1"
+              show-stops
+              show-input
+              size="small"
+              style="margin-top: 8px;"
+            />
+          </div>
+        </div>
 
+        <el-divider />
         <!-- Logo 显示设置 -->
         <div class="setting-item">
           <div class="setting-label">显示 Logo</div>

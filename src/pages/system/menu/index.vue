@@ -540,9 +540,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.menu-management {
-  padding: 20px;
-}
 
 .search-card {
   margin-bottom: 20px;

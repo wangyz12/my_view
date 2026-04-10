@@ -359,9 +359,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-.dept-management {
-  padding: 20px;
-}
 
 .search-card {
   margin-bottom: 20px;

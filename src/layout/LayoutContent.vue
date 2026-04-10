@@ -19,9 +19,7 @@
         <Head />
       </el-header>
       <Breadcrumb v-if="themeStore.showTagsView"/>
-      <el-main class="main-content">
-        <route-cache class="router-view"></route-cache>
-      </el-main>
+      <ViewsMain />
     </el-container>
   </el-container>
 
@@ -34,14 +32,12 @@
       <div class="top-header-content">
         <Logo v-if="themeStore.showLogo" class="top-logo" @goHome="goHome" />
         <TopMenu />
-        <Head class="top-head" :isShow='false'/>
+        <Head class="top-head" :isShow='false' />
       </div>
     </el-header>
     <el-container class="top-container">
       <Breadcrumb v-if="themeStore.showTagsView"/>
-      <el-main class="main-content">
-        <route-cache class="router-view"></route-cache>
-      </el-main>
+      <ViewsMain />
     </el-container>
   </el-container>
 </template>
@@ -52,13 +48,12 @@ import TopMenu from './topMenu/index.vue';
 import Head from './head/index.vue';
 import Logo from './menu/logo/index.vue'
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
-import RouteCache from '@/components/RouteCache/index.vue'
 import ProgressBar from '@/components/ProgressBar/index.vue'
 import { useUserStore } from '@/store/modules/user';
 import { useThemeStore } from '@/store/modules/theme';
 import { useRouter } from 'vue-router';
 import { useProgress } from '@/utils/progress'
-
+import ViewsMain from './viewsMain/index.vue'
 const userStore = useUserStore();
 const themeStore = useThemeStore();
 const router = useRouter();
@@ -75,9 +70,9 @@ const goHome = () => {
   padding: 0 !important;
 }
 
-:deep(.el-main) {
-  padding: 10px !important;
-}
+// :deep(.el-main) {
+//   padding: 0 !important;
+// }
 
 .aside-transition {
   transition: width 0.3s ease-in-out, background-color 0.3s ease;

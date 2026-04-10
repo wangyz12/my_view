@@ -61,7 +61,7 @@ const breadcrumbStore = useBreadcrumbStore()
 const userStore = useUserStore()
 // 检查用户是否有权限访问当前路由
 const checkRoutePermission = () => {
-  const { permission, roles } = route.meta
+  const { permission, roles }:any = route.meta
   
   // 如果路由不需要权限检查，直接返回true
   if (!permission && !roles) {

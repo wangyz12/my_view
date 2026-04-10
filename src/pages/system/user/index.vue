@@ -208,9 +208,6 @@ const handleFormDialogOpened = () => {
 </script>
 
 <style lang="scss" scoped>
-.user-management {
-  padding: 20px;
-}
 
 .dialog-footer {
   display: flex;

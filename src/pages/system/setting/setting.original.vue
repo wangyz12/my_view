@@ -62,9 +62,6 @@ const drawerVisible = ref(false)
 </script>
 
 <style lang="scss" scoped>
-.setting-page {
-  padding: 20px;
-}
 
 .setting-card {
   max-width: 800px;

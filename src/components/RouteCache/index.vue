@@ -7,12 +7,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useThemeStore } from '@/store/modules/theme'
 
 const route = useRoute()
-const router = useRouter()
 const themeStore = useThemeStore()
 
 // 缓存的组件名称列表
@@ -60,12 +59,9 @@ const addToCache = (route: any) => {
       if (cachedRoutes.value.length >= themeStore.maxCacheCount) {
         // 移除最旧的缓存（第一个）
         const removed = cachedRoutes.value.shift()
-        console.log(`🗑️ 缓存数量超限，移除最旧缓存: ${removed}`)
       }
       
       cachedRoutes.value.push(componentName)
-      console.log(`✅ 已缓存路由: ${componentName} (${route.path})`)
-      console.log(`📊 当前缓存数量: ${cachedRoutes.value.length}/${themeStore.maxCacheCount}`)
     }
   }
 }
@@ -77,7 +73,6 @@ const removeFromCache = (route: any) => {
     const index = cachedRoutes.value.indexOf(componentName)
     if (index > -1) {
       cachedRoutes.value.splice(index, 1)
-      console.log(`🗑️ 已移除缓存: ${componentName} (${route.path})`)
     }
   }
 }
@@ -85,15 +80,12 @@ const removeFromCache = (route: any) => {
 // 清除所有缓存
 const clearAllCache = () => {
   cachedRoutes.value = []
-  console.log('🧹 已清除所有路由缓存')
 }
 
 // 手动刷新缓存（保留当前页面）
 const refreshCache = () => {
   const currentName = getComponentName(route)
   const newCache = currentName ? [currentName] : []
-  cachedRoutes.value = newCache
-  console.log(`🔄 已刷新缓存，保留当前页面: ${currentName || '无'}`)
 }
 
 // 监听路由变化
@@ -132,7 +124,6 @@ const handleTabClose = (tabName: string) => {
   const index = cachedRoutes.value.indexOf(tabName)
   if (index > -1) {
     cachedRoutes.value.splice(index, 1)
-    console.log(`🔒 标签页关闭，移除缓存: ${tabName}`)
   }
 }
 
@@ -148,14 +139,11 @@ defineExpose({
 
 // 生命周期
 onMounted(() => {
-  console.log('🔄 路由缓存组件已加载')
   // 初始加载当前路由到缓存
   addToCache(route)
 })
 
-onUnmounted(() => {
-  console.log('🔄 路由缓存组件已卸载')
-})
+
 </script>
 
 <style lang="scss" scoped>
