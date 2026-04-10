@@ -16,7 +16,7 @@
 
     <!-- 左侧图片 + 从左侧滑入动画 -->
     <div class="flex imageBox  image-slide">
-      <img :src="Group" alt="" class="w-[500px] h-[400px]">
+      <img :src="Group" alt="" class="login-image">
     </div>
 
     <!-- 登录卡片 + 从右侧滑入动画（错峰延迟） -->
@@ -224,5 +224,5 @@ const testUser = (item: any) => {
 </script>
 
 <style scoped lang="scss">
-@use './index.scss'
+@use './index.scss';
 </style>
