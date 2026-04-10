@@ -1,0 +1,257 @@
+// 使用 CSS 变量，方便主题切换
+.theme-settings {
+  --settings-btn-size: 40px;
+  --preview-sidebar-width: 18px;
+  --preview-header-height: 12px;
+}
+
+.settings-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: var(--settings-btn-size);
+  height: var(--settings-btn-size);
+  padding: 0;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .el-icon {
+    transition: transform 0.3s ease;
+  }
+
+  &:hover .el-icon {
+    transform: scale(1.1);
+  }
+}
+
+.settings-content {
+  padding: 0 12px;
+}
+
+.setting-item {
+  margin-bottom: 24px;
+
+  .setting-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--el-text-color-primary);
+
+    .el-icon {
+      font-size: 16px;
+      color: var(--el-color-primary);
+    }
+  }
+}
+
+// 布局选项通用样式
+.setting-options {
+  display: flex;
+  gap: 16px;
+}
+
+.layout-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--el-fill-color-light);
+  }
+
+  &.active {
+    border-color: var(--el-color-primary);
+    background-color: var(--el-color-primary-light-9);
+  }
+}
+
+// 预览容器通用样式
+.layout-preview {
+  width: 70px;
+  height: 50px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--el-border-color);
+  background-color: var(--el-bg-color);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+// 使用 @mixin 减少重复代码
+@mixin preview-sidebar($bg-color) {
+  .preview-sidebar {
+    width: var(--preview-sidebar-width);
+    height: 100%;
+    background-color: $bg-color;
+  }
+}
+
+@mixin preview-header($bg-color) {
+  .preview-header {
+    height: var(--preview-header-height);
+    background-color: $bg-color;
+  }
+}
+
+// 暗黑模式预览
+.dark-preview {
+  display: flex;
+
+  @include preview-sidebar(#1f2d3d);
+
+  .preview-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    @include preview-header(#1f2d3d);
+  }
+}
+
+// 明亮模式预览
+.light-preview {
+  display: flex;
+
+  @include preview-sidebar(#ffffff);
+
+  .preview-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    @include preview-header(#ffffff);
+  }
+}
+
+// 侧边栏布局预览
+.side-preview {
+  display: flex;
+
+  @include preview-sidebar(#304156);
+
+  .preview-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    @include preview-header(#ffffff);
+  }
+}
+
+// 顶部布局预览
+.top-preview {
+  display: flex;
+  flex-direction: column;
+
+  @include preview-header(#304156);
+
+  .preview-main {
+    flex: 1;
+    background-color: #f5f7fa;
+  }
+}
+
+.layout-name {
+  font-size: 12px;
+  color: var(--el-text-color-regular);
+}
+
+// 水印输入框
+.watermark-input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px;
+  background-color: var(--el-fill-color-light);
+  border-radius: 8px;
+  border: 1px solid var(--el-border-color-light);
+}
+
+// 缓存设置
+.cache-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cache-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cache-label {
+  font-size: 14px;
+  color: var(--el-text-color-regular);
+}
+
+.cache-count {
+  padding: 12px;
+  background-color: var(--el-fill-color-light);
+  border-radius: 8px;
+  border: 1px solid var(--el-border-color-light);
+}
+
+// 主题色选项
+.color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.color-option {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.active {
+    border-color: var(--el-text-color-primary);
+    box-shadow: 0 0 0 2px rgba(var(--el-color-primary-rgb), 0.2);
+  }
+}
+
+// 重置按钮优化
+.el-button {
+  transition: all 0.3s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}

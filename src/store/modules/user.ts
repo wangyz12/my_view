@@ -130,7 +130,6 @@ export const useUserStore = defineStore('user', {
     set_isCollapse(data: boolean) {
       this.isCollapse = data
     },
-    
     // 设置权限数据
     setPermissions(permissions: string[]) {
       this.permissions = permissions

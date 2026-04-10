@@ -37,7 +37,7 @@ export const useThemeStore = defineStore('theme', {
     fixedHeader: true, // 默认固定头部
     themeColor: '#409EFF', // 默认主题色
     showTagsView: true, // 默认显示标签页
-    themeMode: 'dark', // 默认暗黑主题（菜单和header为深色）
+    themeMode: 'light', // 默认浅色主题（菜单和header为深色）
     watermark: {
       enabled: true,
       text: '', // 空字符串表示使用默认（用户名）
@@ -58,17 +58,17 @@ export const useThemeStore = defineStore('theme', {
     // 是否为明亮模式
     isLightMode: (state) => state.themeMode === 'light',
     // 菜单背景色
-    menuBgColor: (state) => state.themeMode === 'dark' ? '#304156' : '#ffffff',
+    menuBgColor: (state) => state.themeMode === 'dark' ? '#304156' : 'rgba(0,0,0,0)',
     // 菜单文字色
     menuTextColor: (state) => state.themeMode === 'dark' ? '#bfcbd9' : '#303133',
     // 菜单激活色
     menuActiveColor: (state) => state.themeMode === 'dark' ? '#409EFF' : state.themeColor,
     // Header背景色
-    headerBgColor: (state) => state.themeMode === 'dark' ? '#304156' : '#ffffff',
+    headerBgColor: (state) => state.themeMode === 'dark' ? '#304156' : 'rgba(0,0,0,0)',
     // Logo背景色
-    logoBgColor: (state) => state.themeMode === 'dark' ? '#1f2d3d' : '#ffffff',
+    logoBgColor: (state) => state.themeMode === 'dark' ? '#1f2d3d' : 'rgba(0,0,0,0)',
     // Logo文字色
-    logoTextColor: (state) => state.themeMode === 'dark' ? '#ffffff' : '#303133',
+    logoTextColor: (state) => state.themeMode === 'dark' ? 'rgba(0,0,0,0)' : '#303133',
     // 是否启用路由缓存
     isRouteCacheEnabled: (state) => state.enableRouteCache,
   },

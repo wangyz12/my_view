@@ -12,7 +12,7 @@ const themeStore = useThemeStore()
 const mainStyle = computed(()=>{
   const pagePadding = themeStore.pagePadding
   const obj = {
-    padding:`${pagePadding}px !important`
+    padding:`${pagePadding}px !important`,
   }
   return obj
 })

@@ -70,13 +70,10 @@ const goHome = () => {
   padding: 0 !important;
 }
 
-// :deep(.el-main) {
-//   padding: 0 !important;
-// }
-
 .aside-transition {
   transition: width 0.3s ease-in-out, background-color 0.3s ease;
   overflow: hidden;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
 :deep(.el-menu) {

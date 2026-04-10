@@ -22,11 +22,21 @@
         />
       </template>
     </el-menu>
+    <!-- 收缩/展开按钮 -->
+    <div 
+      class="collapse-btn"
+      @click="toggleCollapse"
+    >
+      <el-icon :size="12">
+        <DArrowLeft v-if="!isCollapse" />
+        <DArrowRight v-else />
+      </el-icon>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '@/store/modules/user';
 import { useThemeStore } from '@/store/modules/theme';
@@ -35,7 +45,7 @@ import Logo from './logo/index.vue'
 const themeStore = useThemeStore();
 const router = useRouter();
 const route = useRoute();
-
+console.log(themeStore.menuBgColor)
 // 获取用户store中的菜单数据
 const userStore = useUserStore();
 const menuList = computed(() => userStore.$state.menus || []);
@@ -76,4 +86,65 @@ const findMenuItemByPath = (menus: any[], path: string): any => {
 const goHome = ()=>{
   router.push('/home')
 }
+// 切换折叠状态
+const toggleCollapse = () => {
+  userStore.set_isCollapse(!isCollapse.value);
+};
 </script>
+
+<style scoped lang="scss">
+.menu-wrapper {
+  position: relative;
+  height: 100%;
+}
+
+// 收缩/展开按钮
+.collapse-btn {
+  position: absolute;
+  bottom: 50%;
+  right: -12px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--el-bg-color);
+  border: 1px solid var(--el-border-color);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  // 鼠标悬停效果
+  &:hover {
+    background-color: var(--el-color-primary);
+    border-color: var(--el-color-primary);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    right: 3px;
+    .el-icon {
+      color: #fff;
+    }
+  }
+
+  // 点击效果
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .el-icon {
+    color: var(--el-text-color-secondary);
+    transition: all 0.3s ease;
+  }
+}
+
+// 菜单折叠时，按钮位置微调
+.menu-wrapper.is-collapse .collapse-btn {
+  right: -12px;
+  
+  .el-icon {
+    // 图标方向变了，不需要额外处理
+  }
+}
+</style>
