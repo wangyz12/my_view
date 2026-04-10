@@ -267,7 +267,7 @@ const pageAnimation = ref(themeStore.pageAnimation)
 const animationDuration = ref(themeStore.animationDuration)
 // 动态计算图标颜色（响应主题变化）
 const iconColorStyle = computed(() => {
-  if (themeStore.isDarkMode) {
+  if (themeStore.isDarkMode && themeStore.isTopLayout) {
     return { color: '#f0f2f5' }  // 深色模式：亮白色
   }
   return { color: '#1f2d3d' }     // 浅色模式：深灰色

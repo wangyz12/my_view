@@ -83,7 +83,7 @@ export const useThemeStore = defineStore('theme', {
     // Logo背景色
     logoBgColor: (state) => state.themeMode === 'dark' ? '#1f2d3d' : 'rgba(0,0,0,0)',
     // Logo文字色
-    logoTextColor: (state) => state.themeMode === 'dark' ? 'rgba(0,0,0,0)' : '#303133',
+    logoTextColor: (state) => state.themeMode === 'dark' ? '#fff' : '#303133',
     // 是否启用路由缓存
     isRouteCacheEnabled: (state) => state.enableRouteCache,
   },
