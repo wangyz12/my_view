@@ -1,6 +1,6 @@
 <!-- src/pages/login/index.vue -->
 <template>
-  <div class="login-container relative px-20 min-h-screen flex items-center justify-between overflow-hidden">
+  <div class="login-container relative px-[17%] min-h-screen flex items-center justify-between overflow-hidden">
     <BusinessBackground />
     <!-- 过渡遮罩 -->
     <transition name="fade">
@@ -15,7 +15,7 @@
     </transition>
 
     <!-- 左侧图片 + 从左侧滑入动画 -->
-    <div class="flex imageBox pl-10 image-slide">
+    <div class="flex imageBox  image-slide">
       <img :src="Group" alt="" class="w-[500px] h-[400px]">
     </div>
 
