@@ -113,57 +113,112 @@
       />
       <div class="form-tip">支持图片URL地址，可为空</div>
     </el-form-item>
+    <footer>
+      <div class="dialog-footer">
+        <el-button size="default" @click="emit('close')">取消</el-button>
+        <el-button type="primary" @click="onSubmit">确定</el-button>
+      </div>
+    </footer>
   </el-form>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-import type { FormData, Dept } from '../hooks/useUserManagement'
+import { ElMessage } from 'element-plus'
+import { getDeptTree } from '@/api/system/dept'
+import { 
+  createUser, 
+  updateUser, 
+} from '@/api/system/user'
+const emit = defineEmits<{
+  (e: 'success', data: any): void
+  (e: 'close'): void
+}>()
 
 interface Props {
-  isAdd: boolean
-  formData: FormData
-  deptOptions: Dept[]
-  deptProps: any
-  useDefaultPassword: boolean
-  onPasswordTypeChange?: (value: boolean) => void
-}
-
-interface Emits {
-  (e: 'update:formData', data: FormData): void
-  (e: 'update:useDefaultPassword', value: boolean): void
+  row: {
+    [key: string]: any
+  }
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
+const deptOptions = ref<any>([])
+const deptProps = {
+  value: 'id',
+  label: 'name',
+  children: 'children',
+  checkStrictly: true
+}
 
-// 表单引用
+onMounted(async () => {
+  const res: any = await getDeptTree()
+  deptOptions.value = res.data || []
+  // 如果是编辑模式，初始化表单数据
+  if (!isAdd.value && props.row) {
+    formData.value = { ...props.row }
+    // 确保状态是字符串类型
+    if (formData.value.status !== undefined) {
+      formData.value.status = String(formData.value.status)
+    }
+  }
+})
+
+const useDefaultPassword = ref<boolean>(true)
+const formData = ref<any>({
+  account: '',
+  username: '',
+  deptId: '',
+  phone: '',
+  email: '',
+  status: '0',
+  avatar: '',
+  password: ''
+})
+
+const isAdd = computed(() => {
+  console.log(props.row)
+  return JSON.stringify(props.row) === '{}' || !props.row?.id
+})
+
 const formRef = ref<FormInstance>()
 
 // 自定义密码验证函数
 const validatePassword = (rule: any, value: string, callback: any) => {
-  if (!value) {
+  if (!isAdd.value) {
+    callback()
+    return
+  }
+  
+  if (!useDefaultPassword.value && !value) {
     callback(new Error('请输入密码'))
     return
   }
   
-  if (value.length < 6) {
+  if (!useDefaultPassword.value && value.length < 6) {
     callback(new Error('密码长度不能小于6位'))
     return
   }
   
-  // 检查是否包含字母、下划线和数字
-  const hasLetter = /[a-zA-Z]/.test(value)
-  const hasUnderscore = /_/.test(value)
-  const hasNumber = /\d/.test(value)
-  
-  if (!hasLetter || !hasUnderscore || !hasNumber) {
-    callback(new Error('密码必须包含字母、下划线和数字'))
-    return
+  if (!useDefaultPassword.value) {
+    const hasLetter = /[a-zA-Z]/.test(value)
+    const hasUnderscore = /_/.test(value)
+    const hasNumber = /\d/.test(value)
+    
+    if (!hasLetter || !hasUnderscore || !hasNumber) {
+      callback(new Error('密码必须包含字母、下划线和数字'))
+      return
+    }
   }
   
   callback()
+}
+
+const handlePasswordTypeChange = (val: boolean) => {
+  useDefaultPassword.value = val
+  if (val) {
+    formData.value.password = ''
+  }
 }
 
 // 动态表单验证规则
@@ -218,7 +273,6 @@ const formRules = computed<FormRules>(() => {
             callback()
             return
           }
-          // 简单的URL验证
           if (!/^https?:\/\/.+/i.test(value)) {
             callback(new Error('请输入有效的URL地址'))
             return
@@ -230,8 +284,7 @@ const formRules = computed<FormRules>(() => {
     ]
   }
   
-  // 只有新增时才需要账号和密码验证
-  if (props.isAdd) {
+  if (isAdd.value) {
     rules.account = [
       { required: true, message: '账号不能为空', trigger: 'blur' },
       { min: 2, max: 50, message: '账号长度在 2 到 50 个字符', trigger: 'blur' }
@@ -244,36 +297,69 @@ const formRules = computed<FormRules>(() => {
   return rules
 })
 
-// 处理密码类型变化
-const handlePasswordTypeChange = (value: boolean) => {
-  emit('update:useDefaultPassword', value)
-  if (value) {
-    // 切换到默认密码
-    emit('update:formData', { ...props.formData, password: 'work_123' })
+// 构建提交数据
+const buildSubmitData = () => {
+  const submitData = { ...formData.value }
+  
+  // 转换状态为数字
+  if (submitData.status !== undefined) {
+    submitData.status = Number(submitData.status)
+  }
+  
+  // 新增时处理密码
+  if (isAdd.value) {
+    if (useDefaultPassword.value) {
+      submitData.password = 'work_123'
+    }
   } else {
-    // 切换到自定义密码，清空密码
-    emit('update:formData', { ...props.formData, password: '' })
+    // 编辑时删除密码字段
+    delete submitData.password
+  }
+  
+  // 删除空值字段
+  Object.keys(submitData).forEach(key => {
+    if (submitData[key] === '' || submitData[key] === null || submitData[key] === undefined) {
+      delete submitData[key]
+    }
+  })
+  
+  return submitData
+}
+
+// 提交表单
+const onSubmit = async () => {
+  if (!formRef.value) return
+  
+  try {
+    // 方式一：使用 validate 的回调
+    await new Promise((resolve, reject) => {
+      formRef.value?.validate((valid, fields) => {
+        if (valid) {
+          resolve(true)
+        } else {
+          reject(fields)
+        }
+      })
+    })
+    
+    // 验证通过，构建提交数据
+    const submitData = buildSubmitData()
+    // 调用接口
+    if (isAdd.value) {
+      await createUser(submitData)
+      ElMessage.success('添加成功')
+    } else {
+      await updateUser(submitData.id,submitData)
+      ElMessage.success('编辑成功')
+    }
+    // 触发成功事件
+    emit('success', submitData)
+  } catch (error) {
+    console.error('表单验证失败:', error)
+    ElMessage.warning('请完善表单信息')
   }
 }
 
-// 清除验证
-const clearValidate = () => {
-  if (formRef.value) {
-    formRef.value.clearValidate()
-  }
-}
-
-// 验证表单
-const validate = () => {
-  if (!formRef.value) return Promise.reject(new Error('表单引用不存在'))
-  return formRef.value.validate()
-}
-
-// 暴露方法
-defineExpose({
-  clearValidate,
-  validate
-})
 </script>
 
 <style lang="scss" scoped>

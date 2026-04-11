@@ -11,6 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BoxTable: typeof import('./src/components/BoxTable/index.vue')['default']
     Breadcrumb: typeof import('./src/components/Breadcrumb/index.vue')['default']
     CesiumEarth: typeof import('./src/components/CesiumEarth/cesiumEarth.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']
@@ -20,8 +21,10 @@ declare module 'vue' {
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCascader: typeof import('element-plus/es')['ElCascader']
+    ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCol: typeof import('element-plus/es')['ElCol']
     ElContainer: typeof import('element-plus/es')['ElContainer']
+    ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDescriptions: typeof import('element-plus/es')['ElDescriptions']
     ElDescriptionsItem: typeof import('element-plus/es')['ElDescriptionsItem']
     ElDialog: typeof import('element-plus/es')['ElDialog']
@@ -66,13 +69,17 @@ declare module 'vue' {
     MenuSearch: typeof import('./src/components/MenuSearch/index.vue')['default']
     NotFound: typeof import('./src/components/notFound/index.vue')['default']
     PageLayout: typeof import('./src/components/PageLayout/index.vue')['default']
+    Pagination: typeof import('./src/components/BoxTable/tableOpe/Pagination.vue')['default']
     ProgressBar: typeof import('./src/components/ProgressBar/index.vue')['default']
     RouteCache: typeof import('./src/components/RouteCache/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchForm: typeof import('./src/components/BoxTable/searchForm/index.vue')['default']
     SignPopup: typeof import('./src/components/popup/SignPopup.vue')['default']
     Simple: typeof import('./src/components/MenuSearch/simple.vue')['default']
     Simplest: typeof import('./src/components/MenuSearch/simplest.vue')['default']
+    TableOpe: typeof import('./src/components/BoxTable/tableOpe/index.vue')['default']
+    TableToolbar: typeof import('./src/components/BoxTable/tableOpe/TableToolbar.vue')['default']
     ThemeSettings: typeof import('./src/components/ThemeSettings/index.vue')['default']
     Unauthorized: typeof import('./src/components/Unauthorized/index.vue')['default']
   }
