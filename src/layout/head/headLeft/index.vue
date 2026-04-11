@@ -11,7 +11,6 @@
           <el-breadcrumb-item 
             v-for="(item, index) in breadcrumbItems" 
             :key="index"
-            :to="item.path === currentPath ? undefined : { path: item.path }"
           >
             {{ item.title }}
           </el-breadcrumb-item>
