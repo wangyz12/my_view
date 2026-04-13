@@ -150,8 +150,6 @@
 
 // 首页容器
 .home-container {
-  padding: $spacing-base;
-  
   @media (max-width: $breakpoint-sm - 1) {
     padding: $spacing-sm;
   }
@@ -210,6 +208,7 @@
 
 // 骨架屏样式
 .home-skeleton {
+  padding:0 !important;
   .skeleton-row {
     display: flex;
     gap: $col-gap;
