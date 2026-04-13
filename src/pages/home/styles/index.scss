@@ -1,0 +1,224 @@
+// 首页主样式文件
+// 导入变量、mixin 和组件样式
+
+@import './variables.scss';
+@import './mixins.scss';
+@import './components.scss';
+
+// 首页容器
+.home-container {
+  padding: $spacing-base;
+  
+  @media (max-width: $breakpoint-sm - 1) {
+    padding: $spacing-sm;
+  }
+}
+
+// 首页行布局
+.home-row {
+  display: flex;
+  gap: $col-gap;
+  margin-bottom: $row-gap;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  @media (max-width: $breakpoint-sm - 1) {
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+}
+
+// 首页列布局
+.home-col {
+  &.user-info-col {
+    flex: 0 0 380px;
+    
+    @media (max-width: $breakpoint-sm - 1) {
+      flex: 1;
+    }
+  }
+  
+  &.system-intro-col {
+    flex: 1;
+  }
+  
+  &.quick-access-col {
+    flex: 0 0 380px;
+    
+    @media (max-width: $breakpoint-sm - 1) {
+      flex: 1;
+    }
+  }
+  
+  &.chart-col {
+    flex: 1;
+  }
+  
+  &.activity-col {
+    flex: 0 0 320px;
+    
+    @media (max-width: $breakpoint-sm - 1) {
+      flex: 1;
+    }
+  }
+}
+
+// 骨架屏样式
+.home-skeleton {
+  .skeleton-row {
+    display: flex;
+    gap: $col-gap;
+    margin-bottom: $row-gap;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    @media (max-width: $breakpoint-sm - 1) {
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+    
+    // 第一排骨架屏
+    &:first-child {
+      .skeleton-user-card {
+        flex: 0 0 380px;
+        height: 240px; // LAYOUT_CONFIG.cardHeights.firstRow
+        
+        @media (max-width: $breakpoint-sm - 1) {
+          flex: 1;
+        }
+      }
+      
+      .skeleton-system-intro {
+        flex: 1;
+        height: 240px; // LAYOUT_CONFIG.cardHeights.firstRow
+      }
+    }
+    
+    // 第二排骨架屏
+    &:nth-child(2) {
+      .skeleton-quick-access {
+        flex: 0 0 380px;
+        height: 240px; // LAYOUT_CONFIG.cardHeights.secondRow
+        
+        @media (max-width: $breakpoint-sm - 1) {
+          flex: 1;
+        }
+      }
+      
+      .skeleton-line-chart {
+        flex: 1;
+        height: 240px; // LAYOUT_CONFIG.cardHeights.secondRow
+      }
+    }
+    
+    // 第三排骨架屏
+    &:last-child {
+      .skeleton-chart {
+        flex: 1;
+        height: 300px; // LAYOUT_CONFIG.cardHeights.thirdRow
+      }
+      
+      .skeleton-activity {
+        flex: 0 0 320px;
+        height: 300px; // LAYOUT_CONFIG.cardHeights.thirdRow
+        
+        @media (max-width: $breakpoint-sm - 1) {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+// 骨架屏项目通用样式
+.skeleton-user-card,
+.skeleton-system-intro,
+.skeleton-quick-access,
+.skeleton-line-chart,
+.skeleton-chart,
+.skeleton-activity {
+  @include skeleton-animation;
+  border-radius: $border-radius-base;
+}
+
+// 响应式调整
+@media (max-width: $breakpoint-sm - 1) {
+  .home-col,
+  .skeleton-row .skeleton-user-card,
+  .skeleton-row .skeleton-system-intro,
+  .skeleton-row .skeleton-quick-access,
+  .skeleton-row .skeleton-line-chart,
+  .skeleton-row .skeleton-chart,
+  .skeleton-row .skeleton-activity {
+    flex: 1;
+  }
+}
+
+// 动画类
+.fade-in {
+  animation: fade-in $transition-duration-base $transition-timing-function;
+}
+
+.fade-out {
+  animation: fade-out $transition-duration-base $transition-timing-function;
+}
+
+// 工具类
+.text-ellipsis {
+  @include text-ellipsis;
+}
+
+.text-ellipsis-2 {
+  @include text-ellipsis(2);
+}
+
+.text-ellipsis-3 {
+  @include text-ellipsis(3);
+}
+
+.flex-center {
+  @include flex-center;
+}
+
+.flex-vertical-center {
+  @include flex-vertical-center;
+}
+
+.flex-horizontal-center {
+  @include flex-horizontal-center;
+}
+
+// 状态类
+.status-active {
+  color: $status-active;
+}
+
+.status-inactive {
+  color: $status-inactive;
+}
+
+.status-busy {
+  color: $status-busy;
+}
+
+.status-away {
+  color: $status-away;
+}
+
+// 卡片通用样式类
+.card-base {
+  @include card-base;
+}
+
+.flex-card {
+  @include flex-card;
+}
+
+// 分割线
+.divider {
+  @include divider;
+}
