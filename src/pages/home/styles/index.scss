@@ -5,6 +5,149 @@
 @import './mixins.scss';
 @import './components.scss';
 
+// ==================== 动画样式 ====================
+
+/* 淡入动画 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 淡入上浮动画 */
+@keyframes fadeSlideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* 缩放淡入动画 */
+@keyframes scaleIn {
+  from { 
+    opacity: 0; 
+    transform: scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+/* 水平滑动动画 */
+@keyframes slideInX {
+  from { 
+    opacity: 0; 
+    transform: translateX(-30px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+/* 垂直滑动动画 */
+@keyframes slideInY {
+  from { 
+    opacity: 0; 
+    transform: translateY(-30px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* 动画类 */
+.animate-fade-in {
+  animation-name: fadeIn;
+}
+
+.animate-fade-slide-up {
+  animation-name: fadeSlideUp;
+}
+
+.animate-scale-in {
+  animation-name: scaleIn;
+}
+
+.animate-slide-in-x {
+  animation-name: slideInX;
+}
+
+.animate-slide-in-y {
+  animation-name: slideInY;
+}
+
+/* 动画基础属性 */
+.animate-base {
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+/* 动画延迟类 */
+.animate-delay-50 { animation-delay: 50ms; }
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-150 { animation-delay: 150ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-250 { animation-delay: 250ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-350 { animation-delay: 350ms; }
+.animate-delay-400 { animation-delay: 400ms; }
+.animate-delay-450 { animation-delay: 450ms; }
+.animate-delay-500 { animation-delay: 500ms; }
+
+/* 动画容器 */
+.animation-container {
+  opacity: 0;
+}
+
+.animation-container.animate-in {
+  opacity: 1;
+}
+
+/* 暗黑模式动画调整 */
+:global(.dark) {
+  .animate-fade-slide-up {
+    animation-name: fadeIn; /* 暗黑模式下使用简单的淡入 */
+  }
+  
+  .animate-slide-in-x,
+  .animate-slide-in-y {
+    animation-name: fadeSlideUp; /* 使用更温和的上浮效果 */
+  }
+}
+
+/* 响应式动画调整 */
+@media (max-width: $breakpoint-sm - 1) {
+  .animate-fade-slide-up {
+    transform: translateY(10px); /* 移动端减少移动距离 */
+  }
+  
+  .animate-slide-in-x,
+  .animate-slide-in-y {
+    transform: translateX(-15px) translateY(-15px); /* 移动端减少移动距离 */
+  }
+}
+
+/* 禁用动画的类（用于性能考虑） */
+.no-animation {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* 减少动画（用于可访问性） */
+.reduce-motion {
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 // 首页容器
 .home-container {
   padding: $spacing-base;

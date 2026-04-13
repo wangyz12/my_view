@@ -16,32 +16,52 @@
       </div>
     </div>
     
-    <!-- 首页内容 -->
-    <div v-else class="home-container">
+    <!-- 首页内容（带动画） -->
+    <div 
+      v-else 
+      class="home-container"
+      :class="{ 'animation-container': shouldEnableAnimation, 'animate-in': showContent }"
+    >
       <!-- 第一行：用户信息和系统介绍 -->
       <div class="home-row">
-        <div class="home-col user-info-col">
+        <div 
+          class="home-col user-info-col"
+          :class="getAnimationClass('user-info')"
+          :style="getAnimationStyle('user-info')"
+        >
           <UserInfoCard 
             :user-info="formattedUserInfo" 
             :loading="loading"
           />
         </div>
         
-        <div class="home-col system-intro-col">
+        <div 
+          class="home-col system-intro-col"
+          :class="getAnimationClass('system-intro')"
+          :style="getAnimationStyle('system-intro')"
+        >
           <SystemIntroCard />
         </div>
       </div>
       
       <!-- 第二行：快速访问和折线图 -->
       <div class="home-row">
-        <div class="home-col quick-access-col">
+        <div 
+          class="home-col quick-access-col"
+          :class="getAnimationClass('quick-access')"
+          :style="getAnimationStyle('quick-access')"
+        >
           <QuickAccessCard 
             :links="statsData.quickLinks"
             @link-click="handleLinkClick"
           />
         </div>
         
-        <div class="home-col chart-col">
+        <div 
+          class="home-col chart-col"
+          :class="getAnimationClass('access-trend')"
+          :style="getAnimationStyle('access-trend')"
+        >
           <ChartCard 
             title="系统访问趋势"
             :height="LAYOUT_CONFIG.cardHeights.secondRow"
@@ -54,7 +74,11 @@
       
       <!-- 第三行：图表和最近活动 -->
       <div class="home-row">
-        <div class="home-col chart-col">
+        <div 
+          class="home-col chart-col"
+          :class="getAnimationClass('role-distribution')"
+          :style="getAnimationStyle('role-distribution')"
+        >
           <ChartCard 
             :title="statsData.roleDistribution.title"
             :height="LAYOUT_CONFIG.cardHeights.thirdRow"
@@ -64,7 +88,11 @@
           />
         </div>
         
-        <div class="home-col activity-col">
+        <div 
+          class="home-col activity-col"
+          :class="getAnimationClass('activity-list')"
+          :style="getAnimationStyle('activity-list')"
+        >
           <ActivityList 
             :activities="statsData.recentActivities"
             :loading="loading"
@@ -103,6 +131,15 @@ import {
   USER_STATUS_CONFIG,
   type UserStatus
 } from './config'
+import { useThemeStore } from '@/store/modules/theme'
+import {
+  type PageAnimationType,
+  getComponentAnimation,
+  getThemeBasedAnimation,
+  componentAnimationOrder,
+  shouldAnimate,
+  getTotalAnimationDuration
+} from './utils/animations'
 
 // 导入样式
 import './styles/index.scss'
@@ -150,6 +187,99 @@ const accessTrendOptions = computed(() => {
   return getAccessTrendOptions(statsData.value.accessTrend.data)
 })
 
+// ==================== 动画相关 ====================
+const themeStore = useThemeStore()
+
+// 动画状态
+const showContent = ref(false)
+const animationReady = ref(false)
+
+// 计算主题调整后的动画类型
+const adjustedAnimationType = computed<PageAnimationType>(() => {
+  return getThemeBasedAnimation(
+    themeStore.themeMode,
+    themeStore.pageAnimation
+  )
+})
+
+// 是否启用动画
+const shouldEnableAnimation = computed(() => {
+  return shouldAnimate(adjustedAnimationType.value)
+})
+
+// 获取组件动画配置
+const getAnimationConfig = (componentId: keyof typeof componentAnimationOrder) => {
+  return getComponentAnimation(
+    adjustedAnimationType.value,
+    themeStore.animationDuration,
+    componentAnimationOrder[componentId]
+  )
+}
+
+// 获取组件动画类名
+const getAnimationClass = (componentId: keyof typeof componentAnimationOrder) => {
+  const config = getAnimationConfig(componentId)
+  
+  if (config.type === 'none') return ''
+  
+  const classes = ['animate-base']
+  
+  // 添加动画类型类
+  switch (config.type) {
+    case 'fade':
+      classes.push('animate-fade-in')
+      break
+    case 'fade-slide':
+      classes.push('animate-fade-slide-up')
+      break
+    case 'scale':
+      classes.push('animate-scale-in')
+      break
+    case 'slide-x':
+      classes.push('animate-slide-in-x')
+      break
+    case 'slide-y':
+      classes.push('animate-slide-in-y')
+      break
+  }
+  
+  // 添加延迟类（简化版）
+  const delay = config.delay || 0
+  if (delay > 0) {
+    const delayClass = `animate-delay-${Math.round(delay / 50) * 50}`
+    classes.push(delayClass)
+  }
+  
+  return classes.join(' ')
+}
+
+// 获取组件动画样式
+const getAnimationStyle = (componentId: keyof typeof componentAnimationOrder) => {
+  const config = getAnimationConfig(componentId)
+  
+  if (config.type === 'none') return {}
+  
+  const style: Record<string, string> = {
+    'animation-duration': `${config.duration}ms`,
+    'animation-timing-function': config.easing || 'cubic-bezier(0.4, 0, 0.2, 1)',
+    'animation-fill-mode': 'both'
+  }
+  
+  if (config.delay) {
+    style['animation-delay'] = `${config.delay}ms`
+  }
+  
+  return style
+}
+
+// 计算总动画时长（用于控制骨架屏到内容的过渡）
+const totalAnimationDuration = computed(() => {
+  return getTotalAnimationDuration(
+    adjustedAnimationType.value,
+    themeStore.animationDuration
+  )
+})
+
 // 模拟数据更新
 const updateMockData = () => {
   statsData.value = generateRandomData(statsData.value)
@@ -163,9 +293,22 @@ const initData = () => {
   setTimeout(() => {
     loading.value = false
     
-    // 隐藏初始骨架屏
+    // 准备动画
+    animationReady.value = true
+    
+    // 隐藏初始骨架屏，然后显示内容并触发动画
     setTimeout(() => {
       initialLoading.value = false
+      
+      // 短暂延迟后显示内容并触发动画
+      setTimeout(() => {
+        showContent.value = true
+        
+        // 如果禁用动画，立即显示内容
+        if (!shouldEnableAnimation.value) {
+          showContent.value = true
+        }
+      }, 50)
     }, 300)
   }, 800)
 }
