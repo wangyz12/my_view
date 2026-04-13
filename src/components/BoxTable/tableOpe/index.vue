@@ -4,6 +4,7 @@
       :data="tableData" 
       border 
       style="width: 100%"
+      height="100%" 
       v-loading="loading"
       @selection-change="handleSelectionChange"
     >
@@ -106,8 +107,16 @@ const handleSelectionChange = (selection: any[]) => {
   padding: 10px;
   background-color: #fff;
   border-radius: 4px;
+  height: 100%;           // 🔧 添加这行：占满父容器
+  display: flex;          // 🔧 添加这行
+  flex-direction: column; // 🔧 添加这行
+  min-height: 0;          // 🔧 添加这行：防止 flex 溢出
+  
   :deep(.el-table) {
     font-size: 14px;
+    flex: 1;              // 🔧 添加这行：占据剩余空间
+    min-height: 0;        // 🔧 添加这行：防止 flex 溢出
+    
     .el-table__header th {
       font-weight: 600;
     }

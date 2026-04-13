@@ -44,28 +44,29 @@
           <slot name="table-toolbar" />
         </template>
       </TableToolbar>
-      
-      <TableComponent 
-        ref="tableComponentRef" 
-        :tableColumn="displayColumns" 
-        :tableData="tableData" 
-        :loading="loading"
-        @selection-change="handleSelectionChange"
-      >
-        <!-- 表格列插槽 - 使用 table- 前缀或直接使用列名 -->
-        <template 
-          v-for="col in tableSlotsColumns" 
-          :key="col.slotName || col.prop"
-          #[getTableSlotName(col)]="scope"
+      <slot name="table" :tableData="tableData" :loading="loading" :displayColumns="displayColumns">
+        <TableComponent 
+          ref="tableComponentRef" 
+          :tableColumn="displayColumns" 
+          :tableData="tableData" 
+          :loading="loading"
+          @selection-change="handleSelectionChange"
         >
-          <slot 
-            :name="getTableSlotName(col)" 
-            :row="scope.row" 
-            :column="col"
-            :$index="scope.$index" 
-          />
-        </template>
-      </TableComponent>
+          <!-- 表格列插槽 -->
+          <template 
+            v-for="col in tableSlotsColumns" 
+            :key="col.slotName || col.prop"
+            #[getTableSlotName(col)]="scope"
+          >
+            <slot 
+              :name="getTableSlotName(col)" 
+              :row="scope.row" 
+              :column="col"
+              :$index="scope.$index" 
+            />
+          </template>
+        </TableComponent>
+      </slot>
     </div>
 
     <!-- 分页 -->
@@ -324,11 +325,43 @@ onMounted(() => {
 .main-table {
   background: #f5f7fa;
   min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   .table-wrapper {
     background: #fff;
     border-radius: 4px;
     overflow: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+
+    .table-slot-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      
+      // 确保插槽内的表格填满容器
+      > * {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+    }
+
+    // 默认表格样式
+    :deep(.el-table) {
+      height: 100% !important;
+      flex: 1;
+      
+      .el-table__body-wrapper {
+        overflow-y: auto !important;
+      }
+    }
 
     &.large {
       :deep(.el-table) {
