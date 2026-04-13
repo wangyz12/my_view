@@ -4,5 +4,8 @@
       "source": "/api/(.*)",
       "destination": "https://47.102.196.166/api/$1"
     }
-  ]
+  ],
+  "buildCommand": "pnpm install --no-frozen-lockfile && pnpm build",
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "outputDirectory": "dist"
 }
