@@ -1,19 +1,14 @@
 <template>
   <el-form>
-    <el-form-item label="分配角色">
-      <el-select
-      v-model="localSelectedRoleIds"
-      multiple
-      placeholder="Select"
-      style="width: 240px"
-    >
-      <el-option
-        v-for="item in deptOptions"
-        :key="item.id"
-        :label="item.label"
-        :value="item.id"
+    <el-form-item label="分配部门">
+      <el-cascader
+        v-model="localSelectedRoleIds"
+        :options="deptOptions"
+        :props="deptProps"
+        placeholder="请选择所属部门"
+        style="width: 100%"
+        clearable
       />
-    </el-select>
     </el-form-item>
     <footer>
       <div class="flex justify-center mt-10">
@@ -27,49 +22,45 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import {getRoleList}from '@/api/system/role'
-import { assignUserRoles,getUserRoles } from '@/api/system/userRole'
-
+import { getDeptTree } from '@/api/system/dept'
+import {updateUser}from '@/api/system/user'
 interface Props {
   row: {
     [key: string]: any
   }
 }
-
 const emit = defineEmits<{
   (e: 'success', data: any): void
   (e: 'close'): void
 }>()
-
 const props = defineProps<Props>()
 const deptOptions = ref<any>([])
-const localSelectedRoleIds = ref<any[]>([]) // 存储选中的多维数组
+const localSelectedRoleIds = ref<any[]>([])
+const deptProps = {
+  value: 'id',
+  label: 'name',
+  children: 'children',
+  checkStrictly: true,
+}
 // 提交
 const onSubmit = async () => {
   try {
-    
     const params = {
-      userId: props.row.id,
-      roleIds: localSelectedRoleIds.value  // 提交一维数组
+      deptId:localSelectedRoleIds.value[0]
     }
-    await assignUserRoles(params)
+    await updateUser(props.row.id,params)
     ElMessage.success('角色分配成功')
     emit('success', true)
   } catch (error: any) {
     ElMessage.error(error.response?.data?.msg || error.message || '分配失败')
   }
 }
-
 onMounted(async () => {
-  const rloeRes = await getUserRoles(props.row.id)
-  localSelectedRoleIds.value = rloeRes.data.map((v:any)=>{
-    return v.id
-  })
-  const res: any = await getRoleList({})
-  deptOptions.value = res.data.list || []
+  localSelectedRoleIds.value = [props.row.deptId.id]
+  const res: any = await getDeptTree()
+  deptOptions.value = res.data || []
 })
 </script>
-
 <style lang="scss" scoped>
 :deep(.el-form-item) {
   margin-bottom: 0;

@@ -23,9 +23,12 @@
       <template #operation="{ row }">
         <el-button link type="primary" size="small" @click="handleEdit(row)"
           v-permission="'system:user:edit'">编辑</el-button>
-          <el-button type="primary" link size="small" @click="handleRole( row)" v-permission="'system:user:edit'">
-              分配角色
-            </el-button>
+        <el-button type="primary" link size="small" @click="handleRole(row)" v-permission="'system:user:edit'">
+          分配角色
+        </el-button>
+        <el-button type="primary" link size="small" @click="handleDept(row)" v-permission="'system:user:edit'">
+          分配部门
+        </el-button>
         <el-button v-if="row.status === '1'" type="success" link size="small" @click="handelClick('enable', row)"
           v-permission="'system:user:edit'">
           启用
@@ -45,7 +48,7 @@
 import PageLayout from '@/components/PageLayout/index.vue'
 import BoxTable from '@/components/BoxTable/index.vue'
 import { TableConfig } from './config'
-import { showChangePasswordPopup,showRloePropup } from './propup/index'
+import { showChangePasswordPopup, showRloePropup, showDeptpup } from './propup/index'
 import {
   deleteUser,
   batchDeleteUsers,
@@ -88,23 +91,29 @@ const handleDelete = (row: any) => {
     .catch(() => {
     })
 }
-const handelClick = async (str:string,row:any) => {
+const handelClick = async (str: string, row: any) => {
   try {
-    await ElMessageBox.confirm(`是否${str === 'enable'?'启用':'禁用'}该用户`, '提示', {
+    await ElMessageBox.confirm(`是否${str === 'enable' ? '启用' : '禁用'}该用户`, '提示', {
       type: 'warning',
       confirmButtonText: '确定',
       cancelButtonText: '取消'
     })
-    const status = str === 'enable'? '0':'1'
+    const status = str === 'enable' ? '0' : '1'
     await updateUser(row.id, { status })
     ElMessage.success('启用成功')
     tableInstance.value.queryTableList()
   } catch (error) {
   }
 }
-const handleRole = async (row:any)=>{
-  const res =  await showRloePropup(row)
-  if(res.success){
+const handleRole = async (row: any) => {
+  const res = await showRloePropup(row)
+  if (res.success) {
+    tableInstance.value.queryTableList()
+  }
+}
+const handleDept = async (row: any) => {
+  const res = await showDeptpup(row);
+  if (res.success) {
     tableInstance.value.queryTableList()
   }
 }
