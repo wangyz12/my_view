@@ -58,42 +58,45 @@
     
     <!-- 操作按钮 -->
     <div class="form-actions">
-      <el-button @click="handleCancel">取消</el-button>
+      <el-button @click="emit('close')">取消</el-button>
       <el-button type="primary" @click="handleSubmit" :loading="submitting">确定</el-button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue'
+import { ref, computed } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-
-interface Props {
-  isEdit?: boolean
-  initialData?: any
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  isEdit: false,
-  initialData: () => ({})
-})
+import type {ADDEDITFORM} from './../config'
+import { createRole, updateRole } from '@/api/system/role';
 
 const emit = defineEmits<{
   (e: 'success', data: any): void
-  (e: 'cancel'): void
+  (e: 'close'): void
 }>()
 
-// 表单引用
-const formRef = ref<FormInstance>()
+interface Props {
+  row: {
+    [key: string]: any
+  }
+}
 
+const props = defineProps<Props>()
 // 表单数据
-const formData = reactive({
+const formData = ref<ADDEDITFORM|any>({
   name: '',
   label: '',
   dataScope: '5',
   status: '0',
   remark: ''
 })
+// 表单引用
+const formRef = ref<FormInstance>()
+const isEdit = computed(()=>{
+  formData.value = props.row
+  return !!props.row.id
+})
+
 
 // 提交状态
 const submitting = ref(false)
@@ -111,70 +114,31 @@ const formRules: FormRules = {
     { required: true, message: '请选择数据权限', trigger: 'change' }
   ]
 }
-
-// 监听初始数据变化
-watch(() => props.initialData, (newData) => {
-  if (newData && Object.keys(newData).length > 0) {
-    Object.assign(formData, newData)
-  }
-}, { immediate: true })
-
-// 处理提交
-const handleSubmit = async () => {
+const handleSubmit = async ()=>{
   if (!formRef.value) return
-  
   try {
-    // 验证表单
     await formRef.value.validate()
-    
     submitting.value = true
-    
-    // 触发成功事件，传递表单数据
-    emit('success', { ...formData })
+    const submitData = { ...formData.value }
+    if (isEdit.value) {
+      // 编辑角色
+      await updateRole(props.row.id, submitData)
+      ElMessage.success('更新成功')
+    } else {
+      // 新增角色
+      await createRole(submitData)
+      ElMessage.success('创建成功')
+    }
+    emit('success', submitData)
+    emit('close')
   } catch (error) {
-    console.error('表单验证失败:', error)
+    // 表单校验失败或接口报错
+    console.error('提交失败:', error)
+    ElMessage.error('请正确填写表单信息')
   } finally {
     submitting.value = false
   }
 }
-
-// 处理取消
-const handleCancel = () => {
-  emit('cancel')
-}
-
-// 验证表单（保持向后兼容）
-const validate = async (): Promise<boolean> => {
-  if (!formRef.value) return false
-  
-  try {
-    await formRef.value.validate()
-    return true
-  } catch {
-    return false
-  }
-}
-
-// 重置表单（保持向后兼容）
-const reset = () => {
-  formRef.value?.resetFields()
-  Object.assign(formData, {
-    name: '',
-    label: '',
-    dataScope: '5',
-    status: '0',
-    remark: ''
-  })
-}
-
-// 获取表单数据（保持向后兼容）
-const getFormData = () => ({ ...formData })
-
-defineExpose({
-  validate,
-  reset,
-  getFormData
-})
 </script>
 
 <style scoped>

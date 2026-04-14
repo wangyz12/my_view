@@ -78,9 +78,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch, onMounted } from 'vue'
+import { ref,  computed,  onMounted } from 'vue'
 import { ElTree, ElMessage } from 'element-plus'
-import { Search } from '@element-plus/icons-vue'
 import { getMenuTree } from '@/api/system/menu'
 import { getRoleMenus, assignRoleMenus } from '@/api/system/role'
 
@@ -125,12 +124,9 @@ const treeProps = {
 const loadMenuTree = async () => {
   try {
     loading.value = true
-    console.log('📡 加载菜单树...')
     const res = await getMenuTree()
-    console.log('✅ 菜单树响应:', res)
     if (res.code === 200) {
       menuTree.value = res.data || []
-      console.log('📊 菜单树数据加载完成，数量:', menuTree.value.length)
     }
   } catch (error) {
     console.error('加载菜单树失败:', error)
@@ -142,13 +138,9 @@ const loadMenuTree = async () => {
 // 加载角色已分配的菜单
 const loadRoleMenus = async () => {
   try {
-    console.log('📡 加载角色已有菜单，角色ID:', props.roleId)
     const res = await getRoleMenus(props.roleId)
-    console.log('✅ 角色菜单响应:', res)
     if (res.code === 200) {
       defaultCheckedKeys.value = res.data || []
-      console.log('📋 角色已有菜单ID:', defaultCheckedKeys.value)
-      
       // 等待树组件渲染完成后设置选中的菜单
       setTimeout(() => {
         if (treeRef.value && defaultCheckedKeys.value.length > 0) {
@@ -172,12 +164,10 @@ const filteredMenuTree = computed(() => {
     return nodes
       .map(node => {
         const children = node.children ? filterTree(node.children) : []
-        
         // 检查节点是否匹配搜索条件
         const matchesSearch = !searchKeyword.value || 
           node.title?.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
           node.name?.toLowerCase().includes(searchKeyword.value.toLowerCase())
-        
         // 检查节点是否匹配类型过滤
         const matchesType = !menuType.value || node.type === menuType.value
         
@@ -250,12 +240,9 @@ const getSelectedMenuIds = (): string[] => {
 const handleSubmit = async () => {
   try {
     submitting.value = true
-    
     const menuIds = getSelectedMenuIds()
-    console.log('分配菜单参数:', { roleId: props.roleId, menuIds })
     await assignRoleMenus(props.roleId, menuIds)
-    
-    ElMessage.success('菜单分配成功')
+    ElMessage.success(`已为${props.roleName}角色重新分配菜单`)
     emit('success')
   } catch (error: any) {
     console.error('分配菜单失败:', error)
