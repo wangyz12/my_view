@@ -26,9 +26,9 @@
         <el-button type="primary" link size="small" @click="handleRole(row)" v-permission="'system:user:edit'">
           分配角色
         </el-button>
-        <el-button type="primary" link size="small" @click="handleDept(row)" v-permission="'system:user:edit'">
+        <!-- <el-button type="primary" link size="small" @click="handleDept(row)" v-permission="'system:user:edit'">
           分配部门
-        </el-button>
+        </el-button> -->
         <el-button v-if="row.status === '1'" type="success" link size="small" @click="handelClick('enable', row)"
           v-permission="'system:user:edit'">
           启用
