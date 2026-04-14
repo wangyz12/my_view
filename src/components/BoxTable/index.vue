@@ -202,9 +202,17 @@ const loadData = async () => {
     }
 
     const res = await props.tableConfig.queryApi(params)
-
+    
+    // 使用 dataListStr 指定数据列表字段，默认 'list'
+    const dataListKey = props.tableConfig.apiList || 'list'
+    
     if (res.code === 200) {
-      tableData.value = res.data?.list || res.data || []
+      // 支持嵌套路径，如 'data.user.list'
+      const getValueByPath = (obj: any, path: string) => {
+        return path.split('.').reduce((current, key) => current?.[key], obj)
+      }
+      
+      tableData.value = getValueByPath(res.data, dataListKey) || res.data?.[dataListKey] || res.data || []
       total.value = res.data?.total || 0
       emit('load-success', { data: tableData.value, total: total.value })
     } else {

@@ -28,6 +28,9 @@
         <el-button type="primary" link @click="handleMenuAssign(row)" v-permission="'system:role:edit'">
           分配菜单
         </el-button>
+        <el-button type="primary" link @click="handleView(row)" v-permission="'system:role:edit'">
+          查看用户
+        </el-button>
         <el-button v-permission="'system:role:edit'" type="danger" link @click="handleDelete(row)"
           :disabled="row.name === 'admin'">
           删除
@@ -42,7 +45,7 @@ import PageLayout from '@/components/PageLayout/index.vue'
 import BoxTable from '@/components/BoxTable/index.vue'
 import { ElMessageBox } from 'element-plus'
 import { TableConfig, getDataScopeType, getDataScopeLabel } from './config'
-import { showAddEditRloePopup, showUserMenuPopup } from './propup/index'
+import { showAddEditRloePopup, showUserMenuPopup,showUserListPopup } from './propup/index'
 import { deleteRole } from '@/api/system/role'
 const tableRef = ref()
 const tableInstance = ref<any>(null)
@@ -83,6 +86,12 @@ const handleDelete = async (row: any) => {
       console.error('删除角色失败:', error)
       ElMessage.error(error.message || '删除失败')
     }
+  }
+}
+const handleView = async (row:any)=>{
+  const res:any = await showUserListPopup(`${row.label}角色下的用户`,row)
+  if (res.success) {
+    tableInstance.value.queryTableList()
   }
 }
 </script>

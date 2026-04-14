@@ -9,7 +9,8 @@ export const TableConfig = {
   // ==================== 基础配置 ====================
   // 表格唯一标识（用于保存列设置到 localStorage）
   tableKey: 'user_table',
-  
+  // 用于表格取不同的数据list  默认是list，具体角色页面使用过
+  apiList:'list',
   // 数据查询接口
   // queryApi: getUserList,
   
