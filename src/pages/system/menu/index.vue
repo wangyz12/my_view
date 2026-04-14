@@ -87,7 +87,7 @@ const handleSelectionChange = (val: any) => {
 }
 const handleEdit = async (title: string, row: Object) => {
   const isAdd = title === '编辑菜单'?false:true
-  const res: any = await showAddEditMenuPopup(title, row, menuList.value,isAdd)
+  const res: any = await showAddEditMenuPopup(title, {...row}, menuList.value,isAdd)
   if (res.success) {
     tableInstance.value.queryTableList()
   }
