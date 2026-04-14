@@ -1,4 +1,3 @@
-<!-- src/layout/Layout.vue -->
 <template>
     <el-main class="main-content" :style="mainStyle">
       <route-cache class="router-view"></route-cache>

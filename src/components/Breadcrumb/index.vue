@@ -177,5 +177,5 @@ const handleCommand = (command: string) => {
 </script>
 
 <style scoped lang="scss">
-@use './index.scss'
+@use './index.scss';
 </style>

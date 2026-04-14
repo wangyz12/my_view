@@ -1,4 +1,3 @@
-// env.d.ts（根目录）
 /// <reference types="vite/client" />
 
 // 声明 Element Plus 语言包模块

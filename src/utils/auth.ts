@@ -1,4 +1,3 @@
-// src/utils/auth.ts
 import { useUserStore } from '@/store/modules/user'
 import { getCurrentUserMenus, getCurrentUserPermissions, getCurrentUserDataScope } from '@/api/system/userRole'
 import { getUserDetail } from '@/api/system/user'

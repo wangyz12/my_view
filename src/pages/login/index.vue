@@ -1,4 +1,3 @@
-<!-- src/pages/login/index.vue -->
 <template>
   <div class="login-container relative px-[17%] min-h-screen flex items-center justify-between overflow-hidden">
     <BusinessBackground />
@@ -103,6 +102,7 @@
 </template>
 
 <script setup lang="ts">
+// 只做了简单账号密码验证码登录，更具业务修改登录
 import { ref, reactive, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { User, Lock, Loading } from '@element-plus/icons-vue';

@@ -1,4 +1,3 @@
-<!-- src/layout/Layout.vue -->
 <template>
   <div class="common-layout" :class="{ 'dark-mode': themeStore.isDarkMode, 'light-mode': themeStore.isLightMode }">
     <el-watermark

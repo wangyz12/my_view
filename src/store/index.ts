@@ -1,4 +1,3 @@
-// src/store/index.ts
 import { createPinia } from 'pinia'
 // 可选：导入持久化插件
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'

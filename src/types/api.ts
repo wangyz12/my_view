@@ -1,4 +1,3 @@
-// src/types/api.ts
 import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
 // 定义后端返回数据的通用格式（根据你的实际接口调整）

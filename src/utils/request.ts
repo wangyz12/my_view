@@ -1,4 +1,3 @@
-// src/utils/request.ts
 import axios, { type AxiosInstance, type AxiosError, type AxiosResponse } from 'axios' // 关键：添加 AxiosResponse 导入
 import type { CustomAxiosRequestConfig, CustomInternalRequestConfig, ApiResponse } from '../types/api'
 import { ElMessage } from 'element-plus' // 结合 Element Plus 提示/加载

@@ -1,4 +1,3 @@
-<!-- src/components/popup/SignPopup.vue -->
 <template>
   <el-dialog
     v-model="dialogVisible"

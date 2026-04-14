@@ -1,4 +1,3 @@
-// api/modules/user.ts
 import { post,get } from '../../index'
 export interface LOGINPARAMS  {
   account:string;

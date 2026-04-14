@@ -1,4 +1,3 @@
-// src/utils/progress.ts
 // 全局进度条管理
 
 import { ref } from 'vue'

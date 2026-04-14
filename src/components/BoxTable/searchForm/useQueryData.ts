@@ -1,4 +1,3 @@
-// searchForm/useQueryData.ts
 import { ref } from 'vue'
 
 export function useQueryData() {

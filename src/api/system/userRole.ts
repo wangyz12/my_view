@@ -1,4 +1,3 @@
-// src/api/system/userRole.ts
 import request from '@/utils/request'
 
 // 为用户分配角色

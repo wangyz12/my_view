@@ -1,4 +1,3 @@
-<!-- searchForm/index.vue -->
 <template>
   <div class="query-form">
     <el-form :model="formData" :inline="true" label-width="80px" class="query-form-inline">

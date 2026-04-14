@@ -1,4 +1,3 @@
-// src/api/system/menu.ts
 import request from '@/utils/request'
 
 // 获取菜单树

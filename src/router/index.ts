@@ -1,4 +1,3 @@
-// src/router/index.ts
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router';
 import { useUserStore } from '@/store/modules/user';
 import storage from '@/utils/storage';

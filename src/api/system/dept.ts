@@ -1,4 +1,3 @@
-// src/api/system/dept.ts
 import request from '@/utils/request'
 
 // 获取部门树

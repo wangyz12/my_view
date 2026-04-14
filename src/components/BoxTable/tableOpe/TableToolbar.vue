@@ -1,4 +1,3 @@
-<!-- BoxTable/components/TableToolbar.vue -->
 <template>
   <div class="table-toolbar">
     <!-- 左侧区域：用户自定义工具栏插槽 -->

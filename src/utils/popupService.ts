@@ -1,7 +1,5 @@
-// src/utils/popupService.ts
 import { createApp, ref, type Component, h, type App } from 'vue'
 import { ElDialog, ElButton } from 'element-plus'
-import type { DialogProps } from 'element-plus'
 
 /**
  * 弹窗配置选项

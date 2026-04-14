@@ -43,6 +43,7 @@
 </template>
 
 <script setup lang="ts">
+// 不做过多的菜单展示和封装，两种足以满足
 import Menu from './menu/index.vue';
 import TopMenu from './topMenu/index.vue';
 import Head from './head/index.vue';

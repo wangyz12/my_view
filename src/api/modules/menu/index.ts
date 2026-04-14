@@ -1,4 +1,3 @@
-// api/modules/menu.ts
 import { get } from '../../index';
 
 /**

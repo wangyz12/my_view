@@ -1,4 +1,3 @@
-// src/api/system/role.ts
 import request from '@/utils/request'
 
 // 获取角色列表

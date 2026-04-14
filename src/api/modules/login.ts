@@ -1,4 +1,3 @@
-// src/api/modules/login.ts
 import request from '@/utils/request'
 import { post,get } from '../index'
 // 登录

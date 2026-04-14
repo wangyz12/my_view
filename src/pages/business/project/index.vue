@@ -1,4 +1,3 @@
-<!-- pages/system/user/index.vue -->
 <template>
   <PageLayout type="table" :padding="true">
     <BoxTable 

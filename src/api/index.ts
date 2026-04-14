@@ -1,4 +1,3 @@
-// api/index.ts
 // 核心修改：分别导入默认的 request 函数和命名导出的 get/post 方法
 import request, { get, post } from '@/utils/request'
 

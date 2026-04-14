@@ -1,4 +1,3 @@
-// src/views/user/config.js
 // import { getUserList } from '@/api/system/user';
 // import { getDeptTree } from '@/api/system/dept';
 // import { getRoleList } from '@/api/system/role';

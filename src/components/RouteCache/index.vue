@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, } from 'vue-router'
 import { useThemeStore } from '@/store/modules/theme'
 
 const route = useRoute()
@@ -169,5 +169,5 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-@use './index.scss'
+@use './index.scss';
 </style>

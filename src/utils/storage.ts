@@ -1,4 +1,3 @@
-// src/utils/storage.ts
 /**
  * 本地存储工具封装（支持 localStorage/sessionStorage、过期时间、TS 类型约束）
  */

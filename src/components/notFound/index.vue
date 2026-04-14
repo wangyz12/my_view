@@ -1,4 +1,3 @@
-<!-- src/views/NotFound.vue -->
 <template>
   <div class="not-found">
     <el-result

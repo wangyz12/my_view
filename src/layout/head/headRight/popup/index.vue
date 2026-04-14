@@ -1,4 +1,3 @@
-<!-- src/components/popup/index.vue -->
 <template>
   <div class="change-password-popup">
     <el-form :model="loginForm" :rules="loginRules" label-width="80px" ref="formRef">

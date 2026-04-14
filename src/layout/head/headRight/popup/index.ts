@@ -1,4 +1,3 @@
-// src/api/signPopup.ts
 import { showPopup } from '@/utils/popupService'
 import popup from './index.vue'
 
@@ -12,7 +11,7 @@ export function showChangePasswordPopup(): Promise<any> {
   // 使用弹窗服务
   return showPopup(
     popup,           // 您的弹窗内容组件
-    null,                      // 传递给组件的属性
+    {},                      // 传递给组件的属性
     {
       title: '修改密码',            // 弹窗标题
       width: '350px',              // 弹窗宽度
