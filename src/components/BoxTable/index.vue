@@ -10,7 +10,7 @@
       @search="handleSearch" 
       @reset="handleReset"
     >
-      <!-- 查询表单插槽 - 使用 query- 前缀 -->
+      <!-- 查询表单插槽 -->
       <template 
         v-for="slot in queryFormSlots" 
         :key="slot"
@@ -19,7 +19,6 @@
         <slot :name="`query-${slot}`" v-bind="slotProps" />
       </template>
       
-      <!-- 额外按钮插槽 -->
       <template #extra-buttons="slotProps">
         <slot name="query-extra-buttons" v-bind="slotProps" />
       </template>
@@ -27,7 +26,6 @@
 
     <!-- 表格 -->
     <div :class="['table-wrapper', tableSize]">
-      <!-- 表格工具栏 -->
       <TableToolbar 
         :columns="tableConfig.tableColumn" 
         :tableKey="tableConfig.tableKey || 'default'"
@@ -44,14 +42,20 @@
           <slot name="table-toolbar" />
         </template>
       </TableToolbar>
-      <!-- 内置一个表格插槽，用于处理复杂表格 例：树形结构表格，单元格合并的表格 具体使用参考部门，菜单页面-->
+      
       <slot name="table" :tableData="tableData" :loading="loading" :displayColumns="displayColumns">
         <TableComponent 
           ref="tableComponentRef" 
+          :border="tableConfig.border||false"
           :tableColumn="displayColumns" 
           :tableData="tableData" 
           :loading="loading"
+          :rowClassName="tableConfig.rowClassName"
+          :rowStyle="tableConfig.rowStyle"
+          :spanMethod="tableConfig.spanMethod"
           @selection-change="handleSelectionChange"
+          @row-click="handleRowClick"
+          @row-dblclick="handleRowDblClick"
         >
           <!-- 表格列插槽 -->
           <template 
@@ -70,7 +74,7 @@
       </slot>
     </div>
 
-    <!-- 分页 可以自由发挥小于设定的一页的大小可以不显示分页组件-->
+    <!-- 分页 -->
     <Pagination 
       v-if="tableConfig.pagination !== false" 
       v-model:page="currentPage" 
@@ -97,7 +101,16 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['selection-change', 'load-success', 'load-error', 'mounted', 'refresh', 'export'])
+const emit = defineEmits([
+  'selection-change', 
+  'load-success', 
+  'load-error', 
+  'mounted', 
+  'refresh', 
+  'export',
+  'row-click',      // 新增：行单击
+  'row-dblclick'    // 新增：行双击
+])
 
 const tableData = ref<any[]>([])
 const loading = ref(false)
@@ -131,14 +144,12 @@ const getTableSlotName = (col: any) => {
   if (col.type === 'expand') {
     return 'expand'
   }
-  // 直接返回 自定义插槽名字slotName 或 prop
   return col.slotName || col.prop
 }
 
 // 显示的列（过滤掉隐藏的列）
 const displayColumns = computed(() => {
   if (visibleColumns.value.length) {
-    // 合并 selection 和 index 列
     const fixedColumns = props.tableConfig.tableColumn?.filter((col: any) =>
       col.type === 'selection' || col.type === 'index'
     ) || []
@@ -158,7 +169,7 @@ const handleRefresh = () => {
   loadData()
 }
 
-// 导出数据 这里只是留有操作逻辑，可按业务自行修改
+// 导出数据
 const handleExport = async () => {
   if (!props.tableConfig.exportApi) return
 
@@ -192,7 +203,7 @@ const handleSizeChange = (size: string) => {
   localStorage.setItem('table_size', size)
 }
 
-// 获取表格数据 默认不查询，在获取实例后手动调取查询
+// 获取表格数据
 const loadData = async () => {
   if (!props.tableConfig.queryApi) return
 
@@ -206,18 +217,15 @@ const loadData = async () => {
 
     const res = await props.tableConfig.queryApi(params)
     
-    // 使用 apiList 指定数据列表字段，默认 'list'
     const dataListKey = props.tableConfig.apiList || 'list'
     
     if (res.code === 200) {
-      // 支持嵌套路径，如 'data.user.list'
       const getValueByPath = (obj: any, path: string) => {
         return path.split('.').reduce((current, key) => current?.[key], obj)
       }
       
       tableData.value = getValueByPath(res.data, dataListKey) || res.data?.[dataListKey] || res.data || []
       total.value = res.data?.total || 0
-      // 返回表格的数据，用于特殊情况需要获取表格数据的业务
       emit('load-success', { data: tableData.value, total: total.value })
     } else {
       throw new Error(res.message || '获取数据失败')
@@ -256,6 +264,16 @@ const handleSelectionChange = (selection: any[]) => {
   emit('selection-change', selection)
 }
 
+// 行单击（透传）
+const handleRowClick = (row: any, column: any, event: Event) => {
+  emit('row-click', row, column, event)
+}
+
+// 行双击（透传）
+const handleRowDblClick = (row: any, column: any, event: Event) => {
+  emit('row-dblclick', row, column, event)
+}
+
 // 刷新表格
 const queryTableList = () => {
   loadData()
@@ -290,7 +308,7 @@ const getTableInstance = () => {
   return tableComponentRef.value
 }
 
-// 暴露方法给父组件 内置的几个主要方法，根据业务可追加方法
+// 暴露方法给父组件
 defineExpose({
   queryTableList,
   resetAndRefresh,
@@ -356,7 +374,6 @@ onMounted(() => {
       flex-direction: column;
       min-height: 0;
       
-      // 确保插槽内的表格填满容器
       > * {
         flex: 1;
         display: flex;
@@ -365,7 +382,6 @@ onMounted(() => {
       }
     }
 
-    // 默认表格样式
     :deep(.el-table) {
       height: 100% !important;
       flex: 1;

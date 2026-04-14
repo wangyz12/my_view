@@ -13,7 +13,8 @@ export const TableConfig = {
   apiList:'list',
   // 数据查询接口
   // queryApi: getUserList,
-  
+  // 控制表格的border
+  border:true,
   // 导出接口（可选，配置后自动显示导出按钮）
   exportApi: null, // 如果有导出接口，填入函数名
   
@@ -213,5 +214,25 @@ export const TableConfig = {
       isSlot: true,      // 启用插槽
       slotName: 'operation'  // 插槽名称，在页面中使用 #operation
     }
-  ]
+  ],
+
+   // 行样式自定义
+   rowClassName: ({ row, rowIndex }:any) => {
+    if (row.status === '1') return 'disabled-row'
+    return ''
+  },
+  
+  // 行内联样式
+  rowStyle: ({ row, rowIndex }:any) => {
+    if (row.status === '1') return { color: '#999' }
+    return {}
+  },
+  
+  // 单元格合并
+  spanMethod: ({ row, column, rowIndex, columnIndex }:any) => {
+    if (columnIndex === 0 && rowIndex % 2 === 0) {
+      return { rowspan: 2, colspan: 1 }
+    }
+    return { rowspan: 1, colspan: 1 }
+  }
 };
