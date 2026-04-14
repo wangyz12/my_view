@@ -52,32 +52,33 @@
 <script setup lang="ts">
 import PageLayout from '@/components/PageLayout/index.vue'
 import BoxTable from '@/components/BoxTable/index.vue'
+import type { BoxTableInstance, LoadSuccessData } from '@/components/BoxTable/index.vue'
 import { deleteDept } from '@/api/system/dept'
-import { TableConfig } from './config'
+import { TableConfig,type DeptItem } from './config'
 import {showDeptFormPopup}from './popup/index'
-const tableRef = ref()
-const tableInstance = ref<any>(null)
-const deptList = ref<any>([])
+const tableRef = ref<InstanceType<typeof BoxTable> | null>(null)
+const tableInstance = ref<BoxTableInstance | null>(null)
+const deptList = ref<DeptItem[]>([])
 // 表格渲染完成后的回调，获取组件实例
-const handleTableMounted = (instance: any) => {
+const handleTableMounted = (instance: BoxTableInstance) => {
   tableInstance.value = instance
   instance.queryTableList()
 }
 // 获取表格数据
-const getData = (obj:any)=>{
+const getData = (obj:LoadSuccessData<DeptItem>)=>{
   deptList.value = obj.data
 }
-const handleSelectionChange = (row:any)=>{
+const handleSelectionChange = (row:DeptItem)=>{
   console.log(row)
 }
-const handleEdit = async (title:string, row:any)=>{
+const handleEdit = async (title:string, row:DeptItem | {})=>{
   const isAdd = !!(title === '编辑部门')
-  const res:any = await showDeptFormPopup(title,row,isAdd,deptList.value)
-  if(res.success){
-    tableInstance.value.queryTableList()
+  const res = await showDeptFormPopup(title,row,isAdd,deptList.value)
+  if(res?.success){
+    tableInstance.value?.queryTableList()
   }
 }
-const handleDelete = (row:any)=>{
+const handleDelete = (row:DeptItem)=>{
   ElMessageBox.confirm(`确定要删除${row.name}部门吗？`, '提示', {
     type: 'warning',
     confirmButtonText: '确定',
@@ -86,8 +87,8 @@ const handleDelete = (row:any)=>{
     try {
       await deleteDept(row.id)
       ElMessage.success('删除成功')
-      tableInstance.value.queryTableList()
-    } catch (error: any) {
+      tableInstance.value?.queryTableList()
+    } catch (error) {
       console.log(error)
     }
   })

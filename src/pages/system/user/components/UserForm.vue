@@ -100,8 +100,8 @@
     <!-- 用户状态 -->
     <el-form-item label="用户状态" prop="status">
       <el-radio-group v-model="formData.status">
-        <el-radio :value="'0'">正常</el-radio>
-        <el-radio :value="'1'">停用</el-radio>
+        <el-radio value="0">正常</el-radio>
+        <el-radio value="1">停用</el-radio>
       </el-radio-group>
     </el-form-item>
 
@@ -113,6 +113,7 @@
       />
       <div class="form-tip">支持图片URL地址，可为空</div>
     </el-form-item>
+    
     <footer>
       <div class="dialog-footer">
         <el-button size="default" @click="emit('close')">取消</el-button>
@@ -124,26 +125,46 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import type { FormInstance, FormRules, FormItemRule } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { getDeptTree } from '@/api/system/dept'
-import { 
-  createUser, 
-  updateUser, 
-} from '@/api/system/user'
-const emit = defineEmits<{
-  (e: 'success', data: any): void
-  (e: 'close'): void
-}>()
+import { createUser, updateUser } from '@/api/system/user'
 
-interface Props {
-  row: {
-    [key: string]: any
-  }
+// ==================== 类型定义 ====================
+
+/** 部门树节点 */
+interface DeptTreeNode {
+  id: string
+  name: string
+  children?: DeptTreeNode[]
 }
 
-const props = defineProps<Props>()
-const deptOptions = ref<any>([])
+/** 用户表单数据类型 */
+interface UserFormData {
+  id?: string
+  account: string
+  username: string
+  deptId: string
+  phone: string
+  email: string
+  status: '0' | '1'
+  avatar: string
+  password: string
+}
+
+/** API 响应类型 */
+interface ApiResponse<T = any> {
+  code: number
+  data: T
+  message?: string
+}
+
+/** 组件 Props */
+interface Props {
+  row: Partial<UserFormData>
+}
+
+/** 部门选择器配置 */
 const deptProps = {
   value: 'id',
   label: 'name',
@@ -151,21 +172,9 @@ const deptProps = {
   checkStrictly: true
 }
 
-onMounted(async () => {
-  const res: any = await getDeptTree()
-  deptOptions.value = res.data || []
-  // 如果是编辑模式，初始化表单数据
-  if (!isAdd.value && props.row) {
-    formData.value = { ...props.row }
-    // 确保状态是字符串类型
-    if (formData.value.status !== undefined) {
-      formData.value.status = String(formData.value.status)
-    }
-  }
-})
+// ==================== 常量定义 ====================
 
-const useDefaultPassword = ref<boolean>(true)
-const formData = ref<any>({
+const DEFAULT_FORM_DATA: UserFormData = {
   account: '',
   username: '',
   deptId: '',
@@ -174,54 +183,109 @@ const formData = ref<any>({
   status: '0',
   avatar: '',
   password: ''
-})
+}
 
+// ==================== 响应式数据 ====================
+
+const emit = defineEmits<{
+  (e: 'success', data: UserFormData): void
+  (e: 'close'): void
+}>()
+
+const props = defineProps<Props>()
+
+const formRef = ref<FormInstance | null>(null)
+const formData = ref<UserFormData>({ ...DEFAULT_FORM_DATA })
+const deptOptions = ref<DeptTreeNode[]>([])
+const useDefaultPassword = ref(true)
+
+// 是否为新增模式
 const isAdd = computed(() => {
-  console.log(props.row)
-  return JSON.stringify(props.row) === '{}' || !props.row?.id
+  return !props.row?.id
 })
 
-const formRef = ref<FormInstance>()
+// ==================== 验证函数 ====================
 
-// 自定义密码验证函数
-const validatePassword = (rule: any, value: string, callback: any) => {
-  if (!isAdd.value) {
-    callback()
-    return
-  }
-  
-  if (!useDefaultPassword.value && !value) {
-    callback(new Error('请输入密码'))
-    return
-  }
-  
-  if (!useDefaultPassword.value && value.length < 6) {
-    callback(new Error('密码长度不能小于6位'))
-    return
-  }
-  
-  if (!useDefaultPassword.value) {
-    const hasLetter = /[a-zA-Z]/.test(value)
-    const hasUnderscore = /_/.test(value)
-    const hasNumber = /\d/.test(value)
-    
-    if (!hasLetter || !hasUnderscore || !hasNumber) {
-      callback(new Error('密码必须包含字母、下划线和数字'))
+/** 密码验证 */
+const validatePassword = (_rule: FormItemRule, value: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (!isAdd.value) {
+      resolve()
       return
     }
-  }
-  
-  callback()
+    
+    if (!useDefaultPassword.value && !value) {
+      reject(new Error('请输入密码'))
+      return
+    }
+    
+    if (!useDefaultPassword.value && value.length < 6) {
+      reject(new Error('密码长度不能小于6位'))
+      return
+    }
+    
+    if (!useDefaultPassword.value) {
+      const hasLetter = /[a-zA-Z]/.test(value)
+      const hasUnderscore = /_/.test(value)
+      const hasNumber = /\d/.test(value)
+      
+      if (!hasLetter || !hasUnderscore || !hasNumber) {
+        reject(new Error('密码必须包含字母、下划线和数字'))
+        return
+      }
+    }
+    
+    resolve()
+  })
 }
 
-const handlePasswordTypeChange = (val: boolean) => {
-  useDefaultPassword.value = val
-  if (val) {
-    formData.value.password = ''
-  }
+/** 手机号验证 */
+const validatePhone = (_rule: FormItemRule, value: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (!value) {
+      resolve()
+      return
+    }
+    if (!/^1[3-9]\d{9}$/.test(value)) {
+      reject(new Error('手机号格式不正确'))
+      return
+    }
+    resolve()
+  })
 }
 
-// 动态表单验证规则
+/** 邮箱验证 */
+const validateEmail = (_rule: FormItemRule, value: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (!value) {
+      resolve()
+      return
+    }
+    if (!/^\S+@\S+\.\S+$/.test(value)) {
+      reject(new Error('邮箱格式不正确'))
+      return
+    }
+    resolve()
+  })
+}
+
+/** 头像URL验证 */
+const validateAvatar = (_rule: FormItemRule, value: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (!value) {
+      resolve()
+      return
+    }
+    if (!/^https?:\/\/.+/i.test(value)) {
+      reject(new Error('请输入有效的URL地址'))
+      return
+    }
+    resolve()
+  })
+}
+
+// ==================== 表单验证规则 ====================
+
 const formRules = computed<FormRules>(() => {
   const rules: FormRules = {
     username: [
@@ -232,55 +296,16 @@ const formRules = computed<FormRules>(() => {
       { required: true, message: '所属部门不能为空', trigger: 'change' }
     ],
     phone: [
-      { 
-        validator: (rule, value, callback) => {
-          if (!value) {
-            callback()
-            return
-          }
-          if (!/^1[3-9]\d{9}$/.test(value)) {
-            callback(new Error('手机号格式不正确'))
-            return
-          }
-          callback()
-        },
-        trigger: 'blur' 
-      }
+      { validator: validatePhone, trigger: 'blur' }
     ],
     email: [
-      { 
-        validator: (rule, value, callback) => {
-          if (!value) {
-            callback()
-            return
-          }
-          if (!/^\S+@\S+\.\S+$/.test(value)) {
-            callback(new Error('邮箱格式不正确'))
-            return
-          }
-          callback()
-        },
-        trigger: 'blur' 
-      }
+      { validator: validateEmail, trigger: 'blur' }
     ],
     status: [
       { required: true, message: '请选择用户状态', trigger: 'change' }
     ],
     avatar: [
-      { 
-        validator: (rule, value, callback) => {
-          if (!value) {
-            callback()
-            return
-          }
-          if (!/^https?:\/\/.+/i.test(value)) {
-            callback(new Error('请输入有效的URL地址'))
-            return
-          }
-          callback()
-        },
-        trigger: 'blur' 
-      }
+      { validator: validateAvatar, trigger: 'blur' }
     ]
   }
   
@@ -297,13 +322,23 @@ const formRules = computed<FormRules>(() => {
   return rules
 })
 
-// 构建提交数据
-const buildSubmitData = () => {
-  const submitData = { ...formData.value }
+// ==================== 方法 ====================
+
+/** 处理密码类型切换 */
+const handlePasswordTypeChange = (val: boolean): void => {
+  useDefaultPassword.value = val
+  if (val) {
+    formData.value.password = ''
+  }
+}
+
+/** 构建提交数据 */
+const buildSubmitData = (): Partial<UserFormData> => {
+  const submitData: Partial<UserFormData> = { ...formData.value }
   
   // 转换状态为数字
   if (submitData.status !== undefined) {
-    submitData.status = Number(submitData.status)
+    submitData.status = submitData.status
   }
   
   // 新增时处理密码
@@ -318,48 +353,55 @@ const buildSubmitData = () => {
   
   // 删除空值字段
   Object.keys(submitData).forEach(key => {
-    if (submitData[key] === '' || submitData[key] === null || submitData[key] === undefined) {
-      delete submitData[key]
+    const value = submitData[key as keyof UserFormData]
+    if (value === '' || value === null || value === undefined) {
+      delete submitData[key as keyof UserFormData]
     }
   })
   
   return submitData
 }
 
-// 提交表单
-const onSubmit = async () => {
+/** 提交表单 */
+const onSubmit = async (): Promise<void> => {
   if (!formRef.value) return
   
   try {
-    // 方式一：使用 validate 的回调
-    await new Promise((resolve, reject) => {
-      formRef.value?.validate((valid, fields) => {
-        if (valid) {
-          resolve(true)
-        } else {
-          reject(fields)
-        }
-      })
-    })
+    await formRef.value.validate()
     
-    // 验证通过，构建提交数据
     const submitData = buildSubmitData()
-    // 调用接口
+    
     if (isAdd.value) {
       await createUser(submitData)
       ElMessage.success('添加成功')
     } else {
-      await updateUser(submitData.id,submitData)
+      await updateUser(formData.value.id!, submitData)
       ElMessage.success('编辑成功')
     }
-    // 触发成功事件
-    emit('success', submitData)
+    
+    emit('success', submitData as UserFormData)
   } catch (error) {
     console.error('表单验证失败:', error)
     ElMessage.warning('请完善表单信息')
   }
 }
 
+// ==================== 生命周期 ====================
+
+onMounted(async () => {
+  // 加载部门树
+  const res = await getDeptTree() as ApiResponse<DeptTreeNode[]>
+  deptOptions.value = res.data || []
+  
+  // 如果是编辑模式，初始化表单数据
+  if (!isAdd.value && props.row) {
+    formData.value = {
+      ...DEFAULT_FORM_DATA,
+      ...props.row,
+      status: props.row.status ? String(props.row.status) as '0' | '1' : '0'
+    }
+  }
+})
 </script>
 
 <style lang="scss" scoped>

@@ -1,10 +1,11 @@
 import { showPopup } from '@/utils/popupService';
 import popup from './../components/RoleForm.vue';
 import UserMenu from './../components/RoleMenuAssign.vue'
-import UserList from './../components/RoleUserTable.vue'
+import UserList from './../components/RoleUserTable.vue';
+import type {RoleItem} from './../config';
 export function showAddEditRloePopup(
   title: string,
-  row: any
+  row: RoleItem|{}
 ): Promise<any> {
   // 使用弹窗服务
   return showPopup(
@@ -17,7 +18,7 @@ export function showAddEditRloePopup(
       closeOnClickModal: false, // 点击遮罩不关闭
       className: 'change-password-dialog',
       // 成功回调
-      success: (data: any) => {
+      success: (data) => {
         console.log(data)
         // 这里可以处理成功后的逻辑，比如刷新列表等
       },
@@ -49,7 +50,7 @@ export function showUserMenuPopup(
       closeOnClickModal: false, // 点击遮罩不关闭
       className: 'change-password-dialog',
       // 成功回调
-      success: (data: any) => {
+      success: (data) => {
         console.log(data)
         // 这里可以处理成功后的逻辑，比如刷新列表等
       },
@@ -67,7 +68,7 @@ export function showUserMenuPopup(
 
 export function showUserListPopup(
   title: string,
-  row:any
+  row:RoleItem |{}
 ): Promise<any> {
   // 使用弹窗服务
   return showPopup(
@@ -80,7 +81,7 @@ export function showUserListPopup(
       closeOnClickModal: false, // 点击遮罩不关闭
       className: 'change-password-dialog',
       // 成功回调
-      success: (data: any) => {
+      success: (data) => {
         console.log(data)
         // 这里可以处理成功后的逻辑，比如刷新列表等
       },

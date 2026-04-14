@@ -92,3 +92,54 @@ export const commonIcons = [
   'AlarmClock', 'Coffee', 'Food', 'IceCream', 'Star', 'Bell', 'ChatDotRound',
   'Warning', 'Info', 'Success', 'QuestionFilled'
 ]
+
+/** 菜单数据类型 */
+export interface MenuItem {
+  id: string
+  title: string
+  name: string
+  path: string
+  component: string
+  type: 'menu' | 'button' | 'iframe'
+  permission: string
+  hidden: boolean
+  sort: number
+  icon?: string
+  parentId?: string | null
+  children?: MenuItem[]
+}
+/** 菜单类型 */
+type MenuType = 'menu' | 'button' | 'iframe'
+/** 表单数据类型 */
+export  interface MenuFormData {
+  pid: string | string[] | null
+  name: string
+  path: string
+  component: string
+  title: string
+  icon: string
+  sort: number
+  type: MenuType
+  hidden: boolean
+  cache: boolean
+  permission: string
+  external: boolean
+  target: '_self' | '_blank'
+}
+
+/** 默认表单数据 */
+export const DEFAULT_FORM_DATA: MenuFormData = {
+  pid: '',
+  name: '',
+  path: '',
+  component: '',
+  title: '',
+  icon: '',
+  sort: 0,
+  type: 'menu',
+  hidden: false,
+  cache: true,
+  permission: '',
+  external: false,
+  target: '_self'
+}

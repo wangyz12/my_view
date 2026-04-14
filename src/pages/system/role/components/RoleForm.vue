@@ -39,8 +39,8 @@
 
       <el-form-item label="状态" prop="status">
         <el-radio-group v-model="formData.status">
-          <el-radio :value="'0'">启用</el-radio>
-          <el-radio :value="'1'">禁用</el-radio>
+          <el-radio value="0">启用</el-radio>
+          <el-radio value="1">禁用</el-radio>
         </el-radio-group>
       </el-form-item>
 
@@ -65,41 +65,62 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
-import type {ADDEDITFORM} from './../config'
-import { createRole, updateRole } from '@/api/system/role';
+import type { RoleItem } from './../config'
+import { createRole, updateRole } from '@/api/system/role'
 
-const emit = defineEmits<{
-  (e: 'success', data: any): void
-  (e: 'close'): void
-}>()
+// ==================== 类型定义 ====================
 
-interface Props {
-  row: {
-    [key: string]: any
-  }
+/** 数据权限类型 */
+type DataScope = '1' | '2' | '3' | '4' | '5'
+
+/** 角色状态类型 */
+type RoleStatus = '0' | '1'
+
+/** 表单数据类型 */
+interface RoleFormData {
+  name: string
+  label: string
+  dataScope: DataScope
+  status: RoleStatus
+  remark: string
 }
 
-const props = defineProps<Props>()
-// 表单数据
-const formData = ref<ADDEDITFORM|any>({
+/** 组件 Props */
+interface Props {
+  row: Partial<RoleItem>
+}
+
+// ==================== 常量定义 ====================
+
+/** 默认表单数据 */
+const DEFAULT_FORM_DATA: RoleFormData = {
   name: '',
   label: '',
   dataScope: '5',
   status: '0',
   remark: ''
-})
-// 表单引用
-const formRef = ref<FormInstance>()
-const isEdit = computed(()=>{
-  formData.value = props.row
-  return !!props.row.id
-})
+}
 
+// ==================== 响应式数据 ====================
 
-// 提交状态
+const emit = defineEmits<{
+  (e: 'success', data: RoleFormData): void
+  (e: 'close'): void
+}>()
+
+const props = defineProps<Props>()
+
+const formRef = ref<FormInstance | null>(null)
+const formData = ref<RoleFormData>({ ...DEFAULT_FORM_DATA })
 const submitting = ref(false)
+
+// 判断是否为编辑模式
+const isEdit = computed(() => {
+  return !!props.row?.id
+})
 
 // 表单验证规则
 const formRules: FormRules = {
@@ -114,31 +135,57 @@ const formRules: FormRules = {
     { required: true, message: '请选择数据权限', trigger: 'change' }
   ]
 }
-const handleSubmit = async ()=>{
+
+// ==================== 方法 ====================
+
+/** 提交表单 */
+const handleSubmit = async (): Promise<void> => {
   if (!formRef.value) return
+  
   try {
     await formRef.value.validate()
     submitting.value = true
+    
     const submitData = { ...formData.value }
+    
     if (isEdit.value) {
       // 编辑角色
-      await updateRole(props.row.id, submitData)
+      await updateRole(props.row.id!, submitData)
       ElMessage.success('更新成功')
     } else {
       // 新增角色
       await createRole(submitData)
       ElMessage.success('创建成功')
     }
+    
     emit('success', submitData)
     emit('close')
   } catch (error) {
     // 表单校验失败或接口报错
     console.error('提交失败:', error)
-    ElMessage.error('请正确填写表单信息')
+    if (error !== 'cancel') {
+      ElMessage.error('请正确填写表单信息')
+    }
   } finally {
     submitting.value = false
   }
 }
+
+// ==================== 生命周期 ====================
+
+onMounted(() => {
+  // 合并表单数据
+  if (props.row && Object.keys(props.row).length > 0) {
+    formData.value = {
+      ...DEFAULT_FORM_DATA,
+      name: props.row.name || '',
+      label: props.row.label || '',
+      dataScope: (props.row.dataScope as DataScope) || '5',
+      status: (props.row.status as unknown as RoleStatus) || '0',
+      remark: props.row.remark || ''
+    }
+  }
+})
 </script>
 
 <style scoped>

@@ -65,34 +65,36 @@
 
 <script setup lang="ts">
 import PageLayout from '@/components/PageLayout/index.vue'
-import { TableConfig, getMenuTypeLabel, getMenuTypeType, updateMenusAndRoutes } from './config'
+import BoxTable from '@/components/BoxTable/index.vue'
+import type { BoxTableInstance, LoadSuccessData } from '@/components/BoxTable/index.vue'
+import { TableConfig, getMenuTypeLabel, getMenuTypeType, updateMenusAndRoutes, type MenuItem } from './config'
 import { Plus, } from '@element-plus/icons-vue'
 import { ElMessageBox } from 'element-plus'
 import { deleteMenu } from '@/api/system/menu'
 import { showAddEditMenuPopup } from './propup/index'
-const tableRef = ref()
-const tableInstance = ref<any>(null)
-const menuList = ref<any>([])
+const tableRef = ref<InstanceType<typeof BoxTable> | null>(null)
+const tableInstance = ref<BoxTableInstance | null>(null)
+const menuList = ref<MenuItem[]>([])
 // 表格渲染完成后的回调，获取组件实例
-const handleTableMounted = (instance: any) => {
+const handleTableMounted = (instance: BoxTableInstance) => {
   tableInstance.value = instance
   instance.queryTableList()
 }
 // 获取表格数据
-const getData = (obj:any)=>{
+const getData = (obj:LoadSuccessData<MenuItem>)=>{
   menuList.value = obj.data
 }
-const handleSelectionChange = (val: any) => {
+const handleSelectionChange = (val: MenuItem) => {
   console.log(val)
 }
 const handleEdit = async (title: string, row: Object) => {
   const isAdd = title === '编辑菜单'?false:true
-  const res: any = await showAddEditMenuPopup(title, {...row}, menuList.value,isAdd)
-  if (res.success) {
-    tableInstance.value.queryTableList()
+  const res = await showAddEditMenuPopup(title, {...row}, menuList.value,isAdd)
+  if (res?.success) {
+    tableInstance.value?.queryTableList()
   }
 }
-const handleDelete = (row: any) => {
+const handleDelete = (row: MenuItem) => {
   ElMessageBox.confirm('确定要删除该菜单吗？', '提示', {
     type: 'warning',
     confirmButtonText: '确定',
@@ -101,7 +103,7 @@ const handleDelete = (row: any) => {
     try {
       await deleteMenu(row.id)
       ElMessage.success('删除成功')
-      tableInstance.value.queryTableList()
+      tableInstance.value?.queryTableList()
       // 更新菜单和路由
       await updateMenusAndRoutes()
     } catch (error) {

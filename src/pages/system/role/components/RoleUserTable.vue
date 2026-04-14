@@ -11,7 +11,10 @@
 </template>
 
 <script setup lang="ts">
+import PageLayout from '@/components/PageLayout/index.vue'
 import { getRoleUsers } from '@/api/system/userRole'
+import BoxTable from '@/components/BoxTable/index.vue'
+import type { BoxTableInstance } from '@/components/BoxTable/index.vue'
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
@@ -40,10 +43,11 @@ const TableConfig = {
   apiList: 'users'
 }
 
-const tableRef = ref()
-const tableInstance = ref<any>(null)
+const tableRef = ref<InstanceType<typeof BoxTable> | null>(null)
+const tableInstance = ref<BoxTableInstance | null>(null)
+
 // 表格渲染完成后的回调，获取组件实例
-const handleTableMounted = (instance: any) => {
+const handleTableMounted = (instance: BoxTableInstance): void => {
   tableInstance.value = instance
   instance.queryTableList()
 }

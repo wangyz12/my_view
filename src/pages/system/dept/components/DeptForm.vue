@@ -43,10 +43,10 @@
 <script setup lang="ts">
 import {  createDept, updateDept,} from '@/api/system/dept'
 import { type FormRules} from 'element-plus'
-import type {FORMATDATA}from './../config'
+import type {FORMATDATA,DeptItem}from './../config'
 interface Props {
-  row: Record<string, any>
-  list: Record<string, any>[]
+  row: Partial<DeptItem>
+  list: DeptItem[] 
   isAdd:boolean
 }
 const emit = defineEmits<{
@@ -54,10 +54,10 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 const props = defineProps<Props>()
-const formRef = ref<any>()
+const formRef = ref()
 // 菜单选项（用于选择父级菜单）
-const deptOptions = ref<any[]>([])
-const formData = ref<FORMATDATA | any>({
+const deptOptions = ref<DeptItem[] | []>([])
+const getDefaultFormData = (): FORMATDATA => ({
   parentId: '',
   name: '',
   code: '',
@@ -67,6 +67,7 @@ const formData = ref<FORMATDATA | any>({
   email: '',
   status: '0'
 })
+const formData = ref<FORMATDATA>(getDefaultFormData())
 // 表单验证规则
 const formRules: FormRules = {
   name: [
@@ -85,7 +86,7 @@ const formRules: FormRules = {
   ]
 }
 const onSubmit = async()=>{
-  await formRef.value.validate(async (valid:any) => {
+  await formRef.value.validate(async (valid:boolean) => {
   if (!valid) return
   try {
     const params:any = { ...formData.value }
@@ -104,13 +105,17 @@ const onSubmit = async()=>{
     }
     emit('success',true)
     emit('close')
-  } catch (error: any) {
+  } catch (error) {
     console.log(error)
   } 
 })
 }
 onMounted(()=>{
-  formData.value = props.row
+  formData.value = {
+    ...getDefaultFormData(),
+    ...props.row,
+    parentId: props.row.parentId || ''
+  }
   deptOptions.value = props.list
 })
 </script>

@@ -1,10 +1,11 @@
 import { showPopup } from '@/utils/popupService';
 import popup from './../components/UserAddEdit.vue';
-import iconPopup from './../components/UserSelectIcon.vue'
+import iconPopup from './../components/UserSelectIcon.vue';
+import type{MenuItem} from './../config';
 export function showAddEditMenuPopup(
   title: string,
-  row: any,
-  list:any,
+  row: MenuItem | {},
+  list:MenuItem[],
   isAdd:boolean
 ): Promise<any> {
   // 使用弹窗服务
@@ -18,7 +19,7 @@ export function showAddEditMenuPopup(
       closeOnClickModal: false, // 点击遮罩不关闭
       className: 'change-password-dialog',
       // 成功回调
-      success: (data: any) => {
+      success: (data) => {
         console.log(data,'成功回调')
         // 这里可以处理成功后的逻辑，比如刷新列表等
       },
@@ -46,7 +47,7 @@ export function showSelectIconPopup(): Promise<any> {
       closeOnClickModal: false, // 点击遮罩不关闭
       className: 'change-password-dialog',
       // 成功回调
-      success: (data: any) => {
+      success: (data) => {
         console.log(data,'成功回调')
         // 这里可以处理成功后的逻辑，比如刷新列表等
       },

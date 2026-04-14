@@ -73,39 +73,25 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { formRules, updateMenusAndRoutes } from './../config'
+import { formRules, updateMenusAndRoutes,type MenuItem,type MenuFormData,DEFAULT_FORM_DATA } from './../config'
 import { showSelectIconPopup } from './../propup/index'
 import { createMenu, updateMenu } from '@/api/system/menu'
 interface Props {
-  row: Record<string, any>
-  list: Record<string, any>[]
+  row: Partial<MenuItem>
+  list: MenuItem[]
   isAdd: boolean
 }
 const emit = defineEmits<{
-  (e: 'success', data: any): void
+  (e: 'success', data: boolean): void
   (e: 'close'): void
 }>()
 const props = defineProps<Props>()
-const formRef = ref<any>()
+const formRef = ref()
 // 表单数据
-const formData = ref<any>({
-  pid: '',
-  name: '',
-  path: '',
-  component: '',
-  title: '',
-  icon: '',
-  sort: 0,
-  type: 'menu',
-  hidden: false,
-  cache: true,
-  permission: '',
-  external: false,
-  target: '_self'
-})
+const formData = ref<MenuFormData>({ ...DEFAULT_FORM_DATA })
 
 // 菜单选项（用于选择父级菜单）
-const menuOptions = ref<any[]>([])
+const menuOptions = ref<MenuItem[]>([])
 // 菜单类型变化
 const handleTypeChange = (type: string) => {
   // 根据类型重置相关字段
@@ -130,18 +116,18 @@ const handleExternalChange = (external: boolean) => {
 }
 // 选择图标
 const selectIcon = async () => {
-  const res: any = await showSelectIconPopup()
-  if (res.success) {
+  const res = await showSelectIconPopup()
+  if (res?.success) {
     const { data } = res
     formData.value.icon = data
   }
 }
 const onSubmit = async () => {
-  await formRef.value.validate(async (valid: any) => {
+  await formRef.value.validate(async (valid: boolean) => {
     if (!valid) return
 
     try {
-      const params: any = { ...formData.value }
+      const params:Record<string, any> = { ...formData.value }
 
       // 处理pid（如果是数组，取最后一个）
       if (Array.isArray(params.pid) && params.pid.length > 0) {
@@ -160,13 +146,18 @@ const onSubmit = async () => {
       // 更新菜单和路由
       await updateMenusAndRoutes()
       emit('success', true)
-    } catch (error: any) {
+    } catch (error) {
       console.log(error)
     }
   })
 }
 onMounted(() => {
-  formData.value = props.row
+  formData.value =  {
+    ...DEFAULT_FORM_DATA,
+    ...props.row,
+    // 处理 parentId 到 pid 的映射
+    pid: (props.row as any).pid || (props.row as any).parentId || ''
+  }
   menuOptions.value = props.list
 })
 </script>

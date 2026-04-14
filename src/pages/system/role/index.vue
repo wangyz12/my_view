@@ -43,31 +43,33 @@
 <script setup lang="ts">
 import PageLayout from '@/components/PageLayout/index.vue'
 import BoxTable from '@/components/BoxTable/index.vue'
+import type { BoxTableInstance } from '@/components/BoxTable/index.vue'
 import { ElMessageBox } from 'element-plus'
-import { TableConfig, getDataScopeType, getDataScopeLabel } from './config'
+import { TableConfig, getDataScopeType, getDataScopeLabel, type RoleItem  } from './config'
 import { showAddEditRloePopup, showUserMenuPopup,showUserListPopup } from './propup/index'
 import { deleteRole } from '@/api/system/role'
-const tableRef = ref()
-const tableInstance = ref<any>(null)
+const tableRef = ref<InstanceType<typeof BoxTable> | null>(null)
+const tableInstance = ref<BoxTableInstance | null>(null)
+
 // 表格渲染完成后的回调，获取组件实例
-const handleTableMounted = (instance: any) => {
+const handleTableMounted = (instance: BoxTableInstance): void => {
   tableInstance.value = instance
   instance.queryTableList()
 }
-const handleEdit = async (title: string, row: any) => {
-  const res: any = await showAddEditRloePopup(title, row)
-  if (res.success) {
-    tableInstance.value.queryTableList()
+const handleEdit = async (title: string, row: RoleItem|{}): Promise<void> => {
+  const res = await showAddEditRloePopup(title, row)
+  if (res?.success) {
+    tableInstance.value?.queryTableList()
   }
 }
-const handleMenuAssign = async (row: any) => {
-  const res: any = await showUserMenuPopup(`为${row.label}分配菜单`, row.id, row.label)
-  if (res.success) {
-    tableInstance.value.queryTableList()
+const handleMenuAssign = async (row: RoleItem): Promise<void> => {
+  const res = await showUserMenuPopup(`为${row.label}分配菜单`, row.id, row.label)
+  if (res?.success) {
+    tableInstance.value?.queryTableList()
   }
 }
 // 删除角色
-const handleDelete = async (row: any) => {
+const handleDelete = async (row: RoleItem) => {
   try {
     await ElMessageBox.confirm(
       `确定要删除角色 "${row.label}" 吗？`,
@@ -80,18 +82,15 @@ const handleDelete = async (row: any) => {
     )
     await deleteRole(row.id)
     ElMessage.success('删除成功')
-    tableInstance.value.queryTableList()
-  } catch (error: any) {
-    if (error.message !== 'cancel') {
-      console.error('删除角色失败:', error)
-      ElMessage.error(error.message || '删除失败')
-    }
+    tableInstance.value?.queryTableList()
+  } catch (error) {
+    console.error('删除角色失败:', error)
   }
 }
-const handleView = async (row:any)=>{
-  const res:any = await showUserListPopup(`${row.label}角色下的用户`,row)
-  if (res.success) {
-    tableInstance.value.queryTableList()
+const handleView = async (row:RoleItem): Promise<void>=>{
+  const res = await showUserListPopup(`${row.label}角色下的用户`,row)
+  if (res?.success) {
+    tableInstance.value?.queryTableList()
   }
 }
 </script>

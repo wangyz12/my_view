@@ -32,3 +32,16 @@ export interface FORMATDATA {
   email: string
   status: string
 }
+
+export interface DeptItem {
+  id: string
+  name: string
+  code: string
+  orderNum: number
+  leader: string
+  phone: string
+  email: string
+  status: '0' | '1'
+  parentId?: string
+  children?: DeptItem[]
+}

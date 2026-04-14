@@ -109,3 +109,25 @@ export const TableConfig = {
   total: 0,
   pageSize: 20,
 };
+/** 用户状态类型 */
+export type UserStatus = 0 | 1
+
+/** 部门信息 */
+export interface DeptInfo {
+  id: string
+  name: string
+  code: string
+}
+
+/** 用户数据类型 */
+export interface UserItem {
+  id: string
+  account: string
+  username: string
+  phone: string
+  email: string
+  status: UserStatus
+  deptId: DeptInfo | string
+  createdAt?: string
+  updatedAt?: string
+}

@@ -93,7 +93,14 @@ import QueryForm from './searchForm/index.vue'
 import TableComponent from './tableOpe/index.vue'
 import Pagination from './tableOpe/Pagination.vue'
 import TableToolbar from './tableOpe/TableToolbar.vue'
-
+export type {
+  BoxTableInstance,
+  LoadSuccessData,
+  BoxTableConfig,
+  QueryItem,
+  TableColumn
+} from './types'
+import type {BoxTableInstance, TableColumn} from './types'
 const props = defineProps({
   tableConfig: {
     type: Object as any,
@@ -118,59 +125,58 @@ const exportLoading = ref(false)
 const currentPage = ref(props.tableConfig.page || 1)
 const pageSize = ref(props.tableConfig.pageSize || 20)
 const total = ref(props.tableConfig.total || 0)
-const searchParams = ref<any>({})
-const queryFormRef = ref()
-const tableComponentRef = ref()
+const searchParams = ref<Record<string, any>>({})
+const queryFormRef = ref<InstanceType<typeof QueryForm> | null>(null)
+const tableComponentRef = ref<InstanceType<typeof TableComponent> | null>(null)
 const tableSize = ref(props.tableConfig.size || 'default')
-const visibleColumns = ref<any[]>([])
+const visibleColumns = ref<TableColumn[]>([])
 
-// 获取查询表单的插槽名称（过滤掉内置插槽）
-const queryFormSlots = computed(() => {
+/** 获取查询表单的插槽名称（过滤掉内置插槽） */
+const queryFormSlots = computed<string[]>(() => {
   const builtInSlots = ['extra-buttons']
-  return Object.keys(props.tableConfig.queryList?.find((item: any) => item.isSlot) ? 
-    props.tableConfig.queryList.filter((item: any) => item.isSlot).map((item: any) => item.slotName || item.field) : 
-    [])
+  const queryList = props.tableConfig.queryList || []
+  const slotItems = queryList.filter((item: any) => item.isSlot)
+  return slotItems.map((item: any) => item.slotName || item.field)
 })
 
-// 获取需要创建插槽的表格列
-const tableSlotsColumns = computed(() => {
-  return props.tableConfig.tableColumn?.filter((col: any) => 
+/** 获取需要创建插槽的表格列 */
+const tableSlotsColumns = computed<TableColumn[]>(() => {
+  return (props.tableConfig.tableColumn || []).filter((col: TableColumn) => 
     col.isSlot || col.type === 'expand'
-  ) || []
+  )
 })
 
-// 获取表格插槽名称
-const getTableSlotName = (col: any) => {
-  if (col.type === 'expand') {
-    return 'expand'
-  }
-  return col.slotName || col.prop
+/** 获取表格插槽名称 */
+const getTableSlotName = (col: TableColumn): string => {
+  if (col.type === 'expand') return 'expand'
+  return col.slotName || col.prop || ''
 }
 
-// 显示的列（过滤掉隐藏的列）
-const displayColumns = computed(() => {
+/** 显示的列（过滤掉隐藏的列） */
+const displayColumns = computed<TableColumn[]>(() => {
   if (visibleColumns.value.length) {
-    const fixedColumns = props.tableConfig.tableColumn?.filter((col: any) =>
+    const fixedColumns = (props.tableConfig.tableColumn || []).filter((col: TableColumn) =>
       col.type === 'selection' || col.type === 'index'
-    ) || []
+    )
     return [...fixedColumns, ...visibleColumns.value]
   }
   return props.tableConfig.tableColumn || []
 })
 
-// 处理列变化
-const handleColumnsChange = (columns: any[]) => {
+
+/** 处理列变化 */
+const handleColumnsChange = (columns: TableColumn[]): void => {
   visibleColumns.value = columns
 }
 
-// 刷新数据
-const handleRefresh = () => {
+/** 刷新数据 */
+const handleRefresh = (): void => {
   emit('refresh')
   loadData()
 }
 
-// 导出数据
-const handleExport = async () => {
+/** 导出数据 */
+const handleExport = async (): Promise<void> => {
   if (!props.tableConfig.exportApi) return
 
   exportLoading.value = true
@@ -197,14 +203,18 @@ const handleExport = async () => {
   }
 }
 
-// 表格密度切换
-const handleSizeChange = (size: string) => {
+/** 表格密度切换 */
+const handleSizeChange = (size: string): void => {
   tableSize.value = size
   localStorage.setItem('table_size', size)
 }
-
-// 获取表格数据
-const loadData = async () => {
+/** 获取路径值 */
+const getValueByPath = (obj: any, path: string): any => {
+  if (!path) return ''
+  return path.split('.').reduce((current, key) => current?.[key], obj)
+}
+/** 获取表格数据 */
+const loadData = async (): Promise<void> => {
   if (!props.tableConfig.queryApi) return
 
   loading.value = true
@@ -220,10 +230,6 @@ const loadData = async () => {
     const dataListKey = props.tableConfig.apiList || 'list'
     
     if (res.code === 200) {
-      const getValueByPath = (obj: any, path: string) => {
-        return path.split('.').reduce((current, key) => current?.[key], obj)
-      }
-      
       tableData.value = getValueByPath(res.data, dataListKey) || res.data?.[dataListKey] || res.data || []
       total.value = res.data?.total || 0
       emit('load-success', { data: tableData.value, total: total.value })
@@ -232,7 +238,7 @@ const loadData = async () => {
     }
   } catch (error) {
     console.error('加载数据失败:', error)
-    emit('load-error', error)
+    emit('load-error', error as Error)
     tableData.value = []
     total.value = 0
   } finally {
@@ -240,57 +246,56 @@ const loadData = async () => {
   }
 }
 
-// 搜索
-const handleSearch = (params: any) => {
+/** 搜索 */
+const handleSearch = (params: Record<string, any>): void => {
   searchParams.value = params
   currentPage.value = 1
   loadData()
 }
 
-// 重置
-const handleReset = () => {
+
+/** 重置 */
+const handleReset = (): void => {
   searchParams.value = {}
   currentPage.value = 1
   loadData()
 }
-
-// 分页变化
-const handlePageChange = () => {
+/** 分页变化 */
+const handlePageChange = (): void => {
   loadData()
 }
-
-// 选中变化
-const handleSelectionChange = (selection: any[]) => {
+/** 选中变化 */
+const handleSelectionChange = (selection: any[]): void => {
   emit('selection-change', selection)
 }
 
-// 行单击（透传）
-const handleRowClick = (row: any, column: any, event: Event) => {
+/** 行单击（透传） */
+const handleRowClick = (row: any, column: any, event: Event): void => {
   emit('row-click', row, column, event)
 }
 
-// 行双击（透传）
-const handleRowDblClick = (row: any, column: any, event: Event) => {
+/** 行双击（透传） */
+const handleRowDblClick = (row: any, column: any, event: Event): void => {
   emit('row-dblclick', row, column, event)
 }
 
-// 刷新表格
-const queryTableList = () => {
-  loadData()
+/** 刷新表格 */
+const queryTableList = (): Promise<void> => {
+  return loadData()
 }
 
-// 重置并刷新
-const resetAndRefresh = () => {
+/** 重置并刷新 */
+const resetAndRefresh = (): void => {
   handleReset()
 }
 
-// 获取当前搜索参数
-const getSearchParams = () => {
+/** 获取当前搜索参数 */
+const getSearchParams = (): Record<string, any> => {
   return { ...searchParams.value }
 }
 
-// 设置搜索参数并查询
-const setSearchParams = (params: any, isResetPage = true) => {
+/** 设置搜索参数并查询 */
+const setSearchParams = (params: Record<string, any>, isResetPage = true): void => {
   searchParams.value = { ...params }
   if (isResetPage) {
     currentPage.value = 1
@@ -298,18 +303,18 @@ const setSearchParams = (params: any, isResetPage = true) => {
   loadData()
 }
 
-// 获取查询表单实例
+/** 获取查询表单实例 */
 const getQueryFormInstance = () => {
   return queryFormRef.value
 }
 
-// 获取表格实例
+/** 获取表格实例 */
 const getTableInstance = () => {
   return tableComponentRef.value
 }
 
 // 暴露方法给父组件
-defineExpose({
+const instance: BoxTableInstance = {
   queryTableList,
   resetAndRefresh,
   loadData,
@@ -317,7 +322,9 @@ defineExpose({
   setSearchParams,
   getQueryFormInstance,
   getTableInstance
-})
+}
+
+defineExpose(instance)
 
 // 监听配置变化
 watch(() => props.tableConfig, () => {
@@ -334,21 +341,11 @@ onMounted(() => {
     if (savedSize) {
       tableSize.value = savedSize
     }
-
-    const instance = {
-      queryTableList,
-      resetAndRefresh,
-      loadData,
-      getSearchParams,
-      setSearchParams,
-      getQueryFormInstance,
-      getTableInstance,
-      $component: null as any
-    }
-    instance.$component = instance
     emit('mounted', instance)
   })
 })
+
+
 </script>
 
 <style scoped lang="scss">

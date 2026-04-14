@@ -1,10 +1,11 @@
 import { showPopup } from '@/utils/popupService';
 import popup from './../components/DeptForm.vue';
+import {type DeptItem} from './../config'
 export function showDeptFormPopup(
   title: string,
-  row: any,
+  row: DeptItem | {},
   isAdd: boolean,
-  list: any,
+  list: DeptItem[],
 ): Promise<any> {
   // 使用弹窗服务
   return showPopup(

@@ -2,9 +2,10 @@ import { showPopup } from '@/utils/popupService';
 import popup from './../components/UserForm.vue';
 import role from './../components/UserRoleAssign.vue';
 import dept from './../components/UserDept.vue';
+import type {UserItem} from './../config';
 export function showChangePasswordPopup(
   title: string,
-  row: any
+  row: UserItem|{}
 ): Promise<any> {
   // 使用弹窗服务
   return showPopup(
@@ -17,7 +18,7 @@ export function showChangePasswordPopup(
       closeOnClickModal: false, // 点击遮罩不关闭
       className: 'change-password-dialog',
       // 成功回调
-      success: (data: any) => {
+      success: (data) => {
         console.log( data);
         // 这里可以处理成功后的逻辑，比如刷新列表等
       },
@@ -33,7 +34,7 @@ export function showChangePasswordPopup(
   );
 }
 
-export function showRloePropup(row: any): Promise<any> {
+export function showRloePropup(row: UserItem|{}): Promise<any> {
   // 使用弹窗服务
   return showPopup(
     role, // 您的弹窗内容组件
@@ -45,8 +46,8 @@ export function showRloePropup(row: any): Promise<any> {
       closeOnClickModal: false, // 点击遮罩不关闭
       className: 'change-password-dialog',
       // 成功回调
-      success: (data: any) => {
-        console.log('密码修改成功:', data);
+      success: (data) => {
+        console.log( data);
         // 这里可以处理成功后的逻辑，比如刷新列表等
       },
       // 关闭回调
@@ -61,7 +62,7 @@ export function showRloePropup(row: any): Promise<any> {
   );
 }
 
-export function showDeptpup(row: any): Promise<any> {
+export function showDeptpup(row: UserItem|{}): Promise<any> {
   // 使用弹窗服务
   return showPopup(
     dept, // 您的弹窗内容组件
@@ -73,7 +74,7 @@ export function showDeptpup(row: any): Promise<any> {
       closeOnClickModal: false, // 点击遮罩不关闭
       className: 'change-password-dialog',
       // 成功回调
-      success: (data: any) => {
+      success: (data) => {
         console.log('密码修改成功:', data);
         // 这里可以处理成功后的逻辑，比如刷新列表等
       },
