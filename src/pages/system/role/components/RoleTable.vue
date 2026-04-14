@@ -86,9 +86,9 @@
             <el-button type="primary" link @click="handleMenuAssign(row)">
               分配菜单
             </el-button>
-            <el-button type="primary" link @click="handleDeptAssign(row)">
+            <!-- <el-button type="primary" link @click="handleDeptAssign(row)">
               分配部门
-            </el-button>
+            </el-button> -->
             <el-button
               type="danger"
               link
