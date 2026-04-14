@@ -43,6 +43,7 @@
 <script setup lang="ts">
 import {  createDept, updateDept,} from '@/api/system/dept'
 import { type FormRules} from 'element-plus'
+import type {FORMATDATA}from './../config'
 interface Props {
   row: Record<string, any>
   list: Record<string, any>[]
@@ -56,7 +57,7 @@ const props = defineProps<Props>()
 const formRef = ref<any>()
 // 菜单选项（用于选择父级菜单）
 const deptOptions = ref<any[]>([])
-const formData = ref<any>({
+const formData = ref<FORMATDATA | any>({
   parentId: '',
   name: '',
   code: '',
@@ -86,15 +87,12 @@ const formRules: FormRules = {
 const onSubmit = async()=>{
   await formRef.value.validate(async (valid:any) => {
   if (!valid) return
-
   try {
     const params:any = { ...formData.value }
-
     // 处理pid（如果是数组，取最后一个）
     if (Array.isArray(params.pid) && params.pid.length > 0) {
       params.pid = params.pid[params.pid.length - 1]
     }
-
     if (props.isAdd) {
       // 新增时发送pid
       await createDept(params)
@@ -112,7 +110,6 @@ const onSubmit = async()=>{
 })
 }
 onMounted(()=>{
-  console.log(props)
   formData.value = props.row
   deptOptions.value = props.list
 })

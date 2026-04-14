@@ -50,6 +50,8 @@
 </template>
 
 <script setup lang="ts">
+import PageLayout from '@/components/PageLayout/index.vue'
+import BoxTable from '@/components/BoxTable/index.vue'
 import { deleteDept } from '@/api/system/dept'
 import { TableConfig } from './config'
 import {showDeptFormPopup}from './popup/index'

@@ -21,3 +21,14 @@ export const TableConfig = {
   total: 0,
   pageSize: 20,
 };
+
+export interface FORMATDATA {
+  parentId: string
+  name: string
+  code: string
+  orderNum: number
+  leader:string
+  phone: string
+  email: string
+  status: string
+}

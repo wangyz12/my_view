@@ -72,14 +72,14 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted}from 'vue'
-import {formRules,updateMenusAndRoutes} from './../config'
-import {showSelectIconPopup} from './../propup/index'
+import { onMounted } from 'vue'
+import { formRules, updateMenusAndRoutes } from './../config'
+import { showSelectIconPopup } from './../propup/index'
 import { createMenu, updateMenu } from '@/api/system/menu'
 interface Props {
   row: Record<string, any>
   list: Record<string, any>[]
-  isAdd:boolean
+  isAdd: boolean
 }
 const emit = defineEmits<{
   (e: 'success', data: any): void
@@ -129,43 +129,43 @@ const handleExternalChange = (external: boolean) => {
   }
 }
 // 选择图标
-const selectIcon = async ()=>{
-  const res:any = await showSelectIconPopup()
-  if(res.success){
-    const {data} = res
+const selectIcon = async () => {
+  const res: any = await showSelectIconPopup()
+  if (res.success) {
+    const { data } = res
     formData.value.icon = data
   }
 }
-const onSubmit = async ()=>{
-await formRef.value.validate(async (valid:any) => {
-  if (!valid) return
+const onSubmit = async () => {
+  await formRef.value.validate(async (valid: any) => {
+    if (!valid) return
 
-  try {
-    const params:any = { ...formData.value }
+    try {
+      const params: any = { ...formData.value }
 
-    // 处理pid（如果是数组，取最后一个）
-    if (Array.isArray(params.pid) && params.pid.length > 0) {
-      params.pid = params.pid[params.pid.length - 1]
+      // 处理pid（如果是数组，取最后一个）
+      if (Array.isArray(params.pid) && params.pid.length > 0) {
+        params.pid = params.pid[params.pid.length - 1]
+      }
+
+      if (props.isAdd) {
+        // 新增时发送pid
+        await createMenu(params)
+        ElMessage.success('新增成功')
+      } else {
+        // 编辑时也发送pid，但确保空字符串被正确处理
+        await updateMenu(params)
+        ElMessage.success('更新成功')
+      }
+      // 更新菜单和路由
+      await updateMenusAndRoutes()
+      emit('success', true)
+    } catch (error: any) {
+      console.log(error)
     }
-
-    if (props.isAdd) {
-      // 新增时发送pid
-      await createMenu(params)
-      ElMessage.success('新增成功')
-    } else {
-      // 编辑时也发送pid，但确保空字符串被正确处理
-      await updateMenu(params)
-      ElMessage.success('更新成功')
-    }
-    // 更新菜单和路由
-    await updateMenusAndRoutes()
-    emit('success',true)
-  } catch (error: any) {
-    console.log(error)
-  } 
-})
+  })
 }
-onMounted(()=>{
+onMounted(() => {
   formData.value = props.row
   menuOptions.value = props.list
 })

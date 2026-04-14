@@ -64,6 +64,15 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * 这里只做标的简单封装
+ *        可拓展功能
+ * 表格行单击/双击事件 @row-click、@row-dblclick
+ * 行样式自定义       row-class-name、row-style
+ * 单元格合并         span-method
+ * 
+ * 这里后续会加上以上的功能
+ * */ 
 const props = defineProps({
   tableColumn: {
     type: Array as any,

@@ -78,7 +78,7 @@
             @change="(value:any) => handleCascaderChange(item.field, value)"
           />
           
-          <!-- 日期范围 -->
+          <!-- 日期范围 日期不规定格式根据业务自行修改-->
           <el-date-picker
             v-else-if="item.type === 'daterange'"
             v-model="formData[item.field]"
@@ -125,8 +125,9 @@
 </template>
 
 <script setup lang="ts">
+
 import { reactive, computed, ref, onMounted, watch, onBeforeUnmount } from 'vue'
-import { useQueryData } from './useQueryData'
+import { useQueryData } from './useQueryData' // 处理各种远程表单的数据
 
 const props = defineProps({
   queryList: {

@@ -44,6 +44,7 @@
           <slot name="table-toolbar" />
         </template>
       </TableToolbar>
+      <!-- 内置一个表格插槽，用于处理复杂表格 例：树形结构表格，单元格合并的表格 具体使用参考部门，菜单页面-->
       <slot name="table" :tableData="tableData" :loading="loading" :displayColumns="displayColumns">
         <TableComponent 
           ref="tableComponentRef" 
@@ -69,7 +70,7 @@
       </slot>
     </div>
 
-    <!-- 分页 -->
+    <!-- 分页 可以自由发挥小于设定的一页的大小可以不显示分页组件-->
     <Pagination 
       v-if="tableConfig.pagination !== false" 
       v-model:page="currentPage" 
@@ -81,6 +82,8 @@
 </template>
 
 <script setup lang="ts">
+// 考虑到初级前端，封装的不深，组件封装便于理解，二次封装，自定义拓展，不拓展也可直接使用可满足开发中大部分业务表格，
+// 特定的复杂表格留有表格插槽可自行编写复杂情况的表格
 import { ref, onMounted, watch, nextTick, computed } from 'vue'
 import QueryForm from './searchForm/index.vue'
 import TableComponent from './tableOpe/index.vue'
@@ -123,12 +126,12 @@ const tableSlotsColumns = computed(() => {
   ) || []
 })
 
-// 获取表格插槽名称（统一使用 table- 前缀）
+// 获取表格插槽名称
 const getTableSlotName = (col: any) => {
   if (col.type === 'expand') {
     return 'expand'
   }
-  // 直接返回 slotName 或 prop，不加 table- 前缀
+  // 直接返回 自定义插槽名字slotName 或 prop
   return col.slotName || col.prop
 }
 
@@ -155,7 +158,7 @@ const handleRefresh = () => {
   loadData()
 }
 
-// 导出数据
+// 导出数据 这里只是留有操作逻辑，可按业务自行修改
 const handleExport = async () => {
   if (!props.tableConfig.exportApi) return
 
@@ -189,7 +192,7 @@ const handleSizeChange = (size: string) => {
   localStorage.setItem('table_size', size)
 }
 
-// 获取数据
+// 获取表格数据 默认不查询，在获取实例后手动调取查询
 const loadData = async () => {
   if (!props.tableConfig.queryApi) return
 
@@ -203,7 +206,7 @@ const loadData = async () => {
 
     const res = await props.tableConfig.queryApi(params)
     
-    // 使用 dataListStr 指定数据列表字段，默认 'list'
+    // 使用 apiList 指定数据列表字段，默认 'list'
     const dataListKey = props.tableConfig.apiList || 'list'
     
     if (res.code === 200) {
@@ -214,6 +217,7 @@ const loadData = async () => {
       
       tableData.value = getValueByPath(res.data, dataListKey) || res.data?.[dataListKey] || res.data || []
       total.value = res.data?.total || 0
+      // 返回表格的数据，用于特殊情况需要获取表格数据的业务
       emit('load-success', { data: tableData.value, total: total.value })
     } else {
       throw new Error(res.message || '获取数据失败')
@@ -286,7 +290,7 @@ const getTableInstance = () => {
   return tableComponentRef.value
 }
 
-// 暴露方法给父组件
+// 暴露方法给父组件 内置的几个主要方法，根据业务可追加方法
 defineExpose({
   queryTableList,
   resetAndRefresh,
