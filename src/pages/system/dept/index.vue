@@ -30,7 +30,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="200" fixed="right">
+          <el-table-column label="操作" fixed="right">
             <template #default="{ row }">
               <el-button type="primary" link size="small" @click="handleEdit('新增子部门',row)" v-permission="'system:dept:add'">
               添加子部门
