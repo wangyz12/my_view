@@ -128,8 +128,6 @@ import {
 import {
   DEFAULT_AVATAR,
   LAYOUT_CONFIG,
-  USER_STATUS_CONFIG,
-  type UserStatus
 } from './config'
 import { useThemeStore } from '@/store/modules/theme'
 import {

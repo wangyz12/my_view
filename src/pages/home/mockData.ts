@@ -81,7 +81,7 @@ export const mockStatsData = {
       type: 'login' as ActivityType, 
       target: '系统', 
       time: new Date(Date.now() - 10 * 60 * 1000).toISOString(), 
-      ip: '192.168.1.100',
+      ip: 'xxx.xxx.x.xxx',
       avatar: DEFAULT_AVATAR
     },
     { 
@@ -90,7 +90,7 @@ export const mockStatsData = {
       type: 'create' as ActivityType, 
       target: '新用户: test001', 
       time: new Date(Date.now() - 25 * 60 * 1000).toISOString(), 
-      ip: '192.168.1.101',
+      ip: 'xxx.xxx.x.xxx',
       avatar: DEFAULT_AVATAR
     },
     { 
@@ -99,7 +99,7 @@ export const mockStatsData = {
       type: 'update' as ActivityType, 
       target: '部门信息: 技术部', 
       time: new Date(Date.now() - 60 * 60 * 1000).toISOString(), 
-      ip: '192.168.1.102',
+      ip: 'xxx.xxx.x.xxx',
       avatar: DEFAULT_AVATAR
     },
     { 
@@ -108,7 +108,7 @@ export const mockStatsData = {
       type: 'delete' as ActivityType, 
       target: '测试数据', 
       time: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), 
-      ip: '192.168.1.103',
+      ip: 'xxx.xxx.x.xxx',
       avatar: DEFAULT_AVATAR
     },
     { 
@@ -117,7 +117,7 @@ export const mockStatsData = {
       type: 'permission' as ActivityType, 
       target: '角色权限', 
       time: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), 
-      ip: '192.168.1.104',
+      ip: 'xxx.xxx.x.xxx',
       avatar: DEFAULT_AVATAR
     }
   ],

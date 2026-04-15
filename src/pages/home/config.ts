@@ -92,22 +92,22 @@ export const SYSTEM_INTRO_CONFIG = {
   stats: [
     {
       label: '用户数',
-      value: '1,235',
+      value: 'x,xxx',
       icon: 'User'
     },
     {
       label: '角色数',
-      value: '8',
+      value: 'x',
       icon: 'Lock'
     },
     {
       label: '部门数',
-      value: '12',
+      value: 'xx',
       icon: 'OfficeBuilding'
     },
     {
       label: '在线数',
-      value: '156',
+      value: 'xxx',
       icon: 'Monitor'
     }
   ]
