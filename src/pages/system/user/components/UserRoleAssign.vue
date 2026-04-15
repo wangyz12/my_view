@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { getRoleList } from '@/api/system/role'
+import { getAllRoles } from '@/api/system/role'
 import { assignUserRoles, getUserRoles } from '@/api/system/userRole'
 
 // ==================== 类型定义 ====================
@@ -59,8 +59,9 @@ interface ApiResponse<T = any> {
 
 /** 角色列表响应数据 */
 interface RoleListData {
-  list: RoleItem[]
-  total: number
+  data: RoleItem[]
+  code: number
+  msg:string
 }
 
 /** 提交参数类型 */
@@ -124,7 +125,7 @@ onMounted(async () => {
     // 并行加载数据
     const [userRolesRes, allRolesRes] = await Promise.all([
       getUserRoles(props.row.id) as Promise<ApiResponse<RoleItem[]>>,
-      getRoleList({}) as Promise<ApiResponse<RoleListData>>
+      getAllRoles() as Promise<ApiResponse<RoleItem[]>>
     ])
     
     // 设置用户已分配的角色ID
@@ -134,7 +135,7 @@ onMounted(async () => {
     
     // 设置所有角色选项
     if (allRolesRes.code === 200) {
-      roleOptions.value = allRolesRes.data.list || []
+      roleOptions.value = allRolesRes.data || []
     }
   } catch (error) {
     console.error('加载角色数据失败:', error)

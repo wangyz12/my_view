@@ -80,7 +80,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { ElTree, ElMessage } from 'element-plus'
-import { getMenuTree } from '@/api/system/menu'
+import { getAllMenus } from '@/api/system/menu'
 import { getRoleMenus, assignRoleMenus } from '@/api/system/role'
 import type { TreeNodeData } from 'element-plus/es/components/tree/src/tree.type'
 // ==================== 类型定义 ====================
@@ -207,7 +207,7 @@ const typeStats = computed((): TypeStats => {
 const loadMenuTree = async (): Promise<void> => {
   try {
     loading.value = true
-    const res = await getMenuTree() as ApiResponse<MenuTreeNode[]>
+    const res = await getAllMenus() as ApiResponse<MenuTreeNode[]>
     if (res.code === 200) {
       menuTree.value = res.data || []
     }
