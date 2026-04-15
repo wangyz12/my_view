@@ -8,12 +8,14 @@
       <!-- 面包屑导航 -->
       <div class="breadcrumb hidden md:flex items-center text-sm">
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item 
-            v-for="(item, index) in breadcrumbItems" 
-            :key="index"
-          >
-            {{ item.title }}
-          </el-breadcrumb-item>
+          <transition-group name="breadcrumb">
+            <el-breadcrumb-item 
+              v-for="item in breadcrumbItems" 
+              :key="item.path"
+            >
+              <span class="breadcrumb-item-content">{{ item.title }}</span>
+            </el-breadcrumb-item>
+          </transition-group>
         </el-breadcrumb>
       </div>
     </template>
@@ -31,18 +33,42 @@ import { useUserStore } from '@/store/modules/user'
 import Logo from '@/layout/menu/logo/index.vue'
 import CollapseButton from './CollapseButton.vue'
 
+// ==================== 类型定义 ====================
+
+/** 菜单项类型 */
+interface MenuItem {
+  id: string
+  path: string
+  title: string
+  parentId: string | null
+  name?: string
+  icon?: string
+  children?: MenuItem[]
+  [key: string]: unknown
+}
+
+/** 面包屑项类型 */
+interface BreadcrumbItem {
+  title: string
+  path: string
+}
+
+// ==================== 响应式数据 ====================
+
 const themeStore = useThemeStore()
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
 
-// 👇 添加这一行，定义 currentPath
-const currentPath = computed(() => route.path)
+// ==================== 工具函数 ====================
 
 /**
  * 根据路径查找菜单项
+ * @param menus - 菜单列表
+ * @param path - 目标路径
+ * @returns 找到的菜单项或 null
  */
-const findMenuItemByPath = (menus: any[], path: string): any => {
+const findMenuItemByPath = (menus: MenuItem[], path: string): MenuItem | null => {
   for (const menu of menus) {
     if (menu.path === path) return menu
     if (menu.children && menu.children.length) {
@@ -54,9 +80,12 @@ const findMenuItemByPath = (menus: any[], path: string): any => {
 }
 
 /**
- * 通过 parentId 查找菜单（更精确）
+ * 通过 parentId 查找父级菜单
+ * @param menus - 菜单列表
+ * @param parentId - 父级ID
+ * @returns 找到的父级菜单或 null
  */
-const findMenuItemByParentId = (menus: any[], parentId: string): any => {
+const findMenuItemByParentId = (menus: MenuItem[], parentId: string): MenuItem | null => {
   for (const menu of menus) {
     if (menu.id === parentId) return menu
     if (menu.children && menu.children.length) {
@@ -68,33 +97,41 @@ const findMenuItemByParentId = (menus: any[], parentId: string): any => {
 }
 
 /**
- * 生成面包屑数据（从菜单数据中获取）
+ * 递归收集面包屑路径
+ * @param menu - 当前菜单
+ * @param menus - 完整菜单列表
+ * @param items - 收集结果
  */
-const breadcrumbItems = computed(() => {
-  const menus = userStore.$state.menus || []
-  
-  // 查找当前路径对应的菜单项
+const collectBreadcrumbItems = (
+  menu: MenuItem,
+  menus: MenuItem[],
+  items: BreadcrumbItem[]
+): void => {
+  if (menu.parentId && menu.parentId !== '0' && menu.parentId !== null) {
+    const parentMenu = findMenuItemByParentId(menus, menu.parentId)
+    if (parentMenu) {
+      collectBreadcrumbItems(parentMenu, menus, items)
+      items.push({
+        title: parentMenu.title,
+        path: parentMenu.path
+      })
+    }
+  }
+}
+
+// ==================== 计算属性 ====================
+
+/**
+ * 生成面包屑数据
+ */
+const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
+  const menus = (userStore.$state.menus as MenuItem[]) || []
   const currentMenu = findMenuItemByPath(menus, route.path)
   
   if (!currentMenu) return []
   
-  // 收集父级路径
-  const items: any[] = []
-  
-  const collectParents = (menu: any) => {
-    if (menu.parentId && menu.parentId !== '0' && menu.parentId !== null) {
-      const parentMenu = findMenuItemByParentId(menus, menu.parentId)
-      if (parentMenu) {
-        collectParents(parentMenu)
-        items.push({
-          title: parentMenu.title,
-          path: parentMenu.path
-        })
-      }
-    }
-  }
-  
-  collectParents(currentMenu)
+  const items: BreadcrumbItem[] = []
+  collectBreadcrumbItems(currentMenu, menus, items)
   items.push({
     title: currentMenu.title,
     path: currentMenu.path
@@ -103,7 +140,9 @@ const breadcrumbItems = computed(() => {
   return items
 })
 
-const goHome = () => {
+// ==================== 方法 ====================
+
+const goHome = (): void => {
   router.push('/home')
 }
 </script>
@@ -128,5 +167,30 @@ const goHome = () => {
       font-size: 14px;
     }
   }
+}
+
+/* 面包屑切换动画 */
+.breadcrumb-move,
+.breadcrumb-enter-active,
+.breadcrumb-leave-active {
+  transition: all 0.3s ease;
+}
+
+.breadcrumb-enter-from {
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.breadcrumb-leave-to {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.breadcrumb-leave-active {
+  position: absolute;
+}
+
+.breadcrumb-item-content {
+  display: inline-block;
 }
 </style>

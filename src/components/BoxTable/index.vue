@@ -232,6 +232,7 @@ const loadData = async (): Promise<void> => {
     if (res.code === 200) {
       tableData.value = getValueByPath(res.data, dataListKey) || res.data?.[dataListKey] || res.data || []
       total.value = res.data?.total || 0
+      // 调用 成功回调传递查询出来的数据
       emit('load-success', { data: tableData.value, total: total.value })
     } else {
       throw new Error(res.message || '获取数据失败')

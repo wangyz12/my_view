@@ -9,7 +9,7 @@ const isError = ref(false)
 
 // 请求计数器
 let requestCount = 0
-
+let progressTimer: ReturnType<typeof setInterval> | null = null
 /**
  * 开始进度条
  */
@@ -20,16 +20,15 @@ export const startProgress = () => {
     isError.value = false
     progress.value = 0
     
-    // 模拟进度条增长
-    const interval = setInterval(() => {
+    // 清除之前的定时器
+    if (progressTimer) clearInterval(progressTimer)
+    
+    progressTimer = setInterval(() => {
       if (progress.value >= 90) {
-        clearInterval(interval)
+        if (progressTimer) clearInterval(progressTimer)
         return
       }
-      
-      // 非线性增长，让进度条看起来更自然
-      const increment = Math.random() * 10 + 1
-      progress.value = Math.min(progress.value + increment, 90)
+      progress.value = Math.min(progress.value + Math.random() * 10 + 1, 90)
     }, 200)
   }
 }
@@ -40,15 +39,14 @@ export const startProgress = () => {
 export const finishProgress = () => {
   requestCount = Math.max(0, requestCount - 1)
   if (requestCount === 0) {
+    if (progressTimer) {
+      clearInterval(progressTimer)
+      progressTimer = null
+    }
     progress.value = 100
-    isError.value = false
-    
-    // 延迟隐藏进度条
     setTimeout(() => {
       active.value = false
-      setTimeout(() => {
-        progress.value = 0
-      }, 300)
+      progress.value = 0
     }, 300)
   }
 }

@@ -11,7 +11,7 @@ export const TableConfig = {
   // 用于表格取不同的数据list  默认是list，具体角色页面使用过
   apiList:'list',
   // 数据查询接口
-  // queryApi: getUserList,
+  queryApi: null, // 如果有查询接口，填入函数名
   // 控制表格的border
   border:true,
   // 导出接口（可选，配置后自动显示导出按钮）
@@ -113,27 +113,27 @@ export const TableConfig = {
     },
     
     // 8. 远程搜索框（可选）
-    // { 
-    //   type: 'remote', 
-    //   field: 'userId', 
-    //   label: '负责人',
-    //   queryApi: searchUserApi,
-    //   props: { value: 'id', label: 'name' },
-    //   debounceTime: 500,
-    //   minSearchLength: 2,
-    //   maxResults: 20,
-    //   skipEmptySearch: true,
-    //   defaultValue: ''
-    // },
+    { 
+      type: 'remote', 
+      field: 'userId', 
+      label: '负责人',
+      queryApi: null,
+      props: { value: 'id', label: 'name' },
+      debounceTime: 500,
+      minSearchLength: 2,
+      maxResults: 20,
+      skipEmptySearch: true,
+      defaultValue: ''
+    },
     
     // 9. 自定义插槽示例（需要自定义组件时使用）
-    // { 
-    //   field: 'customField', 
-    //   label: '自定义',
-    //   isSlot: true,
-    //   slotName: 'customField',
-    //   defaultValue: ''
-    // }
+    { 
+      field: 'customField', 
+      label: '自定义',
+      isSlot: true,
+      slotName: 'customField',
+      defaultValue: ''
+    }
   ],
   
   // ==================== 表格列配置 ====================

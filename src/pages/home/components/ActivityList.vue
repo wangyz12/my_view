@@ -3,7 +3,7 @@
     <div class="activity-header">
       <h3 class="activity-title">最近活动</h3>
       <el-button 
-        type="text" 
+        link
         size="small"
         @click="handleViewAll"
       >

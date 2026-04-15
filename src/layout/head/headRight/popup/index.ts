@@ -21,7 +21,7 @@ export function showChangePasswordPopup(): Promise<any> {
       
       // 成功回调
       success: (data) => {
-        console.log('密码修改成功:', data)
+        console.log( data)
         // 这里可以处理成功后的逻辑，比如刷新列表等
       },
       

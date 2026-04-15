@@ -1,7 +1,7 @@
 <template>
-  <div class="menu-wrapper">
-    <Logo v-if="themeStore.showLogo" @goHome="goHome"/>
-    <!-- 菜单区域：使用 element-plus 的菜单组件，数据从 userStore 获取 -->
+  <div class="menu-wrapper" :class="{ 'is-collapse': isCollapse }">
+    <Logo v-if="themeStore.showLogo" @goHome="goHome" />
+    <!-- 菜单区域 -->
     <el-menu
       :default-active="activeMenu"
       :collapse="isCollapse"
@@ -22,11 +22,9 @@
         />
       </template>
     </el-menu>
+    
     <!-- 收缩/展开按钮 -->
-    <div 
-      class="collapse-btn"
-      @click="toggleCollapse"
-    >
+    <div class="collapse-btn" @click="toggleCollapse">
       <el-icon :size="12">
         <DArrowLeft v-if="!isCollapse" />
         <DArrowRight v-else />
@@ -36,60 +34,95 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useUserStore } from '@/store/modules/user';
-import { useThemeStore } from '@/store/modules/theme';
-import MenuItem from './MenuItem.vue'; // 引入递归子组件
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useUserStore } from '@/store/modules/user'
+import { useThemeStore } from '@/store/modules/theme'
+import MenuItem from './MenuItem.vue'
 import Logo from './logo/index.vue'
-const themeStore = useThemeStore();
-const router = useRouter();
-const route = useRoute();
-console.log(themeStore.menuBgColor)
-// 获取用户store中的菜单数据
-const userStore = useUserStore();
-const menuList = computed(() => userStore.$state.menus || []);
 
-// 路由实例，用于高亮当前菜单
-const activeMenu = computed(() => route.path);
+// ==================== 类型定义 ====================
 
-// 控制菜单折叠（可根据需要从props或store传入）
-const isCollapse = computed(()=>userStore.isCollapse);
+/** 菜单项类型 */
+interface MenuItemType {
+  id: string
+  path: string
+  title: string
+  name?: string
+  icon?: string
+  external?: boolean
+  target?: '_blank' | '_self'
+  children?: MenuItemType[]
+  [key: string]: unknown
+}
 
-// 菜单选择处理函数
-const handleMenuSelect = (index: string) => {
-  // 如果是外部链接，使用 window.open 打开
-  const menuItem = findMenuItemByPath(menuList.value, index);
+// ==================== 响应式数据 ====================
+
+const themeStore = useThemeStore()
+const router = useRouter()
+const route = useRoute()
+const userStore = useUserStore()
+
+// ==================== 计算属性 ====================
+
+/** 菜单列表 */
+const menuList = computed<MenuItemType[]>(() => userStore.$state.menus || [])
+
+/** 当前激活的菜单路径 */
+const activeMenu = computed<string>(() => route.path)
+
+/** 菜单是否折叠 */
+const isCollapse = computed<boolean>(() => userStore.isCollapse)
+
+// ==================== 方法 ====================
+
+/**
+ * 根据路径查找菜单项
+ * @param menus - 菜单列表
+ * @param path - 目标路径
+ * @returns 找到的菜单项或 null
+ */
+const findMenuItemByPath = (menus: MenuItemType[], path: string): MenuItemType | null => {
+  for (const menu of menus) {
+    if (menu.path === path) return menu
+    if (menu.children && menu.children.length) {
+      const found = findMenuItemByPath(menu.children, path)
+      if (found) return found
+    }
+  }
+  return null
+}
+
+/**
+ * 处理菜单选择
+ * @param index - 选中的菜单路径
+ */
+const handleMenuSelect = (index: string): void => {
+  const menuItem = findMenuItemByPath(menuList.value, index)
+  
+  // 外部链接处理
   if (menuItem?.external) {
     if (menuItem.target === '_blank') {
-      window.open(menuItem.path, '_blank');
+      window.open(menuItem.path, '_blank')
     } else {
-      window.location.href = menuItem.path;
+      window.location.href = menuItem.path
     }
-    return;
+    return
   }
 
   // 内部路由跳转
-  router.push(index);
-};
-// 根据路径查找菜单项（用于判断是否为外部链接）
-const findMenuItemByPath = (menus: any[], path: string): any => {
-  for (const menu of menus) {
-    if (menu.path === path) return menu;
-    if (menu.children && menu.children.length) {
-      const found = findMenuItemByPath(menu.children, path);
-      if (found) return found;
-    }
-  }
-  return null;
-};
-const goHome = ()=>{
+  router.push(index)
+}
+
+/** 返回首页 */
+const goHome = (): void => {
   router.push('/home')
 }
-// 切换折叠状态
-const toggleCollapse = () => {
-  userStore.set_isCollapse(!isCollapse.value);
-};
+
+/** 切换菜单折叠状态 */
+const toggleCollapse = (): void => {
+  userStore.set_isCollapse(!isCollapse.value)
+}
 </script>
 
 <style scoped lang="scss">
@@ -116,19 +149,18 @@ const toggleCollapse = () => {
   z-index: 10;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
-  // 鼠标悬停效果
   &:hover {
     background-color: var(--el-color-primary);
     border-color: var(--el-color-primary);
     transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     right: 3px;
+    
     .el-icon {
       color: #fff;
     }
   }
 
-  // 点击效果
   &:active {
     transform: scale(0.95);
   }
@@ -136,15 +168,6 @@ const toggleCollapse = () => {
   .el-icon {
     color: var(--el-text-color-secondary);
     transition: all 0.3s ease;
-  }
-}
-
-// 菜单折叠时，按钮位置微调
-.menu-wrapper.is-collapse .collapse-btn {
-  right: -12px;
-  
-  .el-icon {
-    // 图标方向变了，不需要额外处理
   }
 }
 </style>

@@ -26,7 +26,9 @@ const modules = import.meta.glob('@/pages/**/*.vue');
 class DynamicRouteManager {
   private router: Router | null = null;
   private dynamicRoutes: RouteRecordRaw[] = [];
-  private layoutName = 'Layout'; // Layout 路由的名称
+  private layoutName = 'Layout';
+  private isGenerating = false;  // 防重复标志
+  private generatedMenusHash = '';  // 菜单哈希
 
   // 初始化
   init(router: Router) {
@@ -41,7 +43,15 @@ class DynamicRouteManager {
       console.error('Router not initialized');
       return false;
     }
+    // 防重复：如果正在生成或菜单未变化，跳过
+    const menusHash = JSON.stringify(menus)
+    if (this.isGenerating || this.generatedMenusHash === menusHash) {
+      console.log('路由正在生成中或菜单未变化，跳过')
+      return true
+    }
 
+    this.isGenerating = true
+    this.generatedMenusHash = menusHash
     try {
       // 先清除原有的动态路由（只清除之前添加的动态路由，保留静态路由）
       this.resetRoutes();
