@@ -81,3 +81,11 @@ a {
     overflow: hidden;  // 溢出隐藏，内部如果有滚动需求可以在子组件单独设置
   }
 }
+
+.theme-transition {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-transition * {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}

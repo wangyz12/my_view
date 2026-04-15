@@ -131,6 +131,7 @@ export const useThemeStore = defineStore('theme', {
 
     // 设置主题模式
     setThemeMode(mode: ThemeMode) {
+      document.documentElement.classList.add('theme-transition')
       this.themeMode = mode
       // 更新 Element Plus 的 dark 模式
       const html = document.documentElement
@@ -139,6 +140,9 @@ export const useThemeStore = defineStore('theme', {
       } else {
         html.classList.remove('dark')
       }
+      setTimeout(() => {
+        document.documentElement.classList.remove('theme-transition')
+      }, 300)
     },
 
     // 切换主题模式
