@@ -19,7 +19,7 @@ let authErrorTimer: any = null
 // 创建 Axios 实例（指定自定义请求配置类型）
 const service: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL, // 环境变量（VITE_ 开头）
-  timeout: 5000,
+  timeout: 500000,
   headers: {
     'Content-Type': 'application/json;charset=utf-8'
   }
