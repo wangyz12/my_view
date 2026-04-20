@@ -49,7 +49,7 @@ export const useUserStore = defineStore('user', {
     // 新增权限相关字段
     permissions: [],
     roles: [],
-    isSuperAdmin: false
+    isSuperAdmin: false,
   }),
   
   getters: {
@@ -122,8 +122,8 @@ export const useUserStore = defineStore('user', {
       }
       if (data.roles) {
         this.roles = data.roles
-        // 检查是否是超级管理员（拥有admin角色）
-        this.isSuperAdmin = data.roles.some((role: Role) => role.name === 'admin')
+        // 检查是否是超级管理员（拥有super_admin角色）
+        this.isSuperAdmin = data.roles.some((role: Role) => role.name === 'super_admin')
       }
     },
     
