@@ -3,7 +3,16 @@ import { getCurrentUserMenus, getCurrentUserPermissions, getCurrentUserDataScope
 import { getUserDetail } from '@/api/system/user'
 import router from '@/router'
 import { dynamicRouteManager } from '@/router/dynamic'
-
+/**
+ * 初始化用户权限
+ * 
+ * 【全栈知识点】
+ * 1. 后端返回菜单树，前端根据菜单树生成路由（这叫"权限驱动的前端"）
+ * 2. 后端返回权限标识数组（如 ['system:user:add']），前端用 v-permission 指令控制按钮
+ * 3. 后端返回数据权限范围（如 '3' 表示本部门），前端在请求时带上部门ID，后端做过滤
+ * 
+ * 这就是完整的"前端权限体系"：菜单权限 + 按钮权限 + 数据权限
+ */
 /**
  * 初始化用户权限
  */

@@ -3,7 +3,20 @@ import { useUserStore } from '@/store/modules/user';
 import storage from '@/utils/storage';
 import { checkRoutePermission, initUserPermissions } from '@/utils/auth';
 import { startProgress, finishProgress, failProgress } from '@/utils/progress';
-
+/**
+ * 路由守卫
+ * 
+ * 【全栈知识点】
+ * 1. 前端路由守卫 = 后端的拦截器/中间件
+ * 2. 白名单 = 后端的公开接口（不需要认证）
+ * 3. 权限初始化 = 后端的登录后加载用户信息
+ * 4. 路由权限检查 = 后端的 @PreAuthorize 注解
+ * 
+ * 前端路由守卫 + 后端接口权限 = 完整的安全体系
+ * - 前端守卫：控制“能不能看到这个页面”
+ * - 后端接口：控制“能不能调用这个API”
+ * - 两者配合，缺一不可
+ */
 // 定义路由组件
 const Layout = () => import('@/layout/index.vue');
 const Home = () => import('@/pages/home/index.vue');

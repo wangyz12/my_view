@@ -138,7 +138,7 @@ export const useUserStore = defineStore('user', {
     // 设置角色数据
     setRoles(roles: Role[]) {
       this.roles = roles
-      this.isSuperAdmin = roles.some(role => role.name === 'admin')
+      this.isSuperAdmin = roles.some(role => role.name === 'super_admin')
     },
     
     // 添加权限

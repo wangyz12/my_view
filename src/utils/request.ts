@@ -1,10 +1,19 @@
-import axios, { type AxiosInstance, type AxiosError, type AxiosResponse } from 'axios' // 关键：添加 AxiosResponse 导入
+import axios, { type AxiosInstance, type AxiosError, } from 'axios' 
 import type { CustomAxiosRequestConfig, CustomInternalRequestConfig, ApiResponse } from '../types/api'
 import { ElMessage } from 'element-plus' // 结合 Element Plus 提示/加载
 import { storageToken } from './storage' // 导入 Token 快捷方法
 import { startProgress, finishProgress, failProgress } from './progress'
 import router from '@/router'
-
+/**
+ * 响应拦截器
+ * 
+ * 【前端视角理解后端】
+ * - 后端返回的格式是 { code: 200, data: xxx, msg: '成功' }
+ * - code === 200 表示成功，其他都是失败
+ * - 401 表示 token 失效或没有权限
+ * 
+ * 这就是前后端约定的“接口协议”
+ */
 // 扩展 Window 接口以包含自定义属性
 declare global {
   interface Window {
@@ -81,7 +90,7 @@ service.interceptors.response.use(
           
           // 跳转到 401 页面
           if (router.currentRoute.value.path !== '/401') {
-            router.push('/401')
+            router.replace('/401')
           }
         })
         

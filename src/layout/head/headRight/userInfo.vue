@@ -21,7 +21,7 @@ import { useUserStore } from '@/store/modules/user';
 import { useRouter } from 'vue-router';
 import { showChangePasswordPopup } from './popup/index'
 import storage from '@/utils/storage'
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElLoading, ElMessage, ElMessageBox } from 'element-plus';
 const userStore = useUserStore();
 const router = useRouter();
 const avatarUrl = computed(() => {
@@ -50,12 +50,27 @@ const breadcrumbStore = useBreadcrumbStore()
 
 // 统一跳转登录
 const unificationOut = async (str: string) => {
-  storage.clear()
+  const loading = ElLoading.service({
+    fullscreen: true,
+    text: '正在退出...',
+    background: 'rgba(0, 0, 0, 0.5)'
+  })
+  try{
+    storage.clear()
   await userStore.clear_state()
   // 重置标签页
   breadcrumbStore.resetTabs()
   ElMessage.success(str)
-  setTimeout(() => router.push('/login'), 500)
+  setTimeout(() => {
+      loading.close()
+      router.replace('/login')
+    }, 500)
+  } catch(err){
+    console.log(err)
+    loading.close()
+    ElMessage.error('退出失败，请重试')
+  }
+ 
 }
 // 退出
 const outFunc = () => {

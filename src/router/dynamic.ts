@@ -1,6 +1,18 @@
 import type { Router, RouteRecordRaw } from 'vue-router';
 import storage from '@/utils/storage';
-
+/**
+ * 动态路由管理器
+ * 
+ * 【核心原理】
+ * 1. 后端返回菜单树（包含路径、组件、权限等信息）
+ * 2. 前端把菜单树转换成 Vue Router 的 routes 配置
+ * 3. 通过 router.addRoute() 动态添加到路由表中
+ * 
+ * 【为什么需要动态路由？】
+ * - 不同角色看到的菜单不一样（管理员 vs 普通员工）
+ * - 静态写死路由，无法根据权限动态调整
+ * - 动态路由 = 权限驱动的路由
+ */
 // 菜单项接口
 interface MenuItem {
   id: string;

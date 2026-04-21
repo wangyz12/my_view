@@ -1,6 +1,15 @@
 import { createApp, ref, type Component, h, type App } from 'vue'
 import { ElDialog, ElButton } from 'element-plus'
-
+/**
+ * 动态弹窗服务
+ * 
+ * 【前端进阶知识点】
+ * 1. createApp + h：Vue 的动态渲染能力，可以在任何地方弹出一个独立组件
+ * 2. Promise 包装：把“用户操作”这种异步事件变成可 await 的形式
+ * 3. 实例销毁：手动创建的要手动销毁，否则会内存泄漏
+ * 
+ * 这个封装的价值：业务代码只需要关心“弹窗里有什么”，不关心“怎么弹出来”
+ */
 /**
  * 弹窗配置选项
  */
