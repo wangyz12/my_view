@@ -54,7 +54,7 @@ const getIconComponent = (iconName: string) => {
 </script>
 
 <style scoped lang="scss">
-@import '../styles/index.scss';
+@use '../styles/index.scss';
 
 // 这个组件现在使用 components.scss 中定义的样式
 // 如果需要覆盖或添加特定样式，可以在这里添加

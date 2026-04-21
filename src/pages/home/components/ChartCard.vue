@@ -178,5 +178,5 @@ defineExpose({
 
 <style scoped lang="scss">
 // 如果 components.scss 中没有定义样式，在这里添加基础样式
-@import './../styles/index.scss'
+@use './../styles/index.scss';
 </style>

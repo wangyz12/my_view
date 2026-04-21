@@ -378,7 +378,7 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-@import './styles/index.scss';
+@use './styles/index.scss';
 
 // 这里只写页面特有的样式，通用样式已经在 index.scss 中定义
 // 响应式调整已经在 index.scss 中处理

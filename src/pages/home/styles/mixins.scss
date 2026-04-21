@@ -1,14 +1,15 @@
 // 首页样式 mixin
 // 所有可复用的样式 mixin 都在这里定义
+// 导入全局变量
 
-@import './variables.scss';
+@use '@/styles/variables.scss' as *;
 
 // 卡片基础样式
 @mixin card-base {
   background: $card-bg-color;
   border-radius: $card-border-radius;
   padding: $card-padding;
-  box-shadow: $box-shadow-base;
+  box-shadow: $box-shadow-light;
   transition: all $transition-duration-base $transition-timing-function;
   
   &:hover {
@@ -56,14 +57,14 @@
   padding: $spacing-xs $spacing-sm;
   background-color: rgba($color, 0.1);
   color: $color;
-  border-radius: $border-radius-small;
+  border-radius: $border-radius-sm;
   font-size: $font-size-xs;
   font-weight: $font-weight-medium;
   border: 1px solid rgba($color, 0.2);
 }
 
 // 图标按钮样式
-@mixin icon-button($size: 32px, $color: $color-primary) {
+@mixin icon-button($size: 32px, $color: $primary-color) {
   width: $size;
   height: $size;
   border-radius: 50%;

@@ -1,8 +1,9 @@
 // 组件专用样式
 // 所有组件的样式都在这里定义，避免在组件中写重复的CSS
+// 导入全局变量和 mixin
 
-@import './variables.scss';
-@import './mixins.scss';
+@use '@/styles/variables.scss' as *;
+@use './mixins.scss' as *;
 
 // ==================== UserInfoCard 样式 ====================
 .user-info-card {
@@ -59,7 +60,7 @@
     color: $text-color-regular;
     
     .el-icon {
-      color: $color-primary;
+      color: $primary-color;
     }
   }
   
@@ -71,7 +72,7 @@
       color: $text-color-regular;
       
       .el-icon {
-        color: $color-primary;
+        color: $primary-color;
       }
       
       .roles-label {
@@ -88,11 +89,11 @@
   
   .role-tag {
     padding: $spacing-xs $spacing-sm;
-    background-color: rgba($color-primary, 0.1);
-    color: $color-primary;
-    border-radius: $border-radius-small;
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
+    border-radius: $border-radius-sm;
     font-size: $font-size-xs;
-    border: 1px solid rgba($color-primary, 0.2);
+    border: 1px solid rgba($primary-color, 0.2);
   }
   
   .user-contact {
@@ -107,7 +108,7 @@
     color: $text-color-regular;
     
     .el-icon {
-      color: $color-success;
+      color: $success-color;
     }
   }
   
@@ -158,14 +159,14 @@
   .skeleton-name {
     height: 24px;
     width: 120px;
-    border-radius: $border-radius-small;
+    border-radius: $border-radius-sm;
     @include skeleton-animation;
   }
   
   .skeleton-dept {
     height: 20px;
     width: 180px;
-    border-radius: $border-radius-small;
+    border-radius: $border-radius-sm;
     @include skeleton-animation;
   }
   
@@ -178,7 +179,7 @@
   
   .skeleton-detail {
     height: 18px;
-    border-radius: $border-radius-small;
+    border-radius: $border-radius-sm;
     @include skeleton-animation;
     
     &:nth-child(1) {
@@ -218,7 +219,7 @@
     color: $text-color-secondary;
     background-color: $bg-color-light;
     padding: $spacing-xs $spacing-sm;
-    border-radius: $border-radius-small;
+    border-radius: $border-radius-sm;
   }
   
   .intro-description {
@@ -252,7 +253,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: $color-primary;
+    background-color: $primary-color;
     color: white;
     display: flex;
     align-items: center;
@@ -305,7 +306,7 @@
     gap: $spacing-base;
     padding: $spacing-base;
     background-color: $bg-color-light;
-    border-radius: $border-radius-base;
+    border-radius: $border-radius-lg;
     transition: all $transition-duration-base $transition-timing-function;
     
     &:hover {
@@ -318,8 +319,8 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: rgba($color-primary, 0.1);
-    color: $color-primary;
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -371,7 +372,7 @@
     color: $text-color-secondary;
     background-color: $bg-color-light;
     padding: $spacing-xs $spacing-sm;
-    border-radius: $border-radius-small;
+    border-radius: $border-radius-sm;
   }
   
   .access-grid {
@@ -386,7 +387,7 @@
     gap: $spacing-base;
     padding: $spacing-base;
     background-color: $bg-color-light;
-    border-radius: $border-radius-base;
+    border-radius: $border-radius-lg;
     cursor: pointer;
     transition: all $transition-duration-base $transition-timing-function;
     
@@ -404,7 +405,7 @@
   .access-icon {
     width: 48px;
     height: 48px;
-    border-radius: $border-radius-base;
+    border-radius: $border-radius-lg;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -490,14 +491,14 @@
     .skeleton-title {
       height: 24px;
       width: 120px;
-      border-radius: $border-radius-small;
+      border-radius: $border-radius-sm;
       margin-bottom: $spacing-lg;
       @include skeleton-animation;
     }
     
     .skeleton-chart {
       height: v-bind('props.height + "px"');
-      border-radius: $border-radius-base;
+      border-radius: $border-radius-lg;
       @include skeleton-animation;
     }
   }
@@ -553,7 +554,7 @@
   
   .skeleton-line {
     height: 16px;
-    border-radius: $border-radius-small;
+    border-radius: $border-radius-sm;
     @include skeleton-animation;
     
     &.short {
@@ -572,7 +573,7 @@
     align-items: center;
     gap: $spacing-base;
     padding: $spacing-base;
-    border-radius: $border-radius-base;
+    border-radius: $border-radius-lg;
     cursor: pointer;
     transition: all $transition-duration-base $transition-timing-function;
     
@@ -654,23 +655,23 @@
 
 // 标签样式类
 .tag-primary {
-  @include status-tag($color-primary);
+  @include status-tag($primary-color);
 }
 
 .tag-success {
-  @include status-tag($color-success);
+  @include status-tag($success-color);
 }
 
 .tag-warning {
-  @include status-tag($color-warning);
+  @include status-tag($warning-color);
 }
 
 .tag-danger {
-  @include status-tag($color-danger);
+  @include status-tag($danger-color);
 }
 
 .tag-info {
-  @include status-tag($color-info);
+  @include status-tag($info-color);
 }
 
 // 图标按钮样式类
@@ -716,9 +717,9 @@
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px solid rgba($color-primary, 0.3);
+  border: 2px solid rgba($primary-color, 0.3);
   border-radius: 50%;
-  border-top-color: $color-primary;
+  border-top-color: $primary-color;
   animation: spin 1s ease-in-out infinite;
 }
 

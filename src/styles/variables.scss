@@ -4,6 +4,9 @@ $success-color: #67c23a !default;      // 成功色
 $warning-color: #e6a23c !default;      // 警告色
 $danger-color: #f56c6c !default;       // 危险色
 $info-color: #909399 !default;         // 信息色（新增）
+$purple-color: #B37FEB !default;       // 紫色（新增）
+$pink-color: #FF85C0 !default;         // 粉色（新增）
+$cyan-color: #36CFC9 !default;         // 青色（新增）
 
 // 文字颜色
 $text-color-primary: #303133 !default; // 主要文字（原 $text-color）
@@ -14,17 +17,21 @@ $text-color-placeholder: #c0c4cc !default; // 占位文字（新增）
 // 背景颜色
 $bg-color: #f5f7fa !default;           // 页面背景
 $bg-color-light: #fafafa !default;     // 浅色背景（新增）
+$bg-color-lighter: #FAFAFA !default;   // 更浅背景（新增）
 $bg-color-dark: #e4e7ed !default;      // 深色背景（新增）
 
 // 边框颜色
 $border-color: #e4e7ed !default;       // 基础边框
 $border-color-light: #ebeef5 !default; // 浅色边框（新增）
+$border-color-lighter: #EBEEF5 !default; // 更浅边框（新增）
+$border-color-extra-light: #F2F6FC !default; // 最浅边框（新增）
 $border-color-dark: #d4d7de !default;  // 深色边框（新增）
 
 // 边框圆角
 $border-radius: 4px !default;          // 基础圆角
 $border-radius-lg: 8px !default;       // 大圆角（新增）
 $border-radius-sm: 2px !default;       // 小圆角（新增）
+$border-radius-round: 20px !default;   // 圆形按钮圆角（新增）
 $border-radius-circle: 50% !default;   // 圆形（新增）
 
 // 尺寸变量
@@ -38,7 +45,11 @@ $font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica 
 $font-size-base: 14px !default;         // 基础字体
 $font-size-lg: 16px !default;           // 大字体
 $font-size-sm: 12px !default;           // 小字体
+$font-size-xs: 12px !default;           // 极小字体（新增）
+$font-size-xl: 20px !default;           // 超大字体（新增）
 $font-weight-normal: 400 !default;      // 正常字重（新增）
+$font-weight-medium: 500 !default;      // 中等字重（新增）
+$font-weight-semibold: 600 !default;    // 半粗字重（新增）
 $font-weight-bold: 600 !default;        // 加粗字重（新增）
 
 // 行高
@@ -50,13 +61,14 @@ $line-height-sm: 1.2 !default;          // 小行高（新增）
 $spacing-unit: 8px !default;             // 基础间距单位
 $spacing-xs: $spacing-unit !default;     // 极小间距 (8px)
 $spacing-sm: $spacing-unit * 2 !default; // 小间距 (16px)
+$spacing-base: $spacing-unit * 2 !default; // 基础间距 (16px，与 $spacing-sm 相同)
 $spacing-md: $spacing-unit * 3 !default; // 中间距 (24px)
 $spacing-lg: $spacing-unit * 4 !default; // 大间距 (32px)
 $spacing-xl: $spacing-unit * 6 !default; // 极大间距 (48px)
 
 // 响应式断点（与 Element Plus 保持一致）
 $breakpoint-xs: 768px !default;  // < 768px
-$breakpoint-sm: 992px !default;  // < 992px
+$breakpoint-sm: 768px !default;  // < 768px（修改为与首页一致）
 $breakpoint-md: 1200px !default; // < 1200px
 $breakpoint-lg: 1920px !default; // < 1920px
 $breakpoint-xl: 2560px !default; // >= 2560px
@@ -72,13 +84,28 @@ $z-index-tooltip: 1070 !default;
 
 // 动画时长（新增）
 $transition-duration: 0.3s !default;
+$transition-duration-base: 0.3s !default; // 基础动画时长（新增）
 $transition-duration-fast: 0.15s !default;
 $transition-duration-slow: 0.5s !default;
+$transition-timing-function: ease !default; // 动画缓动函数（新增）
 
 // 阴影（新增）
 $box-shadow-base: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04) !default;
 $box-shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.1) !default;
+$box-shadow-card: 0 1px 4px rgba(0, 0, 0, 0.08) !default; // 卡片阴影（新增）
+$box-shadow-hover: 0 4px 16px 0 rgba(0, 0, 0, 0.15) !default; // 悬停阴影（新增）
 $box-shadow-dark: 0 4px 16px 0 rgba(0, 0, 0, 0.2) !default;
+
+// 卡片相关变量（新增）
+$card-padding: 20px !default;           // 卡片内边距
+$card-bg-color: #FFFFFF !default;       // 卡片背景色
+$card-border-radius: $border-radius-lg !default; // 卡片圆角
+
+// 状态颜色（新增）
+$status-active: $success-color !default;   // 活跃状态
+$status-inactive: $info-color !default;    // 非活跃状态
+$status-busy: $warning-color !default;     // 忙碌状态
+$status-away: $danger-color !default;      // 离开状态
 
 // 导出变量供 JavaScript 使用（如果需要在 JS 中使用）
 :export {
@@ -86,6 +113,10 @@ $box-shadow-dark: 0 4px 16px 0 rgba(0, 0, 0, 0.2) !default;
   successColor: $success-color;
   warningColor: $warning-color;
   dangerColor: $danger-color;
+  infoColor: $info-color;
+  purpleColor: $purple-color;
+  pinkColor: $pink-color;
+  cyanColor: $cyan-color;
   textColorPrimary: $text-color-primary;
   fontSizeBase: $font-size-base;
 }

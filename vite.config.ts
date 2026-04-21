@@ -47,17 +47,15 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        // 自动导入全局变量文件（多个文件用 ; 分隔）
-        additionalData: `
-            @use "@/styles/variables.scss" as *;
-            @use "@/styles/mixins.scss" as *;
-          `,
+        // 不再自动导入全局变量文件，改为在每个文件中手动导入
+        // 这样可以避免模块重复加载的问题 也方便知道css变量从哪里来
         // 关闭 deprecated 警告（可选）
-        quietDeps: true,
+        quietDeps: false,
       },
     },
   },
   plugins: [
+    autoSetScriptName(),
     vue({
       script: {
         // 启用 defineModel 支持
@@ -85,7 +83,6 @@ export default defineConfig({
     Components({
       resolvers: [ElementPlusResolver()],
     }),
-    autoSetScriptName(),
     cesium()
   ],
 });
