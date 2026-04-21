@@ -12,7 +12,7 @@
 ## 🌐 项目关联
 
 ### 后端项目
-- **仓库地址**：[https://gitee.com/W_admin_code/node_temp](https://gitee.com/W_admin_code/node_temp)
+- **仓库地址**：[https://gitee.com/W_admin_code/echo-server](https://gitee.com/W_admin_code/echo-server)
 - **技术栈**：Node.js + Express + TypeScript + MongoDB
 - **核心功能**：JWT 认证、RBAC 权限控制、5级数据权限
 
