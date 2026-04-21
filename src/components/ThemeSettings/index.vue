@@ -333,7 +333,5 @@ const themeColors = [
 </script>
 
 <style lang="scss" scoped>
-@import url(./index.scss);
-
-
+@use './index.scss';
 </style>

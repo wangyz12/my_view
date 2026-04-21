@@ -1,14 +1,88 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>后台管理系统</title>
+    <meta name="description" content="企业级后台管理系统，基于 Vue 3 + TypeScript + Element Plus" />
+    <meta name="keywords" content="后台管理, Vue3, TypeScript, Element Plus" />
+    <meta name="theme-color" content="#409eff" />
+    <meta name="author" content="Your Name" />
+    
+    <!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" /> -->
+    
+    <!-- 预连接到常用资源 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://47.102.196.166" /> <!-- 替换为你的 API 域名 -->
+    
+    <title>RBAC 后台管理系统</title>
+    
+    <!-- 内联样式避免页面闪烁（可选） -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      }
+      
+      /* 简单的加载动画 */
+      .app-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f5f7fa;
+      }
+      
+      .app-loading__spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #e4e7ed;
+        border-top-color: #409eff;
+        border-radius: 50%;
+        animation: app-loading-spin 0.8s linear infinite;
+      }
+      
+      @keyframes app-loading-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      
+      .app-loading__text {
+        margin-top: 16px;
+        color: #606266;
+        font-size: 14px;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div class="app-loading">
+        <div style="text-align: center;">
+          <div class="app-loading__spinner"></div>
+          <div class="app-loading__text">加载中...</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 脚本加载失败的降级提示 -->
+    <noscript>
+      <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #f5f7fa; z-index: 9999;">
+        <div style="text-align: center; padding: 20px;">
+          <h2>⚠️ JavaScript 被禁用</h2>
+          <p>很抱歉，该系统需要启用 JavaScript 才能正常运行。</p>
+          <p>请检查浏览器设置后刷新页面重试。</p>
+        </div>
+      </div>
+    </noscript>
+    
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
