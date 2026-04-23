@@ -85,4 +85,27 @@ export default defineConfig({
     }),
     cesium()
   ],
+  build: {
+    // 禁用 sourcemap（大幅减少内存）
+    sourcemap: false,
+    // 降低压缩级别
+    minify: 'esbuild',  // 默认就是 esbuild，但显式指定
+    // 分块策略
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          // 把大型库单独分块
+          if (id.includes('node_modules')) {
+            if (id.includes('echarts')) return 'echarts'
+            if (id.includes('cesium')) return 'cesium'
+            if (id.includes('element-plus')) return 'element-plus'
+            if (id.includes('vue') || id.includes('pinia')) return 'vue-vendor'
+            return 'vendor'
+          }
+        }
+      }
+    },
+    // 调整 chunk 大小警告
+    chunkSizeWarningLimit: 1000
+  }
 });
