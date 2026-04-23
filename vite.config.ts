@@ -4,7 +4,6 @@ import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import autoSetScriptName from './plugins/autoSetComponentsScriptName'
-import cesium from 'vite-plugin-cesium' // 引入插件
 // 关键：导入 path 模块（Node.js 内置，需安装 @types/node 确保 TS 识别）
 import path from "path";
 
@@ -83,7 +82,6 @@ export default defineConfig({
     Components({
       resolvers: [ElementPlusResolver()],
     }),
-    cesium()
   ],
   build: {
     // 禁用 sourcemap（大幅减少内存）
@@ -97,7 +95,6 @@ export default defineConfig({
           // 把大型库单独分块
           if (id.includes('node_modules')) {
             if (id.includes('echarts')) return 'echarts'
-            if (id.includes('cesium')) return 'cesium'
             if (id.includes('element-plus')) return 'element-plus'
             if (id.includes('vue') || id.includes('pinia')) return 'vue-vendor'
             return 'vendor'
