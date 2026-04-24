@@ -164,26 +164,54 @@ class DynamicRouteManager {
 
   // 动态加载组件
   private loadComponent(componentPath: string) {
-    // 清理路径
-    let path = componentPath.replace(/^\//, '');
-    // 构建完整的文件路径
-    let fullPath = `/src/pages/${path}`;
-    // 确保有 .vue 扩展名
-    if (!fullPath.endsWith('.vue')) {
-      fullPath += '.vue';
+    if (!componentPath) {
+      console.warn('Component path is empty');
+      return () => import('@/components/notFound/index.vue');
+    }
+
+    // 清理并规范化路径
+    let path = componentPath.replace(/^\//, '').replace(/\.vue$/i, '');
+    
+    // 构建可能的匹配路径（多个匹配模式提高兼容性）
+    const candidates = [
+      // 模式1: /src/pages/business/project/index
+      `/src/pages/${path}`,
+      // 模式2: /src/pages/business/project/index.vue
+      `/src/pages/${path}.vue`,
+    ];
+
+    // 从 glob 中查找匹配的模块（支持多种后端返回格式）
+    for (const candidate of candidates) {
+      if (modules[candidate]) {
+        return modules[candidate];
+      }
     }
     
-    // 从 glob 中查找匹配的模块
-    const matchedPath = Object.keys(modules).find(key => 
-      key.includes(path.replace(/\.vue$/, ''))
-    );
+    // 兜底：使用模糊匹配（处理路径前缀匹配）
+    const matchedKey = Object.keys(modules).find(key => {
+      // 移除 /src/pages/ 前缀后比较
+      const normalizedKey = key.replace(/^\/src\/pages\//, '').replace(/\.vue$/, '');
+      const normalizedPath = path.replace(/\.vue$/, '');
+      return normalizedKey === normalizedPath || normalizedKey.endsWith('/' + normalizedPath);
+    });
+
+    if (matchedKey) {
+      return modules[matchedKey];
+    }
     
-    if (matchedPath) {
-      return modules[matchedPath];
+    // 诊断日志：输出所有已知模块路径帮助调试
+    if (Object.keys(modules).length > 0) {
+      const sampleKeys = Object.keys(modules).slice(0, 5).join(', ');
+      console.warn(
+        `Component not found: "${componentPath}". ` +
+        `Tried candidates: ${JSON.stringify(candidates)}. ` +
+        `Available modules sample: ${sampleKeys}`
+      );
+    } else {
+      console.warn(`Component not found: "${componentPath}". No modules found via import.meta.glob.`);
     }
     
     // 返回一个默认组件或 404
-    console.warn(`Component not found: ${componentPath}`);
     return () => import('@/components/notFound/index.vue');
   }
 
