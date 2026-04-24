@@ -11,6 +11,7 @@
       :background-color="themeStore.menuBgColor"
       :text-color="themeStore.menuTextColor"
       :active-text-color="themeStore.themeColor"
+      :router="true"
       @select="handleMenuSelect"
     >
       <template v-if="menuList && menuList.length">
@@ -35,7 +36,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useUserStore } from '@/store/modules/user'
 import { useThemeStore } from '@/store/modules/theme'
 import MenuItem from './MenuItem.vue'
@@ -59,7 +60,6 @@ interface MenuItemType {
 // ==================== 响应式数据 ====================
 
 const themeStore = useThemeStore()
-const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 
@@ -95,6 +95,8 @@ const findMenuItemByPath = (menus: MenuItemType[], path: string): MenuItemType |
 
 /**
  * 处理菜单选择
+ * 内部路由跳转由 el-menu :router="true" 自动处理
+ * 这里只处理外部链接
  * @param index - 选中的菜单路径
  */
 const handleMenuSelect = (index: string): void => {
@@ -107,11 +109,7 @@ const handleMenuSelect = (index: string): void => {
     } else {
       window.location.href = menuItem.path
     }
-    return
   }
-
-  // 内部路由跳转
-  router.push(index)
 }
 
 /** 返回首页 */

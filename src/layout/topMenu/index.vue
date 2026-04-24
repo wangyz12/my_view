@@ -9,6 +9,7 @@
       :background-color="themeStore.menuBgColor"
       :text-color="themeStore.menuTextColor"
       :active-text-color="themeStore.themeColor"
+      :router="true"
       @select="handleMenuSelect"
     >
       <template v-if="menuList && menuList.length">
@@ -25,12 +26,11 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useUserStore } from '@/store/modules/user';
 import { useThemeStore } from '@/store/modules/theme';
 import MenuItem from './../menu/MenuItem.vue'; // 引入递归子组件
 
-const router = useRouter();
 const route = useRoute();
 const themeStore = useThemeStore();
 
@@ -47,6 +47,8 @@ const hoverBgColor = computed(() => {
 });
 
 // 菜单选择处理函数
+// 内部路由跳转由 el-menu :router="true" 自动处理
+// 这里只处理外部链接
 const handleMenuSelect = (index: string) => {
   // 如果是外部链接，使用 window.open 打开
   const menuItem = findMenuItemByPath(menuList.value, index);
@@ -56,11 +58,7 @@ const handleMenuSelect = (index: string) => {
     } else {
       window.location.href = menuItem.path;
     }
-    return;
   }
-
-  // 内部路由跳转
-  router.push(index);
 };
 
 // 根据路径查找菜单项（用于判断是否为外部链接）

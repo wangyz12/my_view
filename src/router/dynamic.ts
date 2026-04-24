@@ -253,14 +253,16 @@ class DynamicRouteManager {
   }
 
   // 从存储恢复路由
+  // 页面刷新后，Vue Router 内存中的路由表会丢失
+  // 需要重新从 localStorage 取出菜单数据，重新生成路由
   private restoreRoutes() {
     if (!this.router) return;
     
-    const hasRoutes = storage.get('hasDynamicRoutes');
     const menus = storage.get('menus');
     
-    // 如果有菜单数据但没有动态路由标记，需要重新生成
-    if (menus && menus.length > 0 && !hasRoutes) {
+    // 如果 localStorage 中有菜单数据，则重新生成动态路由
+    // 刷新后 router.getRoutes() 中已经没有这些路由了
+    if (menus && menus.length > 0) {
       this.generateAndAddRoutes(menus);
     }
   }
