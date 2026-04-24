@@ -177,6 +177,60 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-// 如果 components.scss 中没有定义样式，在这里添加基础样式
-@use './../styles/index.scss';
+// ==================== ChartCard 样式 ====================
+.chart-card {
+  &.chart-loading {
+    min-height: v-bind('props.height + 60 + "px"');
+  }
+  
+  .chart-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+  }
+  
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-base;
+    padding-bottom: $spacing-sm;
+    border-bottom: 1px solid $border-color-lighter;
+  }
+  
+  .chart-title {
+    margin: 0;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $text-color-primary;
+  }
+  
+  .chart-actions {
+    display: flex;
+    gap: $spacing-xs;
+  }
+  
+  .chart-content {
+    width: 100%;
+    flex: 1;
+  }
+  
+  // 骨架屏样式
+  .chart-skeleton {
+    .skeleton-title {
+      height: 24px;
+      width: 120px;
+      border-radius: $border-radius-sm;
+      margin-bottom: $spacing-lg;
+      @include skeleton-animation;
+    }
+    
+    .skeleton-chart {
+      height: v-bind('props.height + "px"');
+      border-radius: $border-radius-lg;
+      @include skeleton-animation;
+    }
+  }
+}
 </style>

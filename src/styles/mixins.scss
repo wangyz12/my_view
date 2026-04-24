@@ -20,6 +20,7 @@
     @content;
   }
 }
+
 // 清除浮动
 @mixin clearfix {
   &::after {
@@ -29,7 +30,7 @@
   }
 }
 
-// 弹性布局 - 添加参数增强灵活性
+// 弹性布局 - 居中
 @mixin flex-center($direction: row) {
   display: flex;
   flex-direction: $direction;
@@ -37,7 +38,19 @@
   align-items: center;
 }
 
-// 弹性布局 - 更灵活的版本
+// 弹性布局 - 垂直居中
+@mixin flex-vertical-center {
+  display: flex;
+  align-items: center;
+}
+
+// 弹性布局 - 水平居中
+@mixin flex-horizontal-center {
+  display: flex;
+  justify-content: center;
+}
+
+// 弹性布局 - 两端对齐
 @mixin flex-between {
   display: flex;
   justify-content: space-between;
@@ -53,21 +66,7 @@
   flex-wrap: $wrap;
 }
 
-// 响应式适配 - 使用变量统一管理断点
-@mixin responsive($breakpoint: $breakpoint-mobile) {
-  @media (max-width: $breakpoint) {
-    @content;
-  }
-}
-
-// 响应式适配 - 移动优先（推荐）
-@mixin mobile-up($breakpoint: $breakpoint-mobile) {
-  @media (min-width: $breakpoint) {
-    @content;
-  }
-}
-
-// 文字超出省略 - 优化多行省略
+// 文字超出省略
 @mixin text-ellipsis($line: 1) {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -78,13 +77,12 @@
     display: -webkit-box;
     -webkit-line-clamp: $line;
     -webkit-box-orient: vertical;
-    // 兼容非 WebKit 浏览器
     max-height: calc(1.5em * #{$line});
     line-height: 1.5;
   }
 }
 
-// 新增：响应式字体
+// 响应式字体
 @mixin responsive-font($min-size: 14px, $max-size: 18px, $min-width: 320px, $max-width: 1200px) {
   font-size: clamp(
     #{$min-size},
@@ -93,7 +91,7 @@
   );
 }
 
-// 新增：卡片阴影
+// 卡片阴影
 @mixin card-shadow($level: 1) {
   @if $level == 1 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -104,7 +102,119 @@
   }
 }
 
-// 新增：渐变背景
+// 渐变背景
 @mixin gradient($direction: to right, $start-color: #409eff, $end-color: #67c23a) {
   background: linear-gradient($direction, $start-color, $end-color);
+}
+
+// ==================== 首页/通用 UI Mixins ====================
+
+// 卡片基础样式
+@mixin card-base {
+  background: $card-bg-color;
+  border-radius: $card-border-radius;
+  padding: $card-padding;
+  box-shadow: $box-shadow-light;
+  transition: all $transition-duration-base $transition-timing-function;
+  
+  &:hover {
+    box-shadow: $box-shadow-hover;
+    transform: translateY(-2px);
+  }
+}
+
+// 弹性布局卡片（用于高度一致的卡片）
+@mixin flex-card {
+  @include card-base;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+// 卡片标题
+@mixin card-title {
+  margin: 0;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $text-color-primary;
+  line-height: 1.4;
+}
+
+// 卡片副标题
+@mixin card-subtitle {
+  margin: 0;
+  font-size: $font-size-sm;
+  color: $text-color-secondary;
+  line-height: 1.4;
+}
+
+// 分割线
+@mixin divider {
+  height: 1px;
+  background-color: $border-color-lighter;
+  margin: $spacing-base 0;
+  border: none;
+}
+
+// 状态标签
+@mixin status-tag($color) {
+  display: inline-block;
+  padding: $spacing-xs $spacing-sm;
+  background-color: rgba($color, 0.1);
+  color: $color;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  border: 1px solid rgba($color, 0.2);
+}
+
+// 图标按钮
+@mixin icon-button($size: 32px, $color: $primary-color) {
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  background-color: rgba($color, 0.1);
+  color: $color;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all $transition-duration-base $transition-timing-function;
+  
+  &:hover {
+    background-color: rgba($color, 0.2);
+    transform: scale(1.05);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// 骨架屏动画
+@mixin skeleton-animation {
+  background: linear-gradient(90deg, #f2f2f2 25%, #e6e6e6 50%, #f2f2f2 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+// 响应式隐藏
+@mixin responsive-hide($breakpoint) {
+  @media (max-width: $breakpoint - 1) {
+    display: none;
+  }
+}
+
+// 响应式显示
+@mixin responsive-show($breakpoint) {
+  @media (min-width: $breakpoint) {
+    display: block;
+  }
+}
+
+// 网格布局
+@mixin grid-layout($columns, $gap: $spacing-base) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $gap;
 }

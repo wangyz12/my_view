@@ -54,8 +54,104 @@ const getIconComponent = (iconName: string) => {
 </script>
 
 <style scoped lang="scss">
-@use '../styles/index.scss';
-
-// 这个组件现在使用 components.scss 中定义的样式
-// 如果需要覆盖或添加特定样式，可以在这里添加
+// ==================== SystemIntroCard 样式 ====================
+.system-intro-card {
+  gap: $spacing-lg;
+  
+  .intro-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-sm;
+  }
+  
+  .intro-title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-color-primary;
+  }
+  
+  .intro-version {
+    font-size: $font-size-sm;
+    color: $text-color-secondary;
+    background-color: $bg-color-light;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+  }
+  
+  .intro-description {
+    margin: 0;
+    font-size: $font-size-sm;
+    color: $text-color-regular;
+    line-height: 1.6;
+  }
+  
+  .intro-stats {
+    .stats-title {
+      margin: 0 0 $spacing-base 0;
+      font-size: $font-size-base;
+      font-weight: $font-weight-semibold;
+      color: $text-color-primary;
+    }
+  }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-base;
+    
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-base;
+    padding: $spacing-base;
+    background-color: $bg-color-light;
+    border-radius: $border-radius-lg;
+    transition: all $transition-duration-base $transition-timing-function;
+    
+    &:hover {
+      background-color: $bg-color-lighter;
+      transform: translateY(-2px);
+    }
+  }
+  
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    
+    .el-icon {
+      font-size: $font-size-lg;
+    }
+  }
+  
+  .stat-content {
+    flex: 1;
+    
+    .stat-value {
+      margin: 0 0 $spacing-xs 0;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+      color: $text-color-primary;
+    }
+    
+    .stat-label {
+      margin: 0;
+      font-size: $font-size-xs;
+      color: $text-color-secondary;
+    }
+  }
+}
 </style>

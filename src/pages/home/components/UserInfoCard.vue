@@ -150,8 +150,194 @@ const formatDate = (dateString: string) => {
 </script>
 
 <style scoped lang="scss">
-@use '../styles/index.scss';
-
-// 这个组件现在使用 components.scss 中定义的样式
-// 如果需要覆盖或添加特定样式，可以在这里添加
+// ==================== UserInfoCard 样式 ====================
+.user-info-card {
+  &.user-info-loading {
+    min-height: 240px;
+  }
+  
+  .user-info-content {
+    display: flex;
+    gap: $spacing-lg;
+  }
+  
+  .user-avatar {
+    position: relative;
+    flex-shrink: 0;
+  }
+  
+  .user-status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-round;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    background-color: $card-bg-color;
+    box-shadow: $box-shadow-card;
+  }
+  
+  .user-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+  
+  .user-header {
+    .user-name {
+      margin: 0 0 $spacing-xs 0;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+      color: $text-color-primary;
+    }
+    
+    .user-account {
+      font-size: $font-size-sm;
+      color: $text-color-secondary;
+    }
+  }
+  
+  .user-dept {
+    gap: $spacing-sm;
+    font-size: $font-size-sm;
+    color: $text-color-regular;
+    
+    .el-icon {
+      color: $primary-color;
+    }
+  }
+  
+  .user-roles {
+    .flex-vertical-center {
+      gap: $spacing-sm;
+      margin-bottom: $spacing-xs;
+      font-size: $font-size-sm;
+      color: $text-color-regular;
+      
+      .el-icon {
+        color: $primary-color;
+      }
+      
+      .roles-label {
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+  
+  .roles-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+  }
+  
+  .role-tag {
+    padding: $spacing-xs $spacing-sm;
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-xs;
+    border: 1px solid rgba($primary-color, 0.2);
+  }
+  
+  .user-contact {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+  
+  .contact-item {
+    gap: $spacing-sm;
+    font-size: $font-size-sm;
+    color: $text-color-regular;
+    
+    .el-icon {
+      color: $success-color;
+    }
+  }
+  
+  .user-meta {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    margin-top: $spacing-base;
+    padding-top: $spacing-base;
+    border-top: 1px solid $border-color-lighter;
+  }
+  
+  .meta-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: $font-size-sm;
+  }
+  
+  .meta-label {
+    color: $text-color-secondary;
+  }
+  
+  .meta-value {
+    color: $text-color-primary;
+    font-weight: $font-weight-medium;
+  }
+  
+  // 骨架屏样式
+  .user-info-skeleton {
+    display: flex;
+    gap: $spacing-lg;
+  }
+  
+  .skeleton-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    @include skeleton-animation;
+  }
+  
+  .skeleton-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+  
+  .skeleton-name {
+    height: 24px;
+    width: 120px;
+    border-radius: $border-radius-sm;
+    @include skeleton-animation;
+  }
+  
+  .skeleton-dept {
+    height: 20px;
+    width: 180px;
+    border-radius: $border-radius-sm;
+    @include skeleton-animation;
+  }
+  
+  .skeleton-details {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    margin-top: $spacing-sm;
+  }
+  
+  .skeleton-detail {
+    height: 18px;
+    border-radius: $border-radius-sm;
+    @include skeleton-animation;
+    
+    &:nth-child(1) {
+      width: 200px;
+    }
+    
+    &:nth-child(2) {
+      width: 180px;
+    }
+    
+    &:nth-child(3) {
+      width: 220px;
+    }
+  }
+}
 </style>

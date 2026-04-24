@@ -68,8 +68,101 @@ const handleClick = (link: QuickAccessLink) => {
 </script>
 
 <style scoped lang="scss">
-@use '../styles/index.scss';
-
-// 这个组件现在使用 components.scss 中定义的样式
-// 如果需要覆盖或添加特定样式，可以在这里添加
+// ==================== QuickAccessCard 样式 ====================
+.quick-access-card {
+  gap: $spacing-lg;
+  
+  .access-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-sm;
+  }
+  
+  .access-title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-color-primary;
+  }
+  
+  .access-count {
+    font-size: $font-size-sm;
+    color: $text-color-secondary;
+    background-color: $bg-color-light;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+  }
+  
+  .access-grid {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-base;
+  }
+  
+  .access-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-base;
+    padding: $spacing-base;
+    background-color: $bg-color-light;
+    border-radius: $border-radius-lg;
+    cursor: pointer;
+    transition: all $transition-duration-base $transition-timing-function;
+    
+    &:hover {
+      background-color: $bg-color-lighter;
+      transform: translateX(4px);
+      
+      .access-arrow {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  }
+  
+  .access-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: $border-radius-lg;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    
+    .el-icon {
+      font-size: $font-size-xl;
+    }
+  }
+  
+  .access-content {
+    flex: 1;
+    min-width: 0;
+    
+    .access-name {
+      margin: 0 0 $spacing-xs 0;
+      font-size: $font-size-base;
+      font-weight: $font-weight-medium;
+      color: $text-color-primary;
+      @include text-ellipsis;
+    }
+    
+    .access-desc {
+      margin: 0;
+      font-size: $font-size-xs;
+      color: $text-color-secondary;
+      @include text-ellipsis;
+    }
+  }
+  
+  .access-arrow {
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all $transition-duration-base $transition-timing-function;
+    
+    .el-icon {
+      color: $text-color-secondary;
+    }
+  }
+}
 </style>

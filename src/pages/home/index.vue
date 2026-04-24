@@ -140,7 +140,6 @@ import {
 } from './utils/animations'
 
 // 导入样式
-import './styles/index.scss'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -378,8 +377,440 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-@use './styles/index.scss';
+// ====================================================================
+// Home Page 样式 — 所有样式内联，不再依赖外部 SCSS 文件
+// 全局变量和 mixins 通过 Vite additionalData 自动注入
+// ====================================================================
 
-// 这里只写页面特有的样式，通用样式已经在 index.scss 中定义
-// 响应式调整已经在 index.scss 中处理
+// ==================== 动画样式 ====================
+
+/* 淡入动画 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 淡入上浮动画 */
+@keyframes fadeSlideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* 缩放淡入动画 */
+@keyframes scaleIn {
+  from { 
+    opacity: 0; 
+    transform: scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+/* 水平滑动动画 */
+@keyframes slideInX {
+  from { 
+    opacity: 0; 
+    transform: translateX(-30px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+/* 垂直滑动动画 */
+@keyframes slideInY {
+  from { 
+    opacity: 0; 
+    transform: translateY(-30px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* 动画类 */
+.animate-fade-in {
+  animation-name: fadeIn;
+}
+
+.animate-fade-slide-up {
+  animation-name: fadeSlideUp;
+}
+
+.animate-scale-in {
+  animation-name: scaleIn;
+}
+
+.animate-slide-in-x {
+  animation-name: slideInX;
+}
+
+.animate-slide-in-y {
+  animation-name: slideInY;
+}
+
+/* 动画基础属性 */
+.animate-base {
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+/* 动画延迟类 */
+.animate-delay-50 { animation-delay: 50ms; }
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-150 { animation-delay: 150ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-250 { animation-delay: 250ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-350 { animation-delay: 350ms; }
+.animate-delay-400 { animation-delay: 400ms; }
+.animate-delay-450 { animation-delay: 450ms; }
+.animate-delay-500 { animation-delay: 500ms; }
+
+/* 动画容器 */
+.animation-container {
+  opacity: 0;
+}
+
+.animation-container.animate-in {
+  opacity: 1;
+}
+
+/* 暗黑模式动画调整 */
+@media (prefers-color-scheme: dark) {
+  .animate-fade-slide-up {
+    animation-name: fadeIn;
+  }
+  
+  .animate-slide-in-x,
+  .animate-slide-in-y {
+    animation-name: fadeSlideUp;
+  }
+}
+
+/* 响应式动画调整 */
+@media (max-width: $breakpoint-sm - 1) {
+  .animate-fade-slide-up {
+    transform: translateY(10px);
+  }
+  
+  .animate-slide-in-x,
+  .animate-slide-in-y {
+    transform: translateX(-15px) translateY(-15px);
+  }
+}
+
+// ==================== 首页布局样式 ====================
+
+.home-container {
+  @media (max-width: $breakpoint-sm - 1) {
+    padding: $spacing-xs;
+  }
+}
+
+.home-row {
+  display: flex;
+  gap: $spacing-base;
+  margin-bottom: $spacing-base;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  @media (max-width: $breakpoint-sm - 1) {
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+}
+
+.home-col {
+  &.user-info-col {
+    flex: 0 0 380px;
+    
+    @media (max-width: $breakpoint-sm - 1) {
+      flex: 1;
+    }
+  }
+  
+  &.system-intro-col {
+    flex: 1;
+  }
+  
+  &.quick-access-col {
+    flex: 0 0 380px;
+    
+    @media (max-width: $breakpoint-sm - 1) {
+      flex: 1;
+    }
+  }
+  
+  &.chart-col {
+    flex: 1;
+  }
+  
+  &.activity-col {
+    flex: 0 0 320px;
+    
+    @media (max-width: $breakpoint-sm - 1) {
+      flex: 1;
+    }
+  }
+}
+
+// ==================== 骨架屏样式 ====================
+
+.home-skeleton {
+  padding: 0 !important;
+  
+  .skeleton-row {
+    display: flex;
+    gap: $spacing-base;
+    margin-bottom: $spacing-base;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    @media (max-width: $breakpoint-sm - 1) {
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+    
+    &:first-child {
+      .skeleton-user-card {
+        flex: 0 0 380px;
+        height: 240px;
+        
+        @media (max-width: $breakpoint-sm - 1) {
+          flex: 1;
+        }
+      }
+      
+      .skeleton-system-intro {
+        flex: 1;
+        height: 240px;
+      }
+    }
+    
+    &:nth-child(2) {
+      .skeleton-quick-access {
+        flex: 0 0 380px;
+        height: 240px;
+        
+        @media (max-width: $breakpoint-sm - 1) {
+          flex: 1;
+        }
+      }
+      
+      .skeleton-line-chart {
+        flex: 1;
+        height: 240px;
+      }
+    }
+    
+    &:last-child {
+      .skeleton-chart {
+        flex: 1;
+        height: 300px;
+      }
+      
+      .skeleton-activity {
+        flex: 0 0 320px;
+        height: 300px;
+        
+        @media (max-width: $breakpoint-sm - 1) {
+          flex: 1;
+        }
+      }
+    }
+  }
+}
+
+.skeleton-user-card,
+.skeleton-system-intro,
+.skeleton-quick-access,
+.skeleton-line-chart,
+.skeleton-chart,
+.skeleton-activity {
+  @include skeleton-animation;
+  border-radius: $border-radius-lg;
+}
+
+@media (max-width: $breakpoint-sm - 1) {
+  .home-col,
+  .skeleton-row .skeleton-user-card,
+  .skeleton-row .skeleton-system-intro,
+  .skeleton-row .skeleton-quick-access,
+  .skeleton-row .skeleton-line-chart,
+  .skeleton-row .skeleton-chart,
+  .skeleton-row .skeleton-activity {
+    flex: 1;
+  }
+}
+
+// ==================== 通用工具样式类 ====================
+
+.fade-in {
+  animation: fade-in $transition-duration-base $transition-timing-function;
+}
+
+.fade-out {
+  animation: fade-out $transition-duration-base $transition-timing-function;
+}
+
+.text-ellipsis {
+  @include text-ellipsis;
+}
+
+.text-ellipsis-2 {
+  @include text-ellipsis(2);
+}
+
+.text-ellipsis-3 {
+  @include text-ellipsis(3);
+}
+
+.flex-center {
+  @include flex-center;
+}
+
+.flex-vertical-center {
+  @include flex-vertical-center;
+}
+
+.flex-horizontal-center {
+  @include flex-horizontal-center;
+}
+
+// 状态类
+.status-active {
+  color: $status-active;
+}
+
+.status-inactive {
+  color: $status-inactive;
+}
+
+.status-busy {
+  color: $status-busy;
+}
+
+.status-away {
+  color: $status-away;
+}
+
+// 卡片样式
+.card-base {
+  @include card-base;
+}
+
+.flex-card {
+  @include flex-card;
+}
+
+.divider {
+  @include divider;
+}
+
+// 通用标签样式
+.tag-primary {
+  @include status-tag($primary-color);
+}
+
+.tag-success {
+  @include status-tag($success-color);
+}
+
+.tag-warning {
+  @include status-tag($warning-color);
+}
+
+.tag-danger {
+  @include status-tag($danger-color);
+}
+
+.tag-info {
+  @include status-tag($info-color);
+}
+
+// 图标按钮样式
+.icon-button-sm {
+  @include icon-button(24px);
+}
+
+.icon-button-md {
+  @include icon-button(32px);
+}
+
+.icon-button-lg {
+  @include icon-button(40px);
+}
+
+// 状态指示器
+.status-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: $spacing-xs;
+  
+  &.status-active {
+    background-color: $status-active;
+  }
+  
+  &.status-inactive {
+    background-color: $status-inactive;
+  }
+  
+  &.status-busy {
+    background-color: $status-busy;
+  }
+  
+  &.status-away {
+    background-color: $status-away;
+  }
+}
+
+// 骨架屏动画关键帧
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
 </style>

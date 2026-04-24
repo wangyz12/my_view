@@ -159,8 +159,135 @@ const handleItemClick = (activity: Activity) => {
 </script>
 
 <style scoped lang="scss">
-@use '../styles/index.scss';
-
-// 这个组件现在使用 components.scss 中定义的样式
-// 如果需要覆盖或添加特定样式，可以在这里添加
+// ==================== ActivityList 样式 ====================
+.activity-list-card {
+  gap: $spacing-lg;
+  
+  .activity-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-sm;
+  }
+  
+  .activity-title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-color-primary;
+  }
+  
+  .activity-container {
+    overflow-y: auto;
+  }
+  
+  .activity-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-base;
+  }
+  
+  .skeleton-item {
+    display: flex;
+    gap: $spacing-base;
+    align-items: center;
+  }
+  
+  .skeleton-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    @include skeleton-animation;
+  }
+  
+  .skeleton-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+  
+  .skeleton-line {
+    height: 16px;
+    border-radius: $border-radius-sm;
+    @include skeleton-animation;
+    
+    &.short {
+      width: 60%;
+    }
+  }
+  
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-base;
+  }
+  
+  .activity-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-base;
+    padding: $spacing-base;
+    border-radius: $border-radius-lg;
+    cursor: pointer;
+    transition: all $transition-duration-base $transition-timing-function;
+    
+    &:hover {
+      background-color: $bg-color-light;
+      
+      .activity-arrow {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  }
+  
+  .activity-avatar {
+    flex-shrink: 0;
+  }
+  
+  .activity-content {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .activity-main {
+    margin-bottom: $spacing-xs;
+    font-size: $font-size-sm;
+    line-height: 1.4;
+    
+    .activity-user {
+      font-weight: $font-weight-medium;
+      color: $text-color-primary;
+    }
+    
+    .activity-action {
+      font-weight: $font-weight-medium;
+      margin: 0 $spacing-xs;
+    }
+    
+    .activity-target {
+      color: $text-color-regular;
+      @include text-ellipsis;
+    }
+  }
+  
+  .activity-meta {
+    display: flex;
+    align-items: center;
+    gap: $spacing-base;
+    font-size: $font-size-xs;
+    color: $text-color-secondary;
+  }
+  
+  .activity-arrow {
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all $transition-duration-base $transition-timing-function;
+    
+    .el-icon {
+      color: $text-color-secondary;
+    }
+  }
+}
 </style>

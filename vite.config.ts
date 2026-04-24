@@ -42,13 +42,14 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"), // @ 指向项目根目录下的 src 文件夹
     },
   },
-  // SCSS 全局配置
+  // SCSS 全局配置 - 自动注入变量和 mixins
   css: {
     preprocessorOptions: {
       scss: {
-        // 不再自动导入全局变量文件，改为在每个文件中手动导入
-        // 这样可以避免模块重复加载的问题 也方便知道css变量从哪里来
-        // 关闭 deprecated 警告（可选）
+        additionalData: `
+@use "@/styles/variables.scss" as *;
+@use "@/styles/mixins.scss" as *;
+`,
         quietDeps: false,
       },
     },
