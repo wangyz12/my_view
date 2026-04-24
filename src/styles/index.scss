@@ -6,6 +6,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+// 覆盖 Tailwind preflight: 按钮背景色复位
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  background-color: initial;
+  background-image: initial;
+}
+
+.el-button {
+  background-color: var(--el-button-bg-color, var(--el-color-primary));
+}
 // 全局重置样式
 * {
   margin: 0;
